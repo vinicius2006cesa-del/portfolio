@@ -7,6 +7,7 @@
    3. Menu de navegacion (hamburguesa)
    4. Estado de la navbar al hacer scroll
    5. Link activo segun la seccion visible
+   5b. Boton flotante de WhatsApp
    6. Acordeon del proceso
    7. Formulario de contacto
    8. Arranque
@@ -37,6 +38,23 @@ function prefiereMenosMovimiento() {
    Cuando entra en pantalla le agregamos "visible" y el CSS hace la
    transicion.
    ===================================================================== */
+/**
+ * Le da a cada hijo de un bloque [data-escalonar] un retraso creciente,
+ * para que entren uno atras de otro en vez de todos juntos.
+ *
+ * El retraso se guarda en la variable CSS --retraso, que el CSS ya lee
+ * en transition-delay. El JS decide CUANTO espera cada uno; el CSS
+ * decide QUE pasa. Cada lenguaje hace lo suyo.
+ */
+function prepararEscalonado() {
+  document.querySelectorAll("[data-escalonar]").forEach((bloque) => {
+    bloque.querySelectorAll(".aparece").forEach((el, indice) => {
+      el.style.setProperty("--retraso", indice * 90 + "ms");
+    });
+  });
+}
+
+
 function activarAnimacionesDeScroll() {
   const elementos = document.querySelectorAll(".aparece");
 
@@ -197,6 +215,26 @@ function activarLinkActivo() {
 
 
 /* =====================================================================
+   5b. BOTON FLOTANTE DE WHATSAPP
+   ---------------------------------------------------------------------
+   Aparece recien cuando bajaste del inicio. Arriba ya hay dos botones
+   grandes; un tercero seria ruido.
+   ===================================================================== */
+function activarBotonFlotante() {
+  const boton = document.getElementById("wsp-flotante");
+  if (!boton) return;
+
+  function revisar() {
+    // 600px es, mas o menos, cuando terminaste de pasar el inicio
+    boton.classList.toggle("wsp-flotante--visible", window.scrollY > 600);
+  }
+
+  window.addEventListener("scroll", revisar, { passive: true });
+  revisar();
+}
+
+
+/* =====================================================================
    6. ACORDEON DEL PROCESO
    ---------------------------------------------------------------------
    Al tocar una etapa se abre su panel y se cierran las demas.
@@ -321,10 +359,14 @@ function activarFormulario() {
    inicializa y en que orden.
    ===================================================================== */
 function iniciar() {
+  // El escalonado va PRIMERO: tiene que estar listo antes de que el
+  // observador empiece a marcar elementos como visibles.
+  prepararEscalonado();
   activarAnimacionesDeScroll();
   activarMenu();
   activarNavbarScroll();
   activarLinkActivo();
+  activarBotonFlotante();
   activarProceso();
   activarFormulario();
 }

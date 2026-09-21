@@ -52,6 +52,7 @@
 
   --color-exito:          #16A34A;
   --color-error:          #DC2626;
+  --color-whatsapp:       #25D366;  /* el verde oficial de WhatsApp */
 
   /* --- Tipografia --------------------------------------------------
      Archivo Black: una sola variante, muy pesada. Solo para titulares.
@@ -425,12 +426,22 @@ p {
 .aparece {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 600ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* El retraso lo define el JS en los bloques con data-escalonar.
+     Si nadie lo define, var() usa el 0ms de respaldo. */
+  transition-delay: var(--retraso, 0ms);
 }
 
+/* Variantes de direccion. Se combinan con .aparece:
+   class="aparece aparece--izq" */
+.aparece--izq { transform: translateX(-28px); }
+.aparece--der { transform: translateX(28px); }
+
+/* transform: none anula cualquiera de las variantes de arriba
+   sin tener que escribir una regla .visible para cada una. */
 .aparece.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 /* ACCESIBILIDAD: hay gente a la que el movimiento le provoca mareo.
@@ -452,6 +463,13 @@ p {
 
   .aparece {
     opacity: 1;
+    transform: none;
+    transition-delay: 0ms !important;   /* nada de esperas escalonadas */
+  }
+
+  .wsp-flotante {
+    opacity: 1;
+    visibility: visible;
     transform: none;
   }
 }
@@ -910,6 +928,9 @@ p {
   flex-direction: column;
   gap: var(--esp-3);
   padding: var(--esp-5);
+  /* Crece para ocupar el alto sobrante. Es lo que permite que el
+     margin-top: auto del pie funcione. */
+  flex-grow: 1;
 }
 
 .proyecto__categoria {
@@ -926,6 +947,48 @@ p {
 
 .proyecto p {
   font-size: var(--texto-sm);
+}
+
+/* Pie de la tarjeta: tecnologias + estado.
+   margin-top: auto lo empuja al fondo, asi los pies de las tres
+   tarjetas quedan alineados aunque los textos midan distinto. */
+.proyecto__pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-3);
+  margin-top: auto;
+  padding-top: var(--esp-4);
+  border-top: 1px solid var(--color-borde);
+}
+
+.proyecto__estado {
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+  color: var(--color-texto-tenue);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Para cuando el proyecto tenga su sitio online */
+.proyecto__demo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-1);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-semi);
+  color: var(--color-acento);
+  white-space: nowrap;
+}
+
+.proyecto__demo::after {
+  content: "\2197";
+  transition: transform var(--transicion-rapida);
+}
+
+.proyecto__demo:hover::after {
+  transform: translate(2px, -2px);
 }
 
 /* --- Tarjeta final: "tu proyecto puede ser el proximo" ---------------- */
@@ -1099,6 +1162,23 @@ p {
   color: var(--color-texto);
 }
 
+/* Linea de tiempo de respuesta */
+.respuesta-rapida {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-2);
+  margin-bottom: var(--esp-5);
+  font-size: var(--texto-sm);
+  color: var(--color-texto-suave);
+}
+
+.respuesta-rapida svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--color-acento);
+}
+
 /* --- Formulario -------------------------------------------------------- */
 .formulario {
   display: flex;
@@ -1193,6 +1273,55 @@ p {
 
 .formulario__estado--ok    { color: var(--color-exito); }
 .formulario__estado--error { color: var(--color-error); }
+
+
+/* =====================================================================
+   12b. BOTON FLOTANTE DE WHATSAPP
+   ---------------------------------------------------------------------
+   position: fixed lo ancla a la ventana, no a la pagina: se queda
+   quieto mientras todo lo demas scrollea.
+   ===================================================================== */
+.wsp-flotante {
+  position: fixed;
+  right: var(--esp-5);
+  bottom: var(--esp-5);
+  z-index: var(--capa-navbar);
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--color-whatsapp);
+  color: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+
+  /* Empieza escondido; el JS lo muestra al bajar del inicio */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.9);
+  transition: opacity var(--transicion-normal),
+              visibility var(--transicion-normal),
+              transform var(--transicion-normal),
+              box-shadow var(--transicion-rapida);
+}
+
+.wsp-flotante--visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* El hover se escribe sobre la clase --visible: si lo pusieramos en
+   .wsp-flotante a secas, pisaria el transform del estado escondido. */
+.wsp-flotante--visible:hover {
+  transform: translateY(0) scale(1.08);
+  box-shadow: 0 12px 30px rgba(37, 211, 102, 0.45);
+}
+
+.wsp-flotante svg {
+  width: 30px;
+  height: 30px;
+}
 
 
 /* =====================================================================

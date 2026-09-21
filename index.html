@@ -203,7 +203,9 @@
           </p>
         </div>
 
-        <div class="servicios__grilla">
+        <!-- data-escalonar: el JS le da a cada hijo un retraso distinto,
+             asi entran uno atras de otro en vez de todos de golpe. -->
+        <div class="servicios__grilla" data-escalonar>
 
           <!-- Los iconos son SVG escritos directamente en el HTML.
                Asi heredan el color del CSS y no son un archivo aparte
@@ -265,15 +267,23 @@
           <p>Landing pages, portfolios y sitios institucionales que diseñé y desarrollé.</p>
         </div>
 
-        <div class="proyectos__grilla">
+        <div class="proyectos__grilla" data-escalonar>
 
           <!-- ============================================================
                PARA AGREGAR UN PROYECTO NUEVO:
                copiá un bloque <article class="proyecto"> entero, pegalo
-               antes de la tarjeta oscura del final y cambiá 4 cosas:
+               antes de la tarjeta oscura del final y cambiá:
                  1. el src de la imagen
                  2. el alt de la imagen (describí lo que se ve)
                  3. la categoria, el titulo y la descripcion
+                 4. los tags de tecnologia
+
+               CUANDO EL SITIO ESTE ONLINE, reemplazá esta linea:
+                 <p class="proyecto__estado">Próximamente</p>
+               por esta otra, con la direccion real:
+                 <a class="proyecto__demo" href="https://..."
+                    target="_blank" rel="noopener noreferrer">Ver demo</a>
+
                No hace falta tocar el CSS: la grilla se acomoda sola.
                ============================================================ -->
 
@@ -293,6 +303,14 @@
                 Una sola página con una oferta clara, un botón directo a WhatsApp
                 y carga rápida en celulares.
               </p>
+              <div class="proyecto__pie">
+                <ul class="tags">
+                  <li class="tag">HTML</li>
+                  <li class="tag">CSS</li>
+                  <li class="tag">JavaScript</li>
+                </ul>
+                <p class="proyecto__estado">Próximamente</p>
+              </div>
             </div>
           </article>
 
@@ -309,6 +327,14 @@
                 Un sitio personal para mostrar tu trabajo, contar quién sos y
                 recibir consultas.
               </p>
+              <div class="proyecto__pie">
+                <ul class="tags">
+                  <li class="tag">HTML</li>
+                  <li class="tag">CSS</li>
+                  <li class="tag">JavaScript</li>
+                </ul>
+                <p class="proyecto__estado">Próximamente</p>
+              </div>
             </div>
           </article>
 
@@ -325,6 +351,14 @@
                 Empresa, servicios y contacto en un sitio ordenado, pensado para
                 generar confianza.
               </p>
+              <div class="proyecto__pie">
+                <ul class="tags">
+                  <li class="tag">HTML</li>
+                  <li class="tag">CSS</li>
+                  <li class="tag">JavaScript</li>
+                </ul>
+                <p class="proyecto__estado">Próximamente</p>
+              </div>
             </div>
           </article>
 
@@ -354,14 +388,14 @@
           <h2>¿Cómo trabajamos juntos?</h2>
         </div>
 
-        <div class="proceso__lista">
+        <div class="proceso__lista" data-escalonar>
 
           <!-- Cada etapa es un boton que abre su propio panel.
                aria-expanded dice si esta abierto; aria-controls apunta al
                panel; y el panel usa aria-labelledby para decir a que boton
                pertenece. Con eso el acordeon es navegable con teclado y
                entendible con lector de pantalla. -->
-          <article class="etapa etapa--abierta">
+          <article class="etapa etapa--abierta aparece">
             <h3 class="etapa__encabezado">
               <button class="etapa__boton" type="button"
                       id="etapa-1-boton" aria-expanded="true" aria-controls="etapa-1-panel">
@@ -388,7 +422,7 @@
             </div>
           </article>
 
-          <article class="etapa">
+          <article class="etapa aparece">
             <h3 class="etapa__encabezado">
               <button class="etapa__boton" type="button"
                       id="etapa-2-boton" aria-expanded="false" aria-controls="etapa-2-panel">
@@ -415,7 +449,7 @@
             </div>
           </article>
 
-          <article class="etapa">
+          <article class="etapa aparece">
             <h3 class="etapa__encabezado">
               <button class="etapa__boton" type="button"
                       id="etapa-3-boton" aria-expanded="false" aria-controls="etapa-3-panel">
@@ -441,7 +475,7 @@
             </div>
           </article>
 
-          <article class="etapa">
+          <article class="etapa aparece">
             <h3 class="etapa__encabezado">
               <button class="etapa__boton" type="button"
                       id="etapa-4-boton" aria-expanded="false" aria-controls="etapa-4-panel">
@@ -467,7 +501,7 @@
             </div>
           </article>
 
-          <article class="etapa">
+          <article class="etapa aparece">
             <h3 class="etapa__encabezado">
               <button class="etapa__boton" type="button"
                       id="etapa-5-boton" aria-expanded="false" aria-controls="etapa-5-panel">
@@ -505,7 +539,10 @@
       <div class="contenedor contacto__interior">
 
         <div>
-          <div class="seccion__encabezado aparece">
+          <!-- aparece--izq entra desde la izquierda; el formulario, desde
+               la derecha. Refuerza visualmente que son dos caminos distintos
+               para el mismo objetivo. -->
+          <div class="seccion__encabezado aparece aparece--izq">
             <p class="etiqueta">Consulta inicial</p>
             <h2>Hablemos de tu próximo proyecto</h2>
             <p>
@@ -513,6 +550,18 @@
               avanzar de la mejor manera.
             </p>
           </div>
+
+          <!-- Saber cuanto va a esperar la respuesta baja la ansiedad
+               de quien escribe. Es una linea corta que empuja a mandar
+               la consulta en vez de dejarla para despues. -->
+          <p class="respuesta-rapida aparece">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M12 7v5l3 2"></path>
+            </svg>
+            Respondo en menos de 24 horas, de lunes a viernes.
+          </p>
 
           <div class="contacto__alternativa aparece">
             <p>¿Preferís algo más rápido?</p>
@@ -529,7 +578,7 @@
              Las consultas llegan a tu mail a traves de Web3Forms.
              TODO: reemplazá TU_CLAVE_DE_WEB3FORMS por la clave real.
              Es lo unico que hay que cambiar en todo el archivo. -->
-        <form class="formulario aparece"
+        <form class="formulario aparece aparece--der"
               id="formulario-contacto"
               action="https://api.web3forms.com/submit"
               method="POST">
@@ -646,6 +695,23 @@
 
     </div>
   </footer>
+
+
+  <!-- ===================================================================
+       BOTON FLOTANTE DE WHATSAPP
+       Aparece recien cuando bajas del inicio: arriba ya hay dos botones
+       grandes y un tercero seria ruido. El JS le pone la clase --visible.
+       =================================================================== -->
+  <a class="wsp-flotante"
+     id="wsp-flotante"
+     href="https://wa.me/5493772642065"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="Escribime por WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+    </svg>
+  </a>
 
 
   <!-- ===================================================================
