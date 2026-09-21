@@ -43,16 +43,25 @@ Copiá un bloque `<article class="proyecto">` entero, pegalo antes de la tarjeta
 oscura del final y cambiá la imagen, el alt, la categoría, el título y la
 descripción. La grilla se acomoda sola.
 
-## Formulario (Formspree)
+## Formulario (Web3Forms)
 
-1. Crear cuenta en [formspree.io](https://formspree.io)
-2. New Form → poner un nombre y el mail donde querés recibir las consultas
-3. Copiar el ID del form (la parte final de la URL que te dan)
-4. En `index.html`, reemplazar `TU_ID_DE_FORMSPREE` en el `action` del formulario
-5. Confirmar el mail que te manda Formspree
-6. Probar enviando una consulta desde el sitio publicado
+Las consultas del formulario llegan a tu mail.
 
-El plan gratuito acepta 50 envíos por mes.
+1. Entrar a [web3forms.com](https://web3forms.com)
+2. Escribir tu mail en el campo de la página principal → "Create Access Key"
+3. Te llega la clave por mail (es un código largo tipo `a1b2c3d4-...`)
+4. En `index.html`, buscar `TU_CLAVE_DE_WEB3FORMS` y reemplazarlo por esa clave
+5. Probar enviando una consulta desde el sitio
+
+No hace falta crear cuenta ni entrar a ningún panel. El plan gratuito
+acepta 250 envíos por mes.
+
+Tu dirección de mail **no** queda escrita en el HTML: la clave le dice a
+Web3Forms a dónde reenviar. Los robots de spam rastrean mails a la vista
+en el código de las páginas, así que esto te evita ese problema.
+
+Mientras la clave no esté puesta, el formulario no envía nada: muestra un
+aviso y deriva a WhatsApp, así no se pierde ninguna consulta.
 
 ## Imágenes
 
@@ -71,6 +80,6 @@ Reemplazá los archivos de `assets/img/` por los tuyos. Si cambiás la extensió
 - [ ] Revisar los textos del proceso marcados como `<!-- BORRADOR -->` (etapas 02 a 05)
 - [ ] Reemplazar las imágenes placeholder por las reales
 - [ ] Exportar `og-image.png` de 1200x630 px y actualizar `og:image` y `twitter:image`
-- [ ] Crear el formulario en Formspree y pegar el ID
+- [ ] Pedir la clave en Web3Forms y pegarla en `index.html`
 - [ ] Actualizar la URL definitiva en `canonical`, `og:url` y `twitter:image`
 - [ ] Borrar la copia vieja en `OneDrive\Documents\Portfolio`

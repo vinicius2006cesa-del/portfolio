@@ -256,9 +256,11 @@ function activarFormulario() {
   }
 
   formulario.addEventListener("submit", async (evento) => {
-    // Si todavia no configuraste Formspree, avisamos en vez de enviar
-    // los datos a una direccion que no existe.
-    if (formulario.action.includes("TU_ID_DE_FORMSPREE")) {
+    // Si todavia no pegaste la clave de Web3Forms, avisamos en vez de
+    // mandar la consulta a un lugar que no existe. Asi no se pierde
+    // ningun contacto mientras tanto.
+    const clave = formulario.querySelector("input[name='access_key']");
+    if (!clave || clave.value.includes("TU_CLAVE_DE_WEB3FORMS")) {
       evento.preventDefault();
       mostrarEstado(
         "El formulario todavía no está conectado. Escribime por WhatsApp mientras tanto.",

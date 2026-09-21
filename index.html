@@ -95,13 +95,10 @@
           <li><a class="navbar__link" href="#contacto">Contacto</a></li>
         </ul>
 
-        <!-- rel="noopener noreferrer" es obligatorio por seguridad cuando
-             usas target="_blank": evita que la pagina destino pueda
-             manipular la tuya. -->
-        <a class="btn btn--primario btn--flecha navbar__cta"
-           href="https://wa.me/5493772642065"
-           target="_blank"
-           rel="noopener noreferrer">
+        <!-- Baja al formulario de contacto. Al ser un salto dentro de la
+             misma pagina no lleva target="_blank": abrir una pestana nueva
+             para ir a otra seccion del mismo sitio seria un error. -->
+        <a class="btn btn--primario btn--flecha navbar__cta" href="#contacto">
           Agendar llamada
         </a>
       </nav>
@@ -154,10 +151,7 @@
         </p>
 
         <div class="hero__botones aparece">
-          <a class="btn btn--primario btn--grande btn--flecha"
-             href="https://wa.me/5493772642065"
-             target="_blank"
-             rel="noopener noreferrer">
+          <a class="btn btn--primario btn--grande btn--flecha" href="#contacto">
             Agendar una llamada
           </a>
           <a class="btn btn--secundario btn--grande btn--flecha" href="#proyectos">
@@ -340,10 +334,7 @@
               <h3>¿Tu proyecto puede ser el próximo?</h3>
               <p>Estoy sumando nuevos trabajos. Si tenés una idea, contáctame.</p>
             </div>
-            <a class="btn btn--primario btn--grande btn--flecha"
-               href="https://wa.me/5493772642065"
-               target="_blank"
-               rel="noopener noreferrer">
+            <a class="btn btn--primario btn--grande btn--flecha" href="#contacto">
               Hablemos
             </a>
           </aside>
@@ -535,11 +526,12 @@
         </div>
 
         <!-- FORMULARIO
-             TODO: reemplazá TU_ID_DE_FORMSPREE en el action por el ID real
-             que te da Formspree. Es lo unico que hay que cambiar. -->
+             Las consultas llegan a tu mail a traves de Web3Forms.
+             TODO: reemplazá TU_CLAVE_DE_WEB3FORMS por la clave real.
+             Es lo unico que hay que cambiar en todo el archivo. -->
         <form class="formulario aparece"
               id="formulario-contacto"
-              action="https://formspree.io/f/TU_ID_DE_FORMSPREE"
+              action="https://api.web3forms.com/submit"
               method="POST">
 
           <div class="campo">
@@ -572,13 +564,22 @@
                       required></textarea>
           </div>
 
-          <!-- Campo trampa para bots ("honeypot"). Esta escondido con CSS,
-               asi que una persona nunca lo ve ni lo completa. Los bots si.
-               Formspree descarta como spam todo lo que venga con _gotcha lleno. -->
-          <input type="text" name="_gotcha" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <!-- LA CLAVE
+               Es lo que le dice a Web3Forms a que mail reenviar la consulta.
+               Tu direccion nunca aparece escrita en el HTML: eso importa,
+               porque cualquiera puede leer el codigo de la pagina y los
+               robots de spam rastrean mails a la vista. -->
+          <input type="hidden" name="access_key" value="TU_CLAVE_DE_WEB3FORMS">
 
-          <!-- Asunto del mail que te va a llegar -->
-          <input type="hidden" name="_subject" value="Nueva consulta desde el portfolio">
+          <!-- Asunto y remitente del mail que te va a llegar -->
+          <input type="hidden" name="subject" value="Nueva consulta desde el portfolio">
+          <input type="hidden" name="from_name" value="Portfolio Vinicius Cesa">
+
+          <!-- Campo trampa para bots ("honeypot"). Esta escondido, asi que
+               una persona nunca lo ve ni lo completa. Los bots si.
+               Web3Forms descarta como spam todo lo que venga con botcheck
+               marcado. -->
+          <input type="checkbox" name="botcheck" class="honeypot" tabindex="-1" aria-hidden="true">
 
           <button class="btn btn--acento btn--grande btn--ancho btn--flecha" type="submit">
             Enviar consulta
