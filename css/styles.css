@@ -1191,6 +1191,10 @@ p {
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: -0.02em;
+  /* Hay que pedir el color explicitamente: la regla general
+     "p { color: ... }" es gris para fondo blanco, y le gana al blanco
+     que este parrafo heredaria del footer. */
+  color: var(--color-oscuro-texto);
 }
 
 .footer__frase {
@@ -1224,6 +1228,12 @@ p {
   padding-top: var(--esp-5);
   border-top: 1px solid var(--color-oscuro-borde);
   font-size: var(--texto-sm);
+  color: var(--color-oscuro-suave);
+}
+
+/* Mismo motivo que en .footer__marca: el parrafo del copyright
+   necesita su color propio para no quedar gris sobre negro. */
+.footer__inferior p {
   color: var(--color-oscuro-suave);
 }
 
@@ -1316,6 +1326,13 @@ p {
 
   .hero__contenido {
     padding-bottom: var(--esp-9);
+  }
+
+  /* En celular el titulo se limita a 14ch para que no quede una linea
+     larguisima. En desktop hay lugar de sobra: lo ensanchamos para que
+     use menos renglones. */
+  .hero__titulo {
+    max-width: 20ch;
   }
 
   .proyectos__grilla {

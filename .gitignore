@@ -9,10 +9,11 @@ $RECYCLE.BIN/
 # --- macOS (por si alguna vez abris el proyecto en una Mac) ---
 .DS_Store
 
-# --- Editores ---
+# --- Editores y herramientas ---
 .vscode/
 .idea/
 *.swp
+.claude/
 
 # --- Logs y temporales ---
 *.log
