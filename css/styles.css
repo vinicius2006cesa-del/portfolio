@@ -1333,16 +1333,17 @@ p {
   color: var(--color-oscuro-texto);
 }
 
+/* Si algun dia lo quisieras azul en vez de negro, es solo cambiar
+   este background-color por var(--color-acento). */
 .footer__superior {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--esp-7);
   padding-bottom: var(--esp-7);
 }
 
 .footer__marca {
   font-family: var(--fuente-titulos);
-  font-size: clamp(2.2rem, 7vw, 4rem);
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: -0.02em;
@@ -1353,25 +1354,93 @@ p {
 }
 
 .footer__frase {
-  margin-top: var(--esp-3);
-  max-width: 40ch;
+  margin-top: var(--esp-4);
+  max-width: 38ch;
+  font-size: var(--texto-sm);
   color: var(--color-oscuro-suave);
 }
 
-.footer__links {
+/* --- Iconos de redes --------------------------------------------- */
+.footer__redes {
+  display: flex;
+  gap: var(--esp-3);
+  margin-top: var(--esp-5);
+}
+
+.footer__redes a {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--color-oscuro-borde);
+  border-radius: 50%;
+  color: var(--color-oscuro-suave);
+  transition: color var(--transicion-rapida),
+              border-color var(--transicion-rapida),
+              transform var(--transicion-rapida);
+}
+
+.footer__redes a:hover {
+  color: var(--color-oscuro-texto);
+  border-color: var(--color-oscuro-texto);
+  transform: translateY(-2px);
+}
+
+.footer__redes svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* --- Columnas de datos -------------------------------------------- */
+.footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+}
+
+.footer__titulo {
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-oscuro-suave);
+  opacity: 0.7;
+}
+
+.footer__links,
+.footer__datos {
   display: flex;
   flex-direction: column;
   gap: var(--esp-3);
+  font-size: var(--texto-sm);
+  color: var(--color-oscuro-suave);
 }
 
-.footer__links a {
+.footer__links a,
+.footer__datos a {
   color: var(--color-oscuro-suave);
-  font-size: var(--texto-sm);
   transition: color var(--transicion-rapida);
 }
 
-.footer__links a:hover {
+.footer__links a:hover,
+.footer__datos a:hover {
   color: var(--color-oscuro-texto);
+}
+
+/* La linea que cierra cada columna, en blanco para que destaque */
+.footer__destacado {
+  margin-top: auto;   /* la empuja al fondo: las tres quedan alineadas */
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-semi);
+  color: var(--color-oscuro-texto);
+}
+
+.footer__destacado a {
+  transition: opacity var(--transicion-rapida);
+}
+
+.footer__destacado a:hover {
+  opacity: 0.7;
 }
 
 .footer__inferior {
@@ -1431,13 +1500,14 @@ p {
     flex: 0 0 auto;
   }
 
+  /* Dos columnas en tablet: la marca ocupa el ancho completo arriba */
   .footer__superior {
-    flex-direction: row;
-    justify-content: space-between;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--esp-6) var(--esp-5);
   }
 
-  .footer__links {
-    text-align: right;
+  .footer__marca-col {
+    grid-column: 1 / -1;
   }
 
   /* La barrita "|" se dibuja con CSS, no se escribe en el HTML:
@@ -1551,5 +1621,18 @@ p {
     padding: var(--esp-6);
     padding-left: calc(var(--esp-6) + var(--esp-7));
     font-size: var(--texto-base);
+  }
+
+  /* Footer en cinco columnas: la de la marca es mas ancha que el resto.
+     1.7fr contra 1fr significa "esta mide 1.7 veces lo que cada una
+     de las otras". */
+  .footer__superior {
+    grid-template-columns: 1.7fr 1fr 1fr 1.1fr 1fr;
+    gap: var(--esp-6);
+  }
+
+  .footer__marca-col {
+    grid-column: auto;   /* deja de ocupar toda la fila */
+    padding-right: var(--esp-5);
   }
 }
