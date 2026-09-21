@@ -1518,6 +1518,135 @@ p {
 
 
 /* =====================================================================
+   13b. PAGINA LEGAL
+   ---------------------------------------------------------------------
+   Estilos de legal.html. Texto largo: lo importante es que se lea
+   comodo, no que impresione.
+   ===================================================================== */
+.legal {
+  padding-block: var(--esp-8) var(--esp-9);
+}
+
+/* 68ch es el ancho de linea mas comodo para leer texto corrido.
+   Mas ancho que eso y el ojo se pierde al volver al renglon siguiente. */
+.legal__contenedor {
+  max-width: 68ch;
+}
+
+.legal__encabezado {
+  padding-bottom: var(--esp-5);
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.legal__encabezado h1 {
+  font-size: var(--texto-3xl);
+}
+
+.legal__encabezado p {
+  margin-top: var(--esp-3);
+  font-size: var(--texto-sm);
+  color: var(--color-texto-tenue);
+}
+
+/* Indice de secciones */
+.legal__indice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+  margin-block: var(--esp-5) var(--esp-8);
+}
+
+.legal__indice a {
+  padding: var(--esp-2) var(--esp-4);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-full);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  transition: border-color var(--transicion-rapida),
+              background-color var(--transicion-rapida);
+}
+
+.legal__indice a:hover {
+  border-color: var(--color-texto);
+  background-color: var(--color-fondo-suave);
+}
+
+.legal__seccion {
+  margin-bottom: var(--esp-9);
+}
+
+.legal__seccion h2 {
+  margin-bottom: var(--esp-5);
+  padding-bottom: var(--esp-4);
+  border-bottom: 2px solid var(--color-texto);
+  font-size: var(--texto-2xl);
+}
+
+.legal__seccion h3 {
+  margin-top: var(--esp-6);
+  margin-bottom: var(--esp-3);
+  font-size: var(--texto-lg);
+}
+
+.legal__seccion p {
+  margin-bottom: var(--esp-4);
+}
+
+/* Las listas de esta pagina si llevan vinetas: el reset las saca de
+   todo el sitio, pero aca aportan claridad al enumerar. */
+.legal__seccion ul {
+  margin-bottom: var(--esp-4);
+  padding-left: var(--esp-5);
+  list-style: disc;
+  color: var(--color-texto-suave);
+}
+
+.legal__seccion li {
+  margin-bottom: var(--esp-2);
+}
+
+.legal__seccion strong {
+  color: var(--color-texto);
+  font-weight: var(--peso-semi);
+}
+
+/* Los enlaces dentro del texto van subrayados: en un parrafo largo,
+   distinguirlos solo por el color no alcanza para quien no percibe
+   bien los colores. */
+.legal__seccion a,
+.legal__encabezado a {
+  color: var(--color-acento);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.legal__seccion a:hover {
+  color: var(--color-acento-hover);
+}
+
+/* La frase clave de la politica de cookies */
+.legal__destacado {
+  padding: var(--esp-5);
+  border-left: 3px solid var(--color-acento);
+  border-radius: var(--radio-sm);
+  background-color: var(--color-fondo-suave);
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semi);
+  color: var(--color-texto);
+}
+
+/* Footer reducido de las paginas internas */
+.footer--simple {
+  padding-block: var(--esp-6);
+}
+
+.footer--simple .footer__inferior {
+  padding-top: 0;
+  border-top: none;
+}
+
+
+/* =====================================================================
    14. DESKTOP
    ---------------------------------------------------------------------
    Todo lo de arriba es celular. Aca reacomodamos a partir de 700px
