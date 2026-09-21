@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <!-- ===================================================================
+       CODIFICACION Y VIEWPORT
+       charset: le dice al navegador como leer los acentos y la enie.
+       viewport: sin esta linea el celular finge ser una pantalla de 980px
+       y muestra el sitio "alejado". Es la base de todo el responsive.
+       =================================================================== -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ===================================================================
+       SEO — lo que ve Google
+       =================================================================== -->
+  <title>Vinicius Cesa — Diseño y desarrollo web que convierte</title>
+  <meta name="description" content="Diseño y desarrollo landing pages, portfolios y sitios institucionales que convierten visitas en consultas reales.">
+  <meta name="author" content="Vinicius Cesa">
+  <meta name="robots" content="index, follow">
+
+  <!-- TODO: cuando publiques en Vercel, reemplazá esta URL por la definitiva.
+       La canonical le dice a Google cual es la direccion "oficial" del sitio. -->
+  <link rel="canonical" href="https://vinicius-cesa.vercel.app/">
+
+  <!-- ===================================================================
+       OPEN GRAPH — lo que se ve al compartir el link en WhatsApp,
+       Instagram, LinkedIn o Facebook.
+       =================================================================== -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:site_name" content="Vinicius Cesa">
+  <meta property="og:title" content="Vinicius Cesa — Diseño y desarrollo web que convierte">
+  <meta property="og:description" content="Diseño y desarrollo landing pages, portfolios y sitios institucionales que convierten visitas en consultas reales.">
+  <meta property="og:url" content="https://vinicius-cesa.vercel.app/">
+  <!-- TODO: exportá una imagen real de 1200x630 px como assets/img/og-image.png
+       y cambiá la extension .svg por .png en estas dos lineas.
+       WhatsApp y Facebook NO muestran previsualizaciones en formato SVG. -->
+  <meta property="og:image" content="https://vinicius-cesa.vercel.app/assets/img/og-image.svg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vinicius Cesa — diseño y desarrollo web">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Vinicius Cesa — Diseño y desarrollo web que convierte">
+  <meta name="twitter:description" content="Diseño y desarrollo landing pages, portfolios y sitios institucionales que convierten visitas en consultas reales.">
+  <meta name="twitter:image" content="https://vinicius-cesa.vercel.app/assets/img/og-image.svg">
+
+  <!-- ===================================================================
+       FAVICON Y COLOR DE MARCA
+       =================================================================== -->
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#FFFFFF">
+
+  <!-- ===================================================================
+       FUENTES
+       preconnect abre la conexion con Google Fonts antes de necesitarla.
+       display=swap muestra el texto con una fuente del sistema mientras
+       carga la real, en vez de dejar la pantalla en blanco.
+       =================================================================== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- Primer elemento enfocable: permite a quien navega con teclado
+       saltear la navegacion e ir directo al contenido. -->
+  <a class="saltar-contenido" href="#perfil">Saltar al contenido</a>
+
+  <!-- ===================================================================
+       NAVBAR
+       =================================================================== -->
+  <header class="navbar" id="navbar">
+    <div class="contenedor navbar__interior">
+
+      <!-- La imagen lleva alt="" a proposito: el nombre ya esta escrito
+           al lado en texto. Con alt="Vinicius Cesa", un lector de pantalla
+           diria el nombre dos veces seguidas. -->
+      <a class="navbar__logo" href="#perfil">
+        <img src="assets/img/logo.svg" alt="" width="34" height="34">
+        <span>Vinicius Cesa</span>
+      </a>
+
+      <!-- Este mismo <nav> es el menu de desktop Y el panel del celular.
+           El CSS decide como se muestra segun el ancho de pantalla. -->
+      <nav class="navbar__menu" id="menu-principal" aria-label="Navegación principal">
+        <ul class="navbar__links">
+          <li><a class="navbar__link" href="#perfil">Inicio</a></li>
+          <li><a class="navbar__link" href="#servicios">Servicios</a></li>
+          <li><a class="navbar__link" href="#proyectos">Proyectos</a></li>
+          <li><a class="navbar__link" href="#proceso">Proceso</a></li>
+          <li><a class="navbar__link" href="#contacto">Contacto</a></li>
+        </ul>
+
+        <!-- rel="noopener noreferrer" es obligatorio por seguridad cuando
+             usas target="_blank": evita que la pagina destino pueda
+             manipular la tuya. -->
+        <a class="btn btn--primario btn--flecha navbar__cta"
+           href="https://wa.me/5493772642065"
+           target="_blank"
+           rel="noopener noreferrer">
+          Agendar llamada
+        </a>
+      </nav>
+
+      <!-- aria-expanded le dice al lector de pantalla si el menu esta
+           abierto. El JS lo cambia entre "false" y "true".
+           aria-controls conecta el boton con el menu que controla. -->
+      <button class="navbar__hamburguesa"
+              id="boton-menu"
+              type="button"
+              aria-expanded="false"
+              aria-controls="menu-principal"
+              aria-label="Abrir menú">
+        <span class="hamburguesa__linea"></span>
+        <span class="hamburguesa__linea"></span>
+        <span class="hamburguesa__linea"></span>
+      </button>
+
+    </div>
+  </header>
+
+
+  <main id="contenido">
+
+    <!-- =================================================================
+         INICIO
+         ================================================================= -->
+    <section class="hero" id="perfil">
+      <div class="contenedor hero__contenido">
+
+        <p class="hero__badge aparece">
+          <img src="assets/img/logo.svg" alt="" width="20" height="20">
+          <span class="hero__badge-nombre">Vinicius Cesa</span>
+          <span class="hero__separador" aria-hidden="true"></span>
+          <span class="hero__punto" aria-hidden="true"></span>
+          Disponible para nuevos proyectos
+        </p>
+
+        <!-- Un solo <h1> por pagina: es el titulo principal del documento.
+             Los <span> nos dejan pintar partes distintas sin cambiar el
+             significado del texto. -->
+        <h1 class="hero__titulo aparece">
+          <span class="hero__linea-suave">Tu web no necesita verse bien.</span>
+          Necesita <span class="destacado">vender</span> mejor.
+        </h1>
+
+        <p class="hero__subtitulo aparece">
+          Diseño y desarrollo landing pages, portfolios y sitios institucionales
+          pensados para convertir visitas en consultas reales.
+        </p>
+
+        <div class="hero__botones aparece">
+          <a class="btn btn--primario btn--grande btn--flecha"
+             href="https://wa.me/5493772642065"
+             target="_blank"
+             rel="noopener noreferrer">
+            Agendar una llamada
+          </a>
+          <a class="btn btn--secundario btn--grande btn--flecha" href="#proyectos">
+            Ver proyectos
+          </a>
+        </div>
+
+      </div>
+
+      <!-- MARQUEE
+           La lista esta escrita dos veces: es lo que permite que el
+           desplazamiento sea infinito sin cortes. La copia lleva
+           aria-hidden="true" para que el lector de pantalla no lea
+           los mismos items dos veces.
+           Si agregas o sacas items, hacelo en LAS DOS listas. -->
+      <div class="marquee" aria-label="Servicios: landing pages, desarrollo web, portfolios, sitios institucionales, diseño a medida">
+        <div class="marquee__pista">
+          <ul class="marquee__grupo">
+            <li>Landing pages</li>
+            <li>Desarrollo web</li>
+            <li>Portfolios</li>
+            <li>Sitios institucionales</li>
+            <li>Diseño a medida</li>
+          </ul>
+          <ul class="marquee__grupo" aria-hidden="true">
+            <li>Landing pages</li>
+            <li>Desarrollo web</li>
+            <li>Portfolios</li>
+            <li>Sitios institucionales</li>
+            <li>Diseño a medida</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =================================================================
+         SERVICIOS
+         ================================================================= -->
+    <section class="servicios seccion seccion--gris" id="servicios">
+      <div class="contenedor">
+
+        <div class="seccion__encabezado aparece">
+          <p class="etiqueta">Qué puedo construir</p>
+          <h2>Servicios que transforman tu negocio</h2>
+          <p>
+            Soluciones digitales para emprendedores, profesionales y pymes que
+            necesitan vender más y verse más confiables online.
+          </p>
+        </div>
+
+        <div class="servicios__grilla">
+
+          <!-- Los iconos son SVG escritos directamente en el HTML.
+               Asi heredan el color del CSS y no son un archivo aparte
+               que el navegador tenga que ir a buscar.
+               aria-hidden porque son decorativos: el titulo ya dice todo. -->
+          <article class="servicio aparece">
+            <div class="servicio__icono">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                <path d="M8 21h8M12 17v4"></path>
+              </svg>
+            </div>
+            <h3>Desarrollo Web</h3>
+            <p>
+              Sitios institucionales y portfolios a medida, rápidos, adaptados a
+              celulares y con una estructura pensada para generar confianza.
+            </p>
+            <ul class="tags">
+              <li class="tag">Institucional</li>
+              <li class="tag">Portfolio</li>
+              <li class="tag">Responsive</li>
+            </ul>
+          </article>
+
+          <article class="servicio aparece">
+            <div class="servicio__icono">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M13 2 4.5 12.5H11l-1 9.5 8.5-10.5H12l1-9.5z"></path>
+              </svg>
+            </div>
+            <h3>Landing Pages</h3>
+            <p>
+              Páginas para campañas con una oferta, un CTA y un recorrido pensado
+              para convertir visitas en consultas.
+            </p>
+            <ul class="tags">
+              <li class="tag">Lead gen</li>
+              <li class="tag">CTA claro</li>
+              <li class="tag">Conversión</li>
+            </ul>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =================================================================
+         PROYECTOS
+         ================================================================= -->
+    <section class="proyectos seccion" id="proyectos">
+      <div class="contenedor">
+
+        <div class="seccion__encabezado aparece">
+          <p class="etiqueta">Casos reales</p>
+          <h2>Proyectos realizados</h2>
+          <p>Landing pages, portfolios y sitios institucionales que diseñé y desarrollé.</p>
+        </div>
+
+        <div class="proyectos__grilla">
+
+          <!-- ============================================================
+               PARA AGREGAR UN PROYECTO NUEVO:
+               copiá un bloque <article class="proyecto"> entero, pegalo
+               antes de la tarjeta oscura del final y cambiá 4 cosas:
+                 1. el src de la imagen
+                 2. el alt de la imagen (describí lo que se ve)
+                 3. la categoria, el titulo y la descripcion
+               No hace falta tocar el CSS: la grilla se acomoda sola.
+               ============================================================ -->
+
+          <article class="proyecto aparece">
+            <div class="proyecto__imagen">
+              <!-- loading="lazy" le dice al navegador que no descargue esta
+                   imagen hasta que estes por llegar a ella. Acelera la carga
+                   inicial del sitio. -->
+              <img src="assets/img/proyecto-landing.svg"
+                   alt="Vista de una landing page para campañas con un botón de contacto destacado"
+                   width="1200" height="750" loading="lazy">
+            </div>
+            <div class="proyecto__cuerpo">
+              <p class="proyecto__categoria">Landing page</p>
+              <h3>Landing page para campañas</h3>
+              <p>
+                Una sola página con una oferta clara, un botón directo a WhatsApp
+                y carga rápida en celulares.
+              </p>
+            </div>
+          </article>
+
+          <article class="proyecto aparece">
+            <div class="proyecto__imagen">
+              <img src="assets/img/proyecto-portfolio.svg"
+                   alt="Vista de un portfolio profesional mostrando trabajos realizados"
+                   width="1200" height="750" loading="lazy">
+            </div>
+            <div class="proyecto__cuerpo">
+              <p class="proyecto__categoria">Portfolio</p>
+              <h3>Portfolio profesional</h3>
+              <p>
+                Un sitio personal para mostrar tu trabajo, contar quién sos y
+                recibir consultas.
+              </p>
+            </div>
+          </article>
+
+          <article class="proyecto aparece">
+            <div class="proyecto__imagen">
+              <img src="assets/img/proyecto-institucional.svg"
+                   alt="Vista de un sitio institucional para una pyme, con secciones de empresa y servicios"
+                   width="1200" height="750" loading="lazy">
+            </div>
+            <div class="proyecto__cuerpo">
+              <p class="proyecto__categoria">Sitio institucional</p>
+              <h3>Sitio institucional para pymes</h3>
+              <p>
+                Empresa, servicios y contacto en un sitio ordenado, pensado para
+                generar confianza.
+              </p>
+            </div>
+          </article>
+
+          <!-- Tarjeta de cierre: ocupa el ancho completo de la grilla -->
+          <aside class="proyecto-cta aparece">
+            <div class="proyecto-cta__texto">
+              <h3>¿Tu proyecto puede ser el próximo?</h3>
+              <p>Estoy sumando nuevos trabajos. Si tenés una idea, contáctame.</p>
+            </div>
+            <a class="btn btn--primario btn--grande btn--flecha"
+               href="https://wa.me/5493772642065"
+               target="_blank"
+               rel="noopener noreferrer">
+              Hablemos
+            </a>
+          </aside>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =================================================================
+         PROCESO
+         ================================================================= -->
+    <section class="proceso seccion seccion--gris" id="proceso">
+      <div class="contenedor">
+
+        <div class="seccion__encabezado aparece">
+          <h2>¿Cómo trabajamos juntos?</h2>
+        </div>
+
+        <div class="proceso__lista">
+
+          <!-- Cada etapa es un boton que abre su propio panel.
+               aria-expanded dice si esta abierto; aria-controls apunta al
+               panel; y el panel usa aria-labelledby para decir a que boton
+               pertenece. Con eso el acordeon es navegable con teclado y
+               entendible con lector de pantalla. -->
+          <article class="etapa etapa--abierta">
+            <h3 class="etapa__encabezado">
+              <button class="etapa__boton" type="button"
+                      id="etapa-1-boton" aria-expanded="true" aria-controls="etapa-1-panel">
+                <span class="etapa__numero">01</span>
+                <span class="etapa__texto">
+                  <span class="etapa__nombre">Nos conocemos</span>
+                  <span class="etapa__resumen">Una llamada corta para entender tu negocio, tu momento y qué necesitás resolver.</span>
+                </span>
+                <span class="etapa__icono" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="etapa__panel" id="etapa-1-panel" role="region" aria-labelledby="etapa-1-boton">
+              <div class="etapa__panel-interior">
+                <p class="etapa__detalle">
+                  Arrancamos con una llamada para conocer tu negocio, tu idea y lo que
+                  realmente necesitás lograr con tu web. Para mí es clave que nos
+                  conozcamos, así sabés quién va a estar detrás de la cara digital de tu
+                  marca. No se trata solo de hacer una web, sino de construir una
+                  herramienta que se entienda, que genere confianza y que trabaje para tu
+                  negocio todos los días. Para mí, Vinicius, la confianza, la claridad y
+                  el compromiso son la base de cualquier buen proyecto.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="etapa">
+            <h3 class="etapa__encabezado">
+              <button class="etapa__boton" type="button"
+                      id="etapa-2-boton" aria-expanded="false" aria-controls="etapa-2-panel">
+                <span class="etapa__numero">02</span>
+                <span class="etapa__texto">
+                  <span class="etapa__nombre">Definimos el problema</span>
+                  <span class="etapa__resumen">Detectamos qué te está frenando y qué solución realmente conviene.</span>
+                </span>
+                <span class="etapa__icono" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="etapa__panel" id="etapa-2-panel" role="region" aria-labelledby="etapa-2-boton">
+              <div class="etapa__panel-interior">
+                <!-- BORRADOR: revisar este texto -->
+                <p class="etapa__detalle">
+                  Con lo que me contás, ordenamos qué es lo que realmente te está
+                  frenando. Muchas veces no es la web en sí: es que no se entiende qué
+                  ofrecés, o que el cliente no sabe cómo contactarte. Antes de escribir
+                  una línea de código definimos qué problema vamos a resolver y cómo
+                  vamos a darnos cuenta de que lo resolvimos. Si pienso que no necesitás
+                  una web nueva, te lo digo, antes que venderte algo que no te va a servir.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="etapa">
+            <h3 class="etapa__encabezado">
+              <button class="etapa__boton" type="button"
+                      id="etapa-3-boton" aria-expanded="false" aria-controls="etapa-3-panel">
+                <span class="etapa__numero">03</span>
+                <span class="etapa__texto">
+                  <span class="etapa__nombre">Planificamos y presupuestamos</span>
+                  <span class="etapa__resumen">Alcance claro, tiempos concretos y una propuesta sin sorpresas.</span>
+                </span>
+                <span class="etapa__icono" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="etapa__panel" id="etapa-3-panel" role="region" aria-labelledby="etapa-3-boton">
+              <div class="etapa__panel-interior">
+                <!-- BORRADOR: revisar este texto -->
+                <p class="etapa__detalle">
+                  Te paso una propuesta con todo escrito: qué incluye, qué no incluye,
+                  cuánto sale y en cuánto tiempo lo tenés. Sin letra chica ni costos que
+                  aparecen después. Si el presupuesto no entra en lo que tenías pensado,
+                  vemos juntos qué conviene hacer en una primera etapa y qué puede
+                  esperar. La idea es que decidas con la información completa y sin apuro.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="etapa">
+            <h3 class="etapa__encabezado">
+              <button class="etapa__boton" type="button"
+                      id="etapa-4-boton" aria-expanded="false" aria-controls="etapa-4-panel">
+                <span class="etapa__numero">04</span>
+                <span class="etapa__texto">
+                  <span class="etapa__nombre">Trabajamos con comunicación real</span>
+                  <span class="etapa__resumen">Avances desde la primera semana, transparencia y foco.</span>
+                </span>
+                <span class="etapa__icono" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="etapa__panel" id="etapa-4-panel" role="region" aria-labelledby="etapa-4-boton">
+              <div class="etapa__panel-interior">
+                <!-- BORRADOR: revisar este texto -->
+                <p class="etapa__detalle">
+                  Desde la primera semana ves avances, no promesas. Te muestro el trabajo
+                  a medida que va tomando forma, así podés corregir el rumbo temprano y no
+                  cuando ya está todo hecho. Si algo se complica o se atrasa, te lo digo
+                  en el momento. Prefiero una conversación incómoda a tiempo antes que una
+                  sorpresa al final.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="etapa">
+            <h3 class="etapa__encabezado">
+              <button class="etapa__boton" type="button"
+                      id="etapa-5-boton" aria-expanded="false" aria-controls="etapa-5-panel">
+                <span class="etapa__numero">05</span>
+                <span class="etapa__texto">
+                  <span class="etapa__nombre">Entregamos y acompañamos</span>
+                  <span class="etapa__resumen">Publicamos, damos soporte y sostenemos la evolución de tu herramienta.</span>
+                </span>
+                <span class="etapa__icono" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="etapa__panel" id="etapa-5-panel" role="region" aria-labelledby="etapa-5-boton">
+              <div class="etapa__panel-interior">
+                <!-- BORRADOR: revisar este texto -->
+                <p class="etapa__detalle">
+                  Publicamos el sitio, lo dejamos andando y te explico cómo manejarlo,
+                  para que no dependas de mí por cada cambio chico. Después seguimos en
+                  contacto: una web no se termina el día que sale al aire, se va ajustando
+                  con lo que vas aprendiendo de tus clientes. Si más adelante necesitás
+                  sumar algo, ya conozco tu proyecto y arrancamos desde donde lo dejamos.
+                </p>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =================================================================
+         CONTACTO
+         ================================================================= -->
+    <section class="contacto seccion" id="contacto">
+      <div class="contenedor contacto__interior">
+
+        <div>
+          <div class="seccion__encabezado aparece">
+            <p class="etiqueta">Consulta inicial</p>
+            <h2>Hablemos de tu próximo proyecto</h2>
+            <p>
+              En 20-30 minutos de consulta revisamos qué necesitás y cómo podemos
+              avanzar de la mejor manera.
+            </p>
+          </div>
+
+          <div class="contacto__alternativa aparece">
+            <p>¿Preferís algo más rápido?</p>
+            <a class="btn btn--secundario btn--flecha"
+               href="https://wa.me/5493772642065"
+               target="_blank"
+               rel="noopener noreferrer">
+              Escribime por WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <!-- FORMULARIO
+             TODO: reemplazá TU_ID_DE_FORMSPREE en el action por el ID real
+             que te da Formspree. Es lo unico que hay que cambiar. -->
+        <form class="formulario aparece"
+              id="formulario-contacto"
+              action="https://formspree.io/f/TU_ID_DE_FORMSPREE"
+              method="POST">
+
+          <div class="campo">
+            <label for="nombre">Nombre</label>
+            <!-- required: el navegador no deja enviar si esta vacio.
+                 autocomplete: permite al celular completarlo solo. -->
+            <input type="text" id="nombre" name="nombre"
+                   placeholder="Tu nombre" required autocomplete="name">
+          </div>
+
+          <div class="campo">
+            <label for="whatsapp">
+              WhatsApp <span class="campo__opcional">(opcional)</span>
+            </label>
+            <!-- type="tel" + inputmode: en el celular abre el teclado numerico -->
+            <input type="tel" id="whatsapp" name="whatsapp"
+                   placeholder="+54 9 ..." inputmode="tel" autocomplete="tel">
+          </div>
+
+          <div class="campo">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email"
+                   placeholder="tu@mail.com" required autocomplete="email">
+          </div>
+
+          <div class="campo">
+            <label for="mensaje">Contame tu idea</label>
+            <textarea id="mensaje" name="mensaje"
+                      placeholder="Contame brevemente qué querés construir o mejorar."
+                      required></textarea>
+          </div>
+
+          <!-- Campo trampa para bots ("honeypot"). Esta escondido con CSS,
+               asi que una persona nunca lo ve ni lo completa. Los bots si.
+               Formspree descarta como spam todo lo que venga con _gotcha lleno. -->
+          <input type="text" name="_gotcha" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+          <!-- Asunto del mail que te va a llegar -->
+          <input type="hidden" name="_subject" value="Nueva consulta desde el portfolio">
+
+          <button class="btn btn--acento btn--grande btn--ancho btn--flecha" type="submit">
+            Enviar consulta
+          </button>
+
+          <!-- role="status" hace que el lector de pantalla anuncie el
+               mensaje cuando el JS lo escribe, sin interrumpir lo que
+               la persona este haciendo. -->
+          <p class="formulario__estado" id="formulario-estado" role="status" aria-live="polite"></p>
+        </form>
+
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ===================================================================
+       FOOTER
+       =================================================================== -->
+  <footer class="footer">
+    <div class="contenedor">
+
+      <div class="footer__superior">
+        <div>
+          <p class="footer__marca">Vinicius Cesa</p>
+          <p class="footer__frase">Diseño y desarrollo web para quienes quieren vender más.</p>
+        </div>
+
+        <nav class="footer__links" aria-label="Enlaces del pie de página">
+          <a href="#servicios">Servicios</a>
+          <a href="#proyectos">Proyectos</a>
+          <a href="#proceso">Proceso</a>
+          <a href="#contacto">Contacto</a>
+          <a href="https://wa.me/5493772642065" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        </nav>
+      </div>
+
+      <div class="footer__inferior">
+        <p>© 2026 Vinicius Cesa</p>
+        <!-- Es un link a #perfil y no un boton con JS: asi funciona
+             aunque el JavaScript falle, y el scroll suave ya lo da el CSS. -->
+        <a class="footer__arriba" href="#perfil">
+          Volver arriba <span aria-hidden="true">&uarr;</span>
+        </a>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- ===================================================================
+       JAVASCRIPT
+       defer hace que el navegador siga armando la pagina mientras
+       descarga el script, y lo ejecute cuando el HTML esta completo.
+       =================================================================== -->
+  <script src="js/main.js" defer></script>
+
+</body>
+</html>

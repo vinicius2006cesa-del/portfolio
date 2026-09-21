@@ -1,0 +1,8 @@
+Reemplazá los archivos de esta carpeta por tus imágenes reales,
+manteniendo exactamente los mismos nombres. Así no hace falta tocar el código.
+
+logo.png                    -> tu logo (cuadrado, fondo transparente)
+proyecto-landing.jpg        -> captura del proyecto 1 (1200 x 750 px)
+proyecto-portfolio.jpg      -> captura del proyecto 2 (1200 x 750 px)
+proyecto-institucional.jpg  -> captura del proyecto 3 (1200 x 750 px)
+og-image.png                -> imagen que se ve al compartir el link (1200 x 630 px)

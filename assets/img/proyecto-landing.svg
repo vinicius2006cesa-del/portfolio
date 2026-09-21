@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750">
+  <rect width="1200" height="750" fill="#F4F5F7"/>
+  <rect x="24" y="24" width="1152" height="702" rx="16" fill="none" stroke="#D2D4DA" stroke-width="3" stroke-dasharray="14 12"/>
+  <text x="50%" y="46%" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="56" font-weight="700" fill="#2563EB">Landing page</text>
+  <text x="50%" y="56%" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="30" fill="#6E6F7A">proyecto-landing.jpg — 1200 x 750</text>
+</svg>

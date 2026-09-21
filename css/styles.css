@@ -1,0 +1,1364 @@
+/* =====================================================================
+   VINICIUS CESA — Hoja de estilos principal
+
+   INDICE
+   1. Variables de diseno (tokens)
+   2. Reset
+   3. Estilos base
+   4. Utilidades y layout
+   5. Componentes globales (botones, etiquetas, encabezados)
+   6. Animaciones de aparicion
+   7. Navbar
+   8. Inicio (hero + marquee)
+   9. Servicios
+   10. Proyectos
+   11. Proceso
+   12. Contacto
+   13. Footer
+   14. Desktop (media queries)
+   ===================================================================== */
+
+
+/* =====================================================================
+   1. VARIABLES DE DISENO (tokens)
+   ---------------------------------------------------------------------
+   Todo el diseno del sitio sale de aca. Cambias un valor y se actualiza
+   en todos lados. Es el unico bloque que necesitas tocar para
+   redecorar el sitio entero.
+   ===================================================================== */
+:root {
+  /* --- Colores ----------------------------------------------------
+     Tema claro: fondo blanco, texto casi negro, acento azul. */
+  --color-fondo:          #FFFFFF;
+  --color-fondo-suave:    #F4F5F7;  /* secciones con fondo gris */
+  --color-superficie-alta:#F7F8FA;  /* campos de formulario */
+  --color-borde:          #E6E7EB;
+  --color-borde-fuerte:   #D2D4DA;
+
+  --color-texto:          #0B0B0D;  /* texto principal */
+  --color-texto-suave:    #55565F;  /* parrafos */
+  --color-texto-tenue:    #6E6F7A;  /* textos chicos secundarios */
+  --color-titulo-suave:   #8A8B95;  /* la primera linea gris del titular */
+
+  --color-acento:         #2563EB;  /* azul de marca */
+  --color-acento-hover:   #1D4ED8;
+  --color-acento-texto:   #FFFFFF;  /* texto que va ENCIMA del azul */
+
+  --color-oscuro:         #0B0B0D;  /* fondo del footer y botones negros */
+  --color-oscuro-hover:   #23232A;
+  --color-oscuro-texto:   #FFFFFF;
+  --color-oscuro-suave:   #9A9BA4;  /* texto secundario sobre negro */
+  --color-oscuro-borde:   #26262C;
+
+  --color-exito:          #16A34A;
+  --color-error:          #DC2626;
+
+  /* --- Tipografia --------------------------------------------------
+     Archivo Black: una sola variante, muy pesada. Solo para titulares.
+     Poppins: geometrica y redonda, para todo el resto. */
+  --fuente-titulos: "Archivo Black", "Segoe UI", system-ui, sans-serif;
+  --fuente-texto:   "Poppins", "Segoe UI", system-ui, sans-serif;
+
+  /* clamp(minimo, ideal, maximo): el texto crece solo entre celular y
+     desktop, sin necesidad de media queries. */
+  --texto-xs:   0.75rem;
+  --texto-sm:   0.875rem;
+  --texto-base: 1rem;
+  --texto-lg:   clamp(1.05rem, 0.4vw + 0.95rem, 1.2rem);
+  --texto-xl:   clamp(1.2rem, 0.8vw + 1rem, 1.5rem);
+  --texto-2xl:  clamp(1.5rem, 1.6vw + 1.1rem, 2.1rem);
+  --texto-3xl:  clamp(2rem, 3vw + 1.2rem, 3.4rem);
+  --texto-4xl:  clamp(2.6rem, 6vw + 0.8rem, 5.6rem);
+
+  --peso-normal:  400;
+  --peso-medio:   500;
+  --peso-semi:    600;
+  --peso-bold:    700;
+
+  --altura-linea-titulo: 0.95;
+  --altura-linea-texto:  1.65;
+
+  /* --- Espaciados --------------------------------------------------- */
+  --esp-1:  0.25rem;
+  --esp-2:  0.5rem;
+  --esp-3:  0.75rem;
+  --esp-4:  1rem;
+  --esp-5:  1.5rem;
+  --esp-6:  2rem;
+  --esp-7:  3rem;
+  --esp-8:  4rem;
+  --esp-9:  6rem;
+
+  --esp-seccion: clamp(4rem, 8vw, 7.5rem);
+
+  /* --- Bordes redondeados -------------------------------------------- */
+  --radio-sm:   10px;
+  --radio-md:   16px;
+  --radio-lg:   24px;
+  --radio-full: 999px;
+
+  /* --- Sombras -------------------------------------------------------- */
+  --sombra-sm: 0 1px 3px rgba(11, 11, 13, 0.06);
+  --sombra-md: 0 12px 32px rgba(11, 11, 13, 0.10);
+  --sombra-lg: 0 24px 60px rgba(11, 11, 13, 0.12);
+
+  /* --- Layout ---------------------------------------------------------- */
+  --ancho-contenedor: 1180px;
+  --alto-navbar: 76px;
+
+  /* --- Transiciones ----------------------------------------------------- */
+  --transicion-rapida: 160ms ease;
+  --transicion-normal: 300ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* --- Capas (z-index) --------------------------------------------------- */
+  --capa-navbar: 100;
+  --capa-menu:   200;
+}
+
+
+/* =====================================================================
+   2. RESET
+   ===================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--alto-navbar) + var(--esp-4));
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+h1, h2, h3, h4, p, li, a {
+  overflow-wrap: break-word;
+}
+
+
+/* =====================================================================
+   3. ESTILOS BASE
+   ===================================================================== */
+body {
+  padding-top: var(--alto-navbar);   /* deja lugar para la navbar fija */
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-base);
+  line-height: var(--altura-linea-texto);
+  color: var(--color-texto);
+  background-color: var(--color-fondo);
+}
+
+/* Los titulares van en mayuscula, como en el diseno.
+   text-transform NO cambia el texto del HTML: lo escribis normal y el
+   navegador lo muestra en mayuscula. Asi el lector de pantalla lo lee
+   bien y podes cambiar de idea sin reescribir nada. */
+h1, h2 {
+  font-family: var(--fuente-titulos);
+  font-weight: var(--peso-normal);   /* Archivo Black ya es pesadisima */
+  line-height: var(--altura-linea-titulo);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--texto-4xl); }
+h2 { font-size: var(--texto-3xl); }
+
+h3, h4 {
+  font-family: var(--fuente-texto);
+  font-weight: var(--peso-semi);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+h3 { font-size: var(--texto-xl); }
+
+p {
+  color: var(--color-texto-suave);
+  text-wrap: pretty;
+}
+
+/* ACCESIBILIDAD: contorno visible al navegar con Tab.
+   :focus-visible aparece con teclado pero no al hacer clic con el mouse. */
+:focus-visible {
+  outline: 3px solid var(--color-acento);
+  outline-offset: 3px;
+  border-radius: var(--radio-sm);
+}
+
+::selection {
+  background-color: var(--color-acento);
+  color: var(--color-acento-texto);
+}
+
+
+/* =====================================================================
+   4. UTILIDADES Y LAYOUT
+   ===================================================================== */
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho-contenedor);
+  margin-inline: auto;
+  padding-inline: var(--esp-5);
+}
+
+.seccion {
+  padding-block: var(--esp-seccion);
+}
+
+.seccion--gris {
+  background-color: var(--color-fondo-suave);
+}
+
+/* Invisible en pantalla, pero el lector de pantalla lo lee.
+   Sirve para dar contexto a quien no ve el diseno. */
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Aparece solo al llegar con Tab: permite saltear el menu */
+.saltar-contenido {
+  position: absolute;
+  top: var(--esp-3);
+  left: var(--esp-3);
+  z-index: 999;
+  padding: var(--esp-3) var(--esp-5);
+  border-radius: var(--radio-sm);
+  background-color: var(--color-acento);
+  color: var(--color-acento-texto);
+  font-weight: var(--peso-semi);
+  transform: translateY(-200%);
+  transition: transform var(--transicion-rapida);
+}
+
+.saltar-contenido:focus {
+  transform: translateY(0);
+}
+
+
+/* =====================================================================
+   5. COMPONENTES GLOBALES
+   ===================================================================== */
+
+/* --- Botones ---------------------------------------------------------
+   .btn es la base; los modificadores .btn--* cambian solo el color.
+   El doble guion es la convencion BEM: bloque--modificador. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-2);
+  padding: var(--esp-3) var(--esp-5);
+  border: 1px solid transparent;
+  border-radius: var(--radio-full);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-semi);
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--transicion-rapida),
+              color var(--transicion-rapida),
+              border-color var(--transicion-rapida),
+              transform var(--transicion-rapida),
+              box-shadow var(--transicion-rapida);
+}
+
+/* La flechita de los botones, generada por CSS.
+   Se agrega con ::after para no repetirla en cada boton del HTML. */
+.btn--flecha::after {
+  content: "\2197";   /* flecha diagonal hacia arriba */
+  font-size: 1.05em;
+  transition: transform var(--transicion-rapida);
+}
+
+.btn--flecha:hover::after {
+  transform: translate(2px, -2px);
+}
+
+.btn--primario {
+  background-color: var(--color-oscuro);
+  color: var(--color-oscuro-texto);
+}
+
+.btn--primario:hover {
+  background-color: var(--color-oscuro-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-md);
+}
+
+.btn--secundario {
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  border-color: var(--color-borde-fuerte);
+}
+
+.btn--secundario:hover {
+  border-color: var(--color-texto);
+  transform: translateY(-2px);
+}
+
+.btn--acento {
+  background-color: var(--color-acento);
+  color: var(--color-acento-texto);
+}
+
+.btn--acento:hover {
+  background-color: var(--color-acento-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-md);
+}
+
+.btn--grande {
+  padding: var(--esp-4) var(--esp-6);
+  font-size: var(--texto-base);
+}
+
+.btn--ancho {
+  width: 100%;
+}
+
+/* --- Etiqueta chica arriba de cada titulo ---------------------------- */
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-2);
+  padding: var(--esp-2) var(--esp-4);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-full);
+  background-color: var(--color-fondo);
+  color: var(--color-acento);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* --- Encabezado de seccion (etiqueta + titulo + parrafo) ------------- */
+.seccion__encabezado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--esp-4);
+  max-width: 660px;
+  margin-bottom: var(--esp-7);
+}
+
+.seccion__encabezado p {
+  font-size: var(--texto-lg);
+}
+
+/* --- Pastillas de tags ------------------------------------------------ */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+}
+
+.tag {
+  padding: var(--esp-1) var(--esp-3);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-full);
+  background-color: var(--color-fondo);
+  color: var(--color-texto-tenue);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+}
+
+
+/* =====================================================================
+   6. ANIMACIONES DE APARICION
+   ---------------------------------------------------------------------
+   El JS agrega .visible cuando el elemento entra en pantalla.
+   ===================================================================== */
+.aparece {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 600ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aparece.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ACCESIBILIDAD: hay gente a la que el movimiento le provoca mareo.
+   Windows, iOS y Android tienen una opcion para pedir menos animaciones;
+   esta media query la escucha y apaga todo. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .aparece {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* =====================================================================
+   7. NAVBAR
+   ---------------------------------------------------------------------
+   Mobile-first: esto es el celular. El desktop esta en la seccion 14.
+   ===================================================================== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--capa-navbar);
+  height: var(--alto-navbar);
+  display: flex;
+  align-items: center;
+  /* Fondo semitransparente + desenfoque: efecto "vidrio esmerilado" */
+  background-color: rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transicion-rapida),
+              background-color var(--transicion-rapida);
+}
+
+/* El JS agrega esta clase cuando bajas: la barra se despega del contenido */
+.navbar--scrolleado {
+  background-color: rgba(255, 255, 255, 0.94);
+  border-bottom-color: var(--color-borde);
+}
+
+.navbar__interior {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-4);
+}
+
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-sm);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--color-texto);
+}
+
+.navbar__logo img {
+  width: 34px;
+  height: 34px;
+}
+
+/* --- El menu en celular: panel que baja desde la barra --------------- */
+.navbar__menu {
+  position: fixed;
+  top: var(--alto-navbar);
+  left: 0;
+  right: 0;
+  z-index: var(--capa-menu);
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-5);
+  padding: var(--esp-6) var(--esp-5) var(--esp-7);
+  background-color: var(--color-fondo);
+  border-bottom: 1px solid var(--color-borde);
+  box-shadow: var(--sombra-md);
+
+  /* Estado cerrado. visibility: hidden saca los links del recorrido
+     del Tab: sin eso estarias tabulando sobre links invisibles. */
+  transform: translateY(-16px);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform var(--transicion-normal),
+              opacity var(--transicion-normal),
+              visibility var(--transicion-normal);
+}
+
+.navbar__menu--abierto {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.navbar__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-2);
+}
+
+.navbar__link {
+  display: block;
+  padding: var(--esp-3) 0;
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-medio);
+  color: var(--color-texto-suave);
+  transition: color var(--transicion-rapida);
+}
+
+.navbar__link:hover {
+  color: var(--color-texto);
+}
+
+/* El JS marca con esta clase el link de la seccion que estas viendo */
+.navbar__link--activo {
+  color: var(--color-texto);
+  font-weight: var(--peso-semi);
+}
+
+/* En el panel del celular el boton ocupa todo el ancho.
+   En desktop vuelve a medir lo que ocupa su texto (seccion 14). */
+.navbar__cta {
+  width: 100%;
+}
+
+/* --- Boton hamburguesa -----------------------------------------------
+   44x44 px es el tamano minimo recomendado para tocar con el dedo. */
+.navbar__hamburguesa {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  border-radius: var(--radio-sm);
+}
+
+.hamburguesa__linea {
+  display: block;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background-color: var(--color-texto);
+  transition: transform var(--transicion-rapida),
+              opacity var(--transicion-rapida);
+}
+
+/* Las tres lineas se convierten en X usando el MISMO atributo que ya
+   necesitamos por accesibilidad. Un estado, una sola fuente de verdad. */
+.navbar__hamburguesa[aria-expanded="true"] .hamburguesa__linea:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.navbar__hamburguesa[aria-expanded="true"] .hamburguesa__linea:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar__hamburguesa[aria-expanded="true"] .hamburguesa__linea:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+
+/* =====================================================================
+   8. INICIO (hero + marquee)
+   ===================================================================== */
+.hero {
+  position: relative;
+  padding-top: var(--esp-7);
+  overflow: hidden;
+}
+
+/* Resplandor suave detras del titulo. Se hace con ::before, un
+   pseudo-elemento: existe solo en el CSS, no ensucia el HTML. */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -220px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1000px, 140%);
+  height: 560px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(37, 99, 235, 0.10) 0%,
+    rgba(37, 99, 235, 0) 68%
+  );
+  pointer-events: none;   /* que no bloquee los clics de los botones */
+}
+
+.hero__contenido {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--esp-5);
+  padding-bottom: var(--esp-8);
+  text-align: center;
+}
+
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-3);
+  padding: var(--esp-2) var(--esp-4);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-full);
+  background-color: var(--color-fondo);
+  box-shadow: var(--sombra-sm);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  color: var(--color-texto-suave);
+}
+
+.hero__badge img {
+  width: 20px;
+  height: 20px;
+}
+
+.hero__badge-nombre {
+  font-weight: var(--peso-semi);
+  color: var(--color-texto);
+}
+
+.hero__separador {
+  width: 1px;
+  height: 14px;
+  background-color: var(--color-borde-fuerte);
+}
+
+.hero__punto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-exito);
+  animation: latido 2s ease-in-out infinite;
+}
+
+@keyframes latido {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.8); }
+}
+
+.hero__titulo {
+  max-width: 14ch;
+}
+
+/* La primera linea del titular va en gris: crea jerarquia entre
+   "lo que no alcanza" y "lo que importa". */
+.hero__linea-suave {
+  display: block;
+  color: var(--color-titulo-suave);
+}
+
+/* La palabra destacada, dentro de una caja azul apenas rotada */
+.destacado {
+  display: inline-block;
+  padding: 0.04em 0.18em 0.1em;
+  border-radius: 14px;
+  background-color: var(--color-acento);
+  color: var(--color-acento-texto);
+  transform: rotate(-2.5deg);
+}
+
+.hero__subtitulo {
+  max-width: 52ch;
+  font-size: var(--texto-lg);
+}
+
+.hero__botones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--esp-3);
+  width: 100%;
+  margin-top: var(--esp-2);
+}
+
+/* En celular los botones ocupan todo el ancho: mas faciles de tocar */
+.hero__botones .btn {
+  flex: 1 1 100%;
+}
+
+/* --- Marquee (franja con desplazamiento infinito) --------------------
+   La pista tiene el mismo grupo dos veces y se desplaza -50%, que es
+   justo el ancho de un grupo. Al reiniciar, la copia quedo exactamente
+   donde estaba el original: el salto es invisible. */
+.marquee {
+  border-block: 1px solid var(--color-borde);
+  padding-block: var(--esp-4);
+  overflow: hidden;
+  /* Desvanece los bordes para que los textos no aparezcan de golpe */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.marquee__pista {
+  display: flex;
+  width: max-content;
+  animation: desplazar 32s linear infinite;
+}
+
+/* Si algo te interesa, al pasar el mouse se pausa y podes leerlo */
+.marquee:hover .marquee__pista {
+  animation-play-state: paused;
+}
+
+@keyframes desplazar {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee__grupo {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-6);
+  padding-right: var(--esp-6);
+}
+
+.marquee__grupo li {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-6);
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-xl);
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+  white-space: nowrap;
+}
+
+/* Punto separador azul entre items, dibujado por CSS */
+.marquee__grupo li::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-acento);
+}
+
+/* El !important le gana a la regla general de prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+  }
+
+  .marquee__pista {
+    animation: none !important;
+  }
+}
+
+
+/* =====================================================================
+   9. SERVICIOS
+   ===================================================================== */
+.servicios__grilla {
+  display: grid;
+  gap: var(--esp-5);
+}
+
+.servicio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+  padding: var(--esp-6);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-fondo);
+  transition: border-color var(--transicion-normal),
+              box-shadow var(--transicion-normal),
+              transform var(--transicion-normal);
+}
+
+.servicio:hover {
+  border-color: var(--color-borde-fuerte);
+  box-shadow: var(--sombra-md);
+  transform: translateY(-4px);
+}
+
+.servicio__icono {
+  display: grid;
+  place-items: center;   /* centra horizontal y verticalmente de una */
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radio-md);
+  background-color: var(--color-acento);
+  color: var(--color-acento-texto);
+}
+
+.servicio__icono svg {
+  width: 26px;
+  height: 26px;
+}
+
+.servicio h3 {
+  font-size: var(--texto-2xl);
+}
+
+.servicio p {
+  flex-grow: 1;   /* empuja los tags al fondo, asi quedan alineados
+                     aunque las tarjetas tengan textos de distinto largo */
+}
+
+
+/* =====================================================================
+   10. PROYECTOS
+   ===================================================================== */
+.proyectos__grilla {
+  display: grid;
+  gap: var(--esp-6);
+}
+
+.proyecto {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;   /* recorta la imagen al radio de la tarjeta */
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-fondo);
+  transition: border-color var(--transicion-normal),
+              box-shadow var(--transicion-normal),
+              transform var(--transicion-normal);
+}
+
+.proyecto:hover {
+  border-color: var(--color-borde-fuerte);
+  box-shadow: var(--sombra-md);
+  transform: translateY(-4px);
+}
+
+.proyecto__imagen {
+  overflow: hidden;
+  background-color: var(--color-fondo-suave);
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.proyecto__imagen img {
+  width: 100%;
+  /* aspect-ratio reserva el espacio antes de que cargue la imagen:
+     evita que el contenido "salte" mientras carga la pagina */
+  aspect-ratio: 16 / 10;
+  object-fit: cover;   /* recorta en vez de deformar */
+  transition: transform var(--transicion-normal);
+}
+
+.proyecto:hover .proyecto__imagen img {
+  transform: scale(1.04);
+}
+
+.proyecto__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+  padding: var(--esp-5);
+}
+
+.proyecto__categoria {
+  align-self: flex-start;
+  padding: var(--esp-1) var(--esp-3);
+  border-radius: var(--radio-full);
+  background-color: var(--color-fondo-suave);
+  color: var(--color-acento);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.proyecto p {
+  font-size: var(--texto-sm);
+}
+
+/* --- Tarjeta final: "tu proyecto puede ser el proximo" ---------------- */
+.proyecto-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--esp-4);
+  padding: var(--esp-7) var(--esp-6);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-oscuro);
+  color: var(--color-oscuro-texto);
+}
+
+.proyecto-cta h3 {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-2xl);
+  font-weight: var(--peso-normal);
+  text-transform: uppercase;
+  line-height: var(--altura-linea-titulo);
+}
+
+.proyecto-cta p {
+  color: var(--color-oscuro-suave);
+  max-width: 46ch;
+}
+
+/* Sobre fondo negro, el boton blanco es el que mas contrasta */
+.proyecto-cta .btn--primario {
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+}
+
+.proyecto-cta .btn--primario:hover {
+  background-color: var(--color-fondo-suave);
+}
+
+
+/* =====================================================================
+   11. PROCESO
+   ---------------------------------------------------------------------
+   Acordeon: cada etapa es un boton que despliega su panel de detalle.
+   ===================================================================== */
+.proceso__lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+}
+
+.etapa {
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-md);
+  background-color: var(--color-fondo);
+  overflow: hidden;
+  transition: border-color var(--transicion-rapida),
+              box-shadow var(--transicion-rapida);
+}
+
+.etapa--abierta {
+  border-color: var(--color-texto);
+  box-shadow: var(--sombra-md);
+}
+
+.etapa__encabezado {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.etapa__boton {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--esp-4);
+  width: 100%;
+  padding: var(--esp-5);
+  text-align: left;
+}
+
+.etapa__numero {
+  flex-shrink: 0;   /* que el numero nunca se comprima */
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-lg);
+  color: var(--color-acento);
+}
+
+.etapa__texto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-1);
+  flex-grow: 1;
+}
+
+.etapa__nombre {
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semi);
+  color: var(--color-texto);
+}
+
+.etapa__resumen {
+  font-size: var(--texto-sm);
+  line-height: 1.55;
+  color: var(--color-texto-suave);
+}
+
+/* Flecha dibujada con dos bordes: no hace falta ninguna imagen */
+.etapa__icono {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  margin-top: 6px;
+  border-right: 2px solid var(--color-texto-tenue);
+  border-bottom: 2px solid var(--color-texto-tenue);
+  transform: rotate(45deg);
+  transition: transform var(--transicion-normal);
+}
+
+.etapa--abierta .etapa__icono {
+  transform: rotate(-135deg);   /* apunta para arriba al abrirse */
+}
+
+/* --- El panel que se despliega -----------------------------------------
+   grid-template-rows 0fr -> 1fr es el truco moderno para animar una
+   altura que no conocemos de antemano. Antes habia que inventar un
+   max-height a ojo y siempre quedaba mal con textos largos. */
+.etapa__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transicion-normal);
+}
+
+.etapa--abierta .etapa__panel {
+  grid-template-rows: 1fr;
+}
+
+.etapa__panel-interior {
+  overflow: hidden;
+  visibility: hidden;   /* saca el contenido del recorrido del Tab */
+  transition: visibility var(--transicion-normal);
+}
+
+.etapa--abierta .etapa__panel-interior {
+  visibility: visible;
+}
+
+.etapa__detalle {
+  padding: var(--esp-5);
+  border-top: 1px solid var(--color-borde);
+  font-size: var(--texto-sm);
+}
+
+
+/* =====================================================================
+   12. CONTACTO
+   ===================================================================== */
+.contacto__interior {
+  display: grid;
+  gap: var(--esp-7);
+}
+
+.contacto__alternativa {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--esp-3);
+  padding-top: var(--esp-5);
+  border-top: 1px solid var(--color-borde);
+}
+
+.contacto__alternativa p {
+  font-weight: var(--peso-semi);
+  color: var(--color-texto);
+}
+
+/* --- Formulario -------------------------------------------------------- */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+  padding: var(--esp-6);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-fondo);
+  box-shadow: var(--sombra-lg);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-2);
+}
+
+/* Cada label esta unido a su campo con for="id". Al tocar el texto
+   se enfoca el campo, y el lector de pantalla los lee juntos. */
+.campo label {
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+}
+
+.campo__opcional {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: var(--peso-normal);
+}
+
+.campo input,
+.campo textarea {
+  padding: var(--esp-4);
+  border: 1px solid transparent;
+  border-radius: var(--radio-sm);
+  background-color: var(--color-superficie-alta);
+  font-size: var(--texto-base);
+  transition: border-color var(--transicion-rapida),
+              background-color var(--transicion-rapida);
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder {
+  color: var(--color-texto-tenue);
+}
+
+.campo input:focus,
+.campo textarea:focus {
+  outline: none;   /* lo reemplaza el borde azul */
+  border-color: var(--color-acento);
+  background-color: var(--color-fondo);
+}
+
+.campo textarea {
+  min-height: 130px;
+  resize: vertical;   /* solo se estira a lo alto, no a lo ancho */
+}
+
+/* El honeypot: un campo invisible para personas, visible para los bots.
+   Si lo completan, Formspree descarta el mensaje como spam. */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+}
+
+/* Mensaje de resultado del envio */
+.formulario__estado {
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  min-height: 1.5em;
+}
+
+.formulario__estado--ok    { color: var(--color-exito); }
+.formulario__estado--error { color: var(--color-error); }
+
+
+/* =====================================================================
+   13. FOOTER
+   ===================================================================== */
+.footer {
+  padding-block: var(--esp-8) var(--esp-6);
+  background-color: var(--color-oscuro);
+  color: var(--color-oscuro-texto);
+}
+
+.footer__superior {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-7);
+  padding-bottom: var(--esp-7);
+}
+
+.footer__marca {
+  font-family: var(--fuente-titulos);
+  font-size: clamp(2.2rem, 7vw, 4rem);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.footer__frase {
+  margin-top: var(--esp-3);
+  max-width: 40ch;
+  color: var(--color-oscuro-suave);
+}
+
+.footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+}
+
+.footer__links a {
+  color: var(--color-oscuro-suave);
+  font-size: var(--texto-sm);
+  transition: color var(--transicion-rapida);
+}
+
+.footer__links a:hover {
+  color: var(--color-oscuro-texto);
+}
+
+.footer__inferior {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-4);
+  padding-top: var(--esp-5);
+  border-top: 1px solid var(--color-oscuro-borde);
+  font-size: var(--texto-sm);
+  color: var(--color-oscuro-suave);
+}
+
+.footer__arriba {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-2);
+  color: var(--color-oscuro-texto);
+  font-weight: var(--peso-medio);
+  transition: opacity var(--transicion-rapida);
+}
+
+.footer__arriba:hover {
+  opacity: 0.7;
+}
+
+
+/* =====================================================================
+   14. DESKTOP
+   ---------------------------------------------------------------------
+   Todo lo de arriba es celular. Aca reacomodamos a partir de 700px
+   (tablet) y 900px (desktop).
+   ===================================================================== */
+@media (min-width: 700px) {
+  /* repeat(2, 1fr) = dos columnas del mismo ancho */
+  .servicios__grilla,
+  .proyectos__grilla {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero__botones .btn {
+    flex: 0 0 auto;
+  }
+
+  .footer__superior {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .footer__links {
+    text-align: right;
+  }
+}
+
+@media (min-width: 900px) {
+  .navbar__hamburguesa {
+    display: none;
+  }
+
+  /* El menu deja de ser panel flotante y vuelve a la barra.
+     Se anulan todos los estilos del estado cerrado del celular. */
+  .navbar__menu {
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    flex-grow: 1;
+    gap: var(--esp-6);
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .navbar__links {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--esp-6);
+    margin-inline: auto;   /* empuja los links al centro de la barra */
+  }
+
+  .navbar__link {
+    padding: 0;
+    font-size: var(--texto-sm);
+  }
+
+  .navbar__cta {
+    width: auto;
+  }
+
+  .navbar__logo {
+    font-size: var(--texto-base);
+  }
+
+  .hero {
+    padding-top: var(--esp-8);
+  }
+
+  .hero__contenido {
+    padding-bottom: var(--esp-9);
+  }
+
+  .proyectos__grilla {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* La tarjeta final ocupa el ancho de las tres columnas.
+     1 / -1 significa "desde la primera linea hasta la ultima". */
+  .proyecto-cta {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--esp-6);
+    padding: var(--esp-7);
+  }
+
+  .proyecto-cta__texto {
+    max-width: 60%;
+  }
+
+  .contacto__interior {
+    /* Dos columnas: el texto ocupa 5 partes y el formulario 6 */
+    grid-template-columns: 5fr 6fr;
+    gap: var(--esp-8);
+    align-items: start;
+  }
+
+  .contacto .seccion__encabezado {
+    margin-bottom: var(--esp-5);
+  }
+
+  .etapa__boton {
+    padding: var(--esp-6);
+  }
+
+  .etapa__numero {
+    font-size: var(--texto-2xl);
+  }
+
+  .etapa__detalle {
+    padding: var(--esp-6);
+    padding-left: calc(var(--esp-6) + var(--esp-7));
+    font-size: var(--texto-base);
+  }
+}
