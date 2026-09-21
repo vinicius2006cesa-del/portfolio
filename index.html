@@ -581,6 +581,18 @@
                marcado. -->
           <input type="checkbox" name="botcheck" class="honeypot" tabindex="-1" aria-hidden="true">
 
+          <!-- Nota de privacidad. Va ACA y no en el footer a proposito:
+               la persona la lee justo cuando esta decidiendo si te deja
+               sus datos, que es el momento en que le sirve. -->
+          <p class="formulario__nota">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            Usamos estos datos solo para responder tu consulta.
+          </p>
+
           <button class="btn btn--acento btn--grande btn--ancho btn--flecha" type="submit">
             Enviar consulta
           </button>
@@ -619,7 +631,12 @@
       </div>
 
       <div class="footer__inferior">
-        <p>© 2026 Vinicius Cesa</p>
+        <p>
+          © 2026 Vinicius Cesa
+          <span class="footer__privacidad">
+            Los datos del formulario se usan únicamente para responder consultas.
+          </span>
+        </p>
         <!-- Es un link a #perfil y no un boton con JS: asi funciona
              aunque el JavaScript falle, y el scroll suave ya lo da el CSS. -->
         <a class="footer__arriba" href="#perfil">

@@ -1169,6 +1169,21 @@ p {
   opacity: 0;
 }
 
+/* Nota de privacidad debajo de los campos */
+.formulario__nota {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-2);
+  font-size: var(--texto-xs);
+  color: var(--color-texto-tenue);
+}
+
+.formulario__nota svg {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
+
 /* Mensaje de resultado del envio */
 .formulario__estado {
   font-size: var(--texto-sm);
@@ -1248,6 +1263,14 @@ p {
   color: var(--color-oscuro-suave);
 }
 
+/* En celular baja a su propia linea; en desktop queda al lado del
+   copyright, separada por una barrita. */
+.footer__privacidad {
+  display: block;
+  font-size: var(--texto-xs);
+  opacity: 0.75;
+}
+
 .footer__arriba {
   display: inline-flex;
   align-items: center;
@@ -1286,6 +1309,17 @@ p {
 
   .footer__links {
     text-align: right;
+  }
+
+  /* La barrita "|" se dibuja con CSS, no se escribe en el HTML:
+     es decoracion, no contenido. */
+  .footer__privacidad {
+    display: inline;
+  }
+
+  .footer__privacidad::before {
+    content: "·";
+    margin-inline: var(--esp-2);
   }
 }
 
