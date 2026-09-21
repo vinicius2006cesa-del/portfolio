@@ -689,6 +689,17 @@ p {
   50%      { opacity: 0.4; transform: scale(0.8); }
 }
 
+/* En pantallas muy angostas el badge no entra en una linea y el nombre
+   se parte al medio. Ahi escondemos el logo y el nombre (que ya estan en
+   la barra de arriba) y dejamos solo el estado, que es lo que importa. */
+@media (max-width: 480px) {
+  .hero__badge img,
+  .hero__badge-nombre,
+  .hero__separador {
+    display: none;
+  }
+}
+
 .hero__titulo {
   max-width: 14ch;
 }
