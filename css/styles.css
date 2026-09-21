@@ -1427,9 +1427,17 @@ p {
   color: var(--color-oscuro-texto);
 }
 
-/* La linea que cierra cada columna, en blanco para que destaque */
+/* La linea que cierra cada columna, en blanco para que destaque.
+   margin-top: auto la empuja al fondo de la columna, asi los BORDES
+   INFERIORES quedan alineados. Pero eso sola no alcanza: si una frase
+   ocupa dos renglones y otra uno, la de dos arranca mas arriba y se ve
+   despareja.
+   min-height reserva la altura de dos renglones en TODAS, ocupen uno o
+   dos. Asi arrancan y terminan a la misma altura. */
 .footer__destacado {
-  margin-top: auto;   /* la empuja al fondo: las tres quedan alineadas */
+  margin-top: auto;
+  min-height: 2.8em;        /* 2 renglones x 1.4 de interlineado */
+  line-height: 1.4;
   font-size: var(--texto-sm);
   font-weight: var(--peso-semi);
   color: var(--color-oscuro-texto);
@@ -1467,6 +1475,32 @@ p {
   display: block;
   font-size: var(--texto-xs);
   opacity: 0.75;
+}
+
+/* Links legales. El CSS ya esta listo para cuando se descomenten
+   en el HTML. */
+.footer__legales {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2) var(--esp-4);
+  font-size: var(--texto-xs);
+}
+
+.footer__legales a {
+  color: var(--color-oscuro-suave);
+  transition: color var(--transicion-rapida);
+}
+
+.footer__legales a:hover {
+  color: var(--color-oscuro-texto);
+}
+
+/* Punto separador entre links, dibujado por CSS.
+   :not(:last-child) evita que quede un punto suelto al final. */
+.footer__legales a:not(:last-child)::after {
+  content: "·";
+  margin-left: var(--esp-4);
+  opacity: 0.5;
 }
 
 .footer__arriba {
@@ -1623,12 +1657,12 @@ p {
     font-size: var(--texto-base);
   }
 
-  /* Footer en cinco columnas: la de la marca es mas ancha que el resto.
-     1.7fr contra 1fr significa "esta mide 1.7 veces lo que cada una
-     de las otras". */
+  /* Footer en cuatro columnas. 1.6fr contra 1fr significa "esta mide
+     1.6 veces lo que cada una de las otras". La de Contacto lleva un
+     poco mas porque el mail es largo. */
   .footer__superior {
-    grid-template-columns: 1.7fr 1fr 1fr 1.1fr 1fr;
-    gap: var(--esp-6);
+    grid-template-columns: 1.5fr 1fr 1.3fr 1.2fr;
+    gap: var(--esp-7);
   }
 
   .footer__marca-col {

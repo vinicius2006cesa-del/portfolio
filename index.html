@@ -665,10 +665,6 @@
   <footer class="footer">
     <div class="contenedor">
 
-      <!-- ===============================================================
-           ATENCION: los valores marcados con REVISAR son de ejemplo.
-           Reemplazalos por los reales ANTES de publicar el sitio.
-           =============================================================== -->
       <div class="footer__superior">
 
         <!-- Columna 1: marca, que hacés y las redes -->
@@ -690,8 +686,7 @@
               </a>
             </li>
             <li>
-              <!-- REVISAR: poné tu mail real -->
-              <a href="mailto:hola@viniciuscesa.com" aria-label="Email">
+              <a href="mailto:vinicius2006cesa@gmail.com" aria-label="Email">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <rect x="2" y="4" width="20" height="16" rx="2"></rect>
@@ -699,9 +694,13 @@
                 </svg>
               </a>
             </li>
+
+            <!-- CUANDO TENGAS INSTAGRAM: descomentá este bloque y cambiá
+                 "TU_USUARIO" por tu usuario real (en los dos lugares:
+                 aca y en la lista de contacto de mas abajo). -->
+            <!--
             <li>
-              <!-- REVISAR: poné tu usuario real de Instagram -->
-              <a href="https://instagram.com/viniciuscesa" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <a href="https://instagram.com/TU_USUARIO" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <rect x="2" y="2" width="20" height="20" rx="5"></rect>
@@ -710,10 +709,13 @@
                 </svg>
               </a>
             </li>
+            -->
           </ul>
         </div>
 
-        <!-- Columna 2: navegación -->
+        <!-- Columna 2: navegación
+             Cada columna cierra con una linea destacada. Al haber una en
+             todas, quedan alineadas entre si en vez de sueltas. -->
         <nav class="footer__col" aria-label="Enlaces del pie de página">
           <h3 class="footer__titulo">Explorar</h3>
           <ul class="footer__links">
@@ -723,21 +725,12 @@
             <li><a href="#proceso">Proceso</a></li>
             <li><a href="#contacto">Contacto</a></li>
           </ul>
+          <p class="footer__destacado">
+            <a href="#contacto">Agendá una llamada</a>
+          </p>
         </nav>
 
-        <!-- Columna 3: horarios -->
-        <div class="footer__col">
-          <h3 class="footer__titulo">Horarios</h3>
-          <ul class="footer__datos">
-            <!-- REVISAR: poné tus horarios reales -->
-            <li>Lun — Vie · 9:00 — 18:00</li>
-            <li>Sábado · con cita previa</li>
-            <li>Domingo · cerrado</li>
-          </ul>
-          <p class="footer__destacado">Respondo en menos de 24 h</p>
-        </div>
-
-        <!-- Columna 4: contacto -->
+        <!-- Columna 3: contacto -->
         <div class="footer__col">
           <h3 class="footer__titulo">Contacto</h3>
           <ul class="footer__datos">
@@ -746,21 +739,19 @@
                 +54 9 3772 64-2065
               </a>
             </li>
-            <!-- REVISAR: mail e Instagram reales -->
-            <li><a href="mailto:hola@viniciuscesa.com">hola@viniciuscesa.com</a></li>
-            <li><a href="https://instagram.com/viniciuscesa" target="_blank" rel="noopener noreferrer">@viniciuscesa</a></li>
+            <li><a href="mailto:vinicius2006cesa@gmail.com">vinicius2006cesa@gmail.com</a></li>
+            <!-- CUANDO TENGAS INSTAGRAM, descomentá esta linea:
+            <li><a href="https://instagram.com/TU_USUARIO" target="_blank" rel="noopener noreferrer">@TU_USUARIO</a></li>
+            -->
           </ul>
-          <p class="footer__destacado">
-            <a href="#contacto">Agendá una llamada</a>
-          </p>
+          <p class="footer__destacado">Respondo en menos de 24 h</p>
         </div>
 
-        <!-- Columna 5: ubicación -->
+        <!-- Columna 4: ubicación -->
         <div class="footer__col">
           <h3 class="footer__titulo">Ubicación</h3>
           <ul class="footer__datos">
-            <!-- REVISAR: poné tu ciudad real -->
-            <li>Corrientes, Argentina</li>
+            <li>Rosario, Argentina</li>
             <li>Trabajo 100% remoto</li>
           </ul>
           <p class="footer__destacado">Reuniones por videollamada</p>
@@ -770,11 +761,41 @@
 
       <div class="footer__inferior">
         <p>
-          © 2026 Vinicius Cesa
+          © 2026 Vinicius Cesa. Todos los derechos reservados.
           <span class="footer__privacidad">
             Los datos del formulario se usan únicamente para responder consultas.
           </span>
         </p>
+
+        <!-- ===============================================================
+             LINKS LEGALES — PENDIENTES
+
+             Estan escritos y con su CSS listo, pero comentados a proposito:
+             cada uno necesita una pagina real detras. Un link legal que no
+             lleva a ningun lado es peor que no tenerlo, porque el primer
+             cliente que haga clic ve que es adorno.
+
+             PARA ACTIVARLOS hay que crear estos archivos en la raiz del
+             proyecto y despues borrar las dos lineas de comentario:
+               terminos.html
+               privacidad.html
+               cookies.html
+               aviso-legal.html
+
+             OJO con el "Boton de arrepentimiento": es una obligacion legal
+             argentina para quien VENDE online (Resolucion 424/2020). Un
+             portfolio que solo recibe consultas no lo necesita. Si algun
+             dia vendes servicios desde el sitio, ahi si corresponde.
+             =============================================================== -->
+        <!--
+        <nav class="footer__legales" aria-label="Información legal">
+          <a href="terminos.html">Términos y Condiciones</a>
+          <a href="privacidad.html">Privacidad</a>
+          <a href="cookies.html">Cookies</a>
+          <a href="aviso-legal.html">Aviso Legal</a>
+        </nav>
+        -->
+
         <!-- Es un link a #perfil y no un boton con JS: asi funciona
              aunque el JavaScript falle, y el scroll suave ya lo da el CSS. -->
         <a class="footer__arriba" href="#perfil">

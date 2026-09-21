@@ -81,6 +81,11 @@ Reemplazá los archivos de `assets/img/` por los tuyos. Si cambiás la extensió
 - [ ] Reemplazar las imágenes placeholder por las reales
 - [ ] Exportar `og-image.png` de 1200x630 px y actualizar `og:image` y `twitter:image`
 - [x] Pedir la clave en Web3Forms y pegarla en `index.html`
-- [ ] Enviar una consulta de prueba y revisar que llegue (mirar también spam)
+- [x] Probar el formulario: llega el mail con todos los datos
+- [ ] Sumar Instagram al footer cuando exista la cuenta (hay dos bloques
+      comentados en `index.html` listos para descomentar)
+- [ ] Decidir si se activan los links legales del footer. Están escritos y
+      comentados al final de `index.html`; necesitan sus páginas reales
+      (`terminos.html`, `privacidad.html`, `cookies.html`, `aviso-legal.html`)
 - [ ] Actualizar la URL definitiva en `canonical`, `og:url` y `twitter:image`
 - [ ] Borrar la copia vieja en `OneDrive\Documents\Portfolio`
