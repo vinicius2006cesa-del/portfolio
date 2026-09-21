@@ -80,6 +80,7 @@ Reemplazá los archivos de `assets/img/` por los tuyos. Si cambiás la extensió
 - [ ] Revisar los textos del proceso marcados como `<!-- BORRADOR -->` (etapas 02 a 05)
 - [ ] Reemplazar las imágenes placeholder por las reales
 - [ ] Exportar `og-image.png` de 1200x630 px y actualizar `og:image` y `twitter:image`
-- [ ] Pedir la clave en Web3Forms y pegarla en `index.html`
+- [x] Pedir la clave en Web3Forms y pegarla en `index.html`
+- [ ] Enviar una consulta de prueba y revisar que llegue (mirar también spam)
 - [ ] Actualizar la URL definitiva en `canonical`, `og:url` y `twitter:image`
 - [ ] Borrar la copia vieja en `OneDrive\Documents\Portfolio`
