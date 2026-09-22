@@ -74,12 +74,25 @@ aviso y deriva a WhatsApp, así no se pierde ninguna consulta.
 Reemplazá los archivos de `assets/img/` por los tuyos. Si cambiás la extensión
 (de `.svg` a `.jpg`), actualizala también en `index.html`.
 
-## Publicar en Vercel
+## Publicado en Cloudflare Pages
 
-1. Subir el repositorio a GitHub
-2. En [vercel.com](https://vercel.com) → "Add New Project" → importar el repo
-3. No tocar ninguna configuración: Vercel detecta el `index.html` y lo sirve
-4. Deploy. Cada `git push` a la rama principal republica el sitio solo
+**En vivo: https://portfolio-d8u.pages.dev**
+
+El sitio se republica solo con cada `git push` a la rama `main`.
+
+Configuración usada (por si hay que rehacerla):
+
+| Campo | Valor |
+|---|---|
+| Framework preset | None |
+| Build command | vacío |
+| Build output directory | vacío (raíz) |
+| Production branch | main |
+
+Se eligió Cloudflare por sobre Vercel porque su plan gratuito permite uso
+comercial (el de Vercel no), sirve desde Buenos Aires en vez de São Paulo
+—responde al doble de velocidad desde Argentina— y vende los dominios
+al costo.
 
 ## Pendientes
 
