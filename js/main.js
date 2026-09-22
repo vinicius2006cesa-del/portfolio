@@ -226,7 +226,17 @@ function activarBotonFlotante() {
 
   function revisar() {
     // 600px es, mas o menos, cuando terminaste de pasar el inicio
-    boton.classList.toggle("wsp-flotante--visible", window.scrollY > 600);
+    const pasoElInicio = window.scrollY > 600;
+
+    // Cuanto falta para el fondo de la pagina:
+    //   alto de la ventana + lo que scrolleaste = donde termina lo que ves
+    //   scrollHeight = alto total del documento
+    const llegoAlFinal =
+      window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 160;
+
+    // Lo escondemos en el footer por dos motivos: ahi el boton tapaba el
+    // "Volver arriba", y ademas ya tenes todos los contactos a la vista.
+    boton.classList.toggle("wsp-flotante--visible", pasoElInicio && !llegoAlFinal);
   }
 
   window.addEventListener("scroll", revisar, { passive: true });
