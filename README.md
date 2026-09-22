@@ -21,7 +21,13 @@ que guardás. Clic derecho en `index.html` → "Open with Live Server".
 
 ## Dónde vive el proyecto
 
-`C:\Users\vinic\dev\Portfolio`
+`D:\dev\Portfolio`
+
+Los proyectos van en el disco D para dejar el C libre para Windows.
+
+Nota: D es un disco mecánico (HDD). Para un sitio estático no se nota, pero si
+algún día hacés un proyecto con `npm` (miles de archivos chicos), va a ir más
+lento que en C.
 
 **No lo muevas a `Documentos` ni a OneDrive.** El "Acceso controlado a carpetas"
 de Windows Defender bloquea que Git y los editores escriban ahí, y OneDrive
