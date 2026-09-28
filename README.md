@@ -76,7 +76,12 @@ Reemplazá los archivos de `assets/img/` por los tuyos. Si cambiás la extensió
 
 ## Publicado en Cloudflare Pages
 
-**En vivo: https://portfolio-d8u.pages.dev**
+**En vivo: https://viniciuscesa.com**
+
+Dominio registrado en Hostinger, con el DNS delegado a Cloudflare
+(nameservers `jack` y `treasure.ns.cloudflare.com`). La dirección interna
+`portfolio-d8u.pages.dev` sigue existiendo: es a donde apunta el CNAME del
+dominio, así que no hay que borrarla.
 
 El sitio se republica solo con cada `git push` a la rama `main`.
 
