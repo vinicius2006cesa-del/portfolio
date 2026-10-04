@@ -62,7 +62,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/styles.css?v=202610032354">
+  <link rel="stylesheet" href="css/styles.css?v=202610040002">
 </head>
 
 <body>
@@ -688,16 +688,19 @@
               </a>
             </li>
 
-            <!-- ===== INSTAGRAM: cuando tengas la cuenta =====
-                 1. Borrá la linea "<!--" de abajo y la "-->" del final.
-                 2. Reemplazá TU_USUARIO por tu usuario (sin el arroba).
-                 3. Hace lo mismo en el bloque de la columna "Contacto",
-                    unas lineas mas abajo.
-                 El icono y el estilo ya estan hechos: queda al lado del
-                 de WhatsApp y el del mail, igual que esos dos. -->
-            <!--
             <li>
-              <a href="https://instagram.com/TU_USUARIO" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <!-- Todavia sin href: el icono se ve y mantiene el estilo
+                   de los otros dos, pero al tocarlo no pasa nada. Un
+                   enlace sin href tampoco se puede enfocar con el
+                   teclado, que es lo correcto mientras no lleve a ningun
+                   lado. Cuando tengas la cuenta, agregale al enlace de
+                   abajo estos tres atributos:
+                     href="https://instagram.com/TU_USUARIO"
+                     target="_blank"
+                     rel="noopener noreferrer"
+                   y descomenta la linea del usuario en la columna
+                   "Contacto", unas lineas mas abajo. -->
+              <a aria-label="Instagram">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <rect x="2" y="2" width="20" height="20" rx="5"></rect>
@@ -706,7 +709,6 @@
                 </svg>
               </a>
             </li>
-            -->
           </ul>
         </div>
 
@@ -806,7 +808,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610032354" defer></script>
+  <script src="js/main.js?v=202610040002" defer></script>
 
 </body>
 </html>
