@@ -970,6 +970,17 @@ p {
 .hero__subtitulo {
   max-width: 52ch;
   font-size: var(--texto-lg);
+  /* Base apagada a proposito: el contraste lo hacen las palabras en
+     negrita de adentro. Igual cumple accesibilidad (4.9:1 sobre crema),
+     no es texto "gris decorativo". */
+  color: var(--color-texto-tenue);
+}
+
+/* Las tres palabras que cargan el mensaje: mismo tamano, maximo
+   contraste. El salto de color hace mas trabajo que el de peso. */
+.hero__subtitulo b {
+  font-weight: var(--peso-semi);
+  color: var(--color-texto);
 }
 
 .hero__botones {
