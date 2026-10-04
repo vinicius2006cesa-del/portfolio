@@ -84,13 +84,14 @@
   --color-error:          #B91C1C;  /*  5.5:1 */
   --color-whatsapp:       #25D366;  /* el verde oficial de WhatsApp */
 
-  /* --- Dorado suave --------------------------------------------------
-     Solo para el distintivo de "disponible". Es el crema de marca con un
-     punto mas de dorado: el salto de BRILLO es minimo (1.04:1 contra el
-     fondo), lo que cambia es el TONO. Por eso lleva ademas un borde
-     dorado, que es lo que de verdad lo despega del fondo. */
-  --color-dorado:         #F7E7BE;
-  --color-dorado-borde:   #E0C690;
+  /* --- Verdes del distintivo "disponible" ------------------------------
+     --color-exito        texto (5.58:1 sobre crema, accesible)
+     --color-exito-vivo   el punto: mas brillante, solo decorativo
+     --color-exito-velo   fondo translucido, 8% de verde sobre lo que haya
+     --color-exito-borde  el contorno de la pastilla */
+  --color-exito-vivo:     #16A34A;
+  --color-exito-velo:     rgba(19, 107, 51, 0.08);
+  --color-exito-borde:    #B4CFBC;
 
   /* --- Tipografia ------------------------------------------------------------
      Outfit, la misma del logo. UNA sola familia para todo el sitio:
@@ -771,13 +772,18 @@ p {
   align-items: center;
   gap: var(--esp-3);
   padding: var(--esp-2) var(--esp-4);
-  border: 1px solid var(--color-dorado-borde);
+  /* Mas relleno a los costados que arriba y abajo: eso es lo que le da
+     forma de pastilla en vez de caja redondeada. */
+  padding-inline: var(--esp-5);
+  border: 1px solid var(--color-exito-borde);
   border-radius: var(--radio-full);
-  background-color: var(--color-dorado);
-  box-shadow: var(--sombra-sm);
+  /* Translucido: es el crema de la pagina con un velo verde del 8%, no
+     un color plano. Si algun dia cambia el fondo, el badge acompana. */
+  background-color: var(--color-exito-velo);
   font-size: var(--texto-xs);
-  font-weight: var(--peso-medio);
-  color: var(--color-texto-suave);
+  font-weight: var(--peso-semi);
+  letter-spacing: 0.02em;
+  color: var(--color-exito);
 }
 
 .hero__badge img {
@@ -785,23 +791,24 @@ p {
   height: 20px;
 }
 
-.hero__separador {
-  width: 1px;
-  height: 14px;
-  background-color: var(--color-borde-fuerte);
-}
-
+/* El punto NO parpadea: queda siempre encendido y lo que late es el
+   halo de alrededor. Antes se animaba la opacidad del punto (1 -> 0.4),
+   que da sensacion de "se apaga y se prende"; esto da sensacion de
+   "esta vivo". El halo se dibuja con box-shadow, que no ocupa espacio
+   en el layout y por eso no empuja al texto de al lado. */
 .hero__punto {
-  width: 7px;
-  height: 7px;
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background-color: var(--color-exito);
-  animation: latido 2s ease-in-out infinite;
+  background-color: var(--color-exito-vivo);
+  animation: resplandor 2.4s ease-out infinite;
 }
 
-@keyframes latido {
-  0%, 100% { opacity: 1;   transform: scale(1); }
-  50%      { opacity: 0.4; transform: scale(0.8); }
+@keyframes resplandor {
+  0%   { box-shadow: 0 0 0 0   rgba(22, 163, 74, 0.55); }
+  70%  { box-shadow: 0 0 0 7px rgba(22, 163, 74, 0);    }
+  100% { box-shadow: 0 0 0 0   rgba(22, 163, 74, 0);    }
 }
 
 /* En pantallas muy angostas el badge no entra en una linea y el nombre
@@ -809,9 +816,6 @@ p {
    la barra de arriba) y dejamos solo el estado, que es lo que importa. */
 @media (max-width: 480px) {
   .hero__badge img,
-  .hero__separador {
-    display: none;
-  }
 }
 
 .hero__titulo {
