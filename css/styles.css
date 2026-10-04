@@ -1114,6 +1114,158 @@ p {
 }
 
 
+/* --- Vitrina de proyectos ---------------------------------------------
+   Lista de nombres a la izquierda, vista grande a la derecha.
+   En celular se apila: primero los nombres, despues la vista.
+   ------------------------------------------------------------------- */
+.vitrina {
+  display: grid;
+  gap: var(--esp-5);
+  margin-bottom: var(--esp-6);
+}
+
+.vitrina__lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-2);
+}
+
+/* Cada nombre de la lista. Es un <button> de verdad, no un div con
+   onclick: asi funciona con teclado y los lectores de pantalla lo
+   anuncian como lo que es. */
+.vitrina__nombre {
+  display: flex;
+  align-items: baseline;
+  gap: var(--esp-4);
+  width: 100%;
+  padding: var(--esp-4);
+  border: 1px solid transparent;
+  border-radius: var(--radio-md);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transicion-rapida),
+              border-color var(--transicion-rapida),
+              transform var(--transicion-rapida);
+}
+
+.vitrina__indice {
+  flex-shrink: 0;
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-extra);
+  color: var(--color-titulo-suave);
+  transition: color var(--transicion-rapida);
+}
+
+.vitrina__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vitrina__titulo {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-extra);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  /* Apagado mientras no esta elegido: asi se nota cual estas viendo. */
+  color: var(--color-texto-tenue);
+  transition: color var(--transicion-rapida);
+}
+
+.vitrina__rubro {
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-titulo-suave);
+}
+
+.vitrina__nombre:hover {
+  background-color: var(--color-superficie-alta);
+}
+
+.vitrina__nombre:hover .vitrina__titulo {
+  color: var(--color-texto);
+}
+
+/* El elegido: fondo claro, borde y el titulo a pleno contraste. */
+.vitrina__nombre[aria-selected="true"] {
+  background-color: var(--color-superficie-alta);
+  border-color: var(--color-borde);
+}
+
+.vitrina__nombre[aria-selected="true"] .vitrina__titulo {
+  color: var(--color-texto);
+}
+
+.vitrina__nombre[aria-selected="true"] .vitrina__indice {
+  color: var(--color-acento-legible);
+}
+
+/* --- El visor -------------------------------------------------------
+   Todos los paneles ocupan la MISMA celda de la grilla (grid-area 1/1),
+   apilados uno encima del otro. Dos ventajas: el fundido entre paneles
+   sale solo con opacity, y la altura del visor es la del panel mas alto
+   sin tener que medirla con JavaScript. */
+.vitrina__visor {
+  display: grid;
+}
+
+.vitrina__panel {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+  opacity: 0;
+  transition: opacity var(--transicion-normal);
+}
+
+.vitrina__panel--activo {
+  opacity: 1;
+}
+
+/* aspect-ratio reserva el espacio antes de que cargue la imagen, asi la
+   pagina no pega un salto cuando aparece. */
+.vitrina__imagen {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-superficie-alta);
+}
+
+.vitrina__imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vitrina__detalle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--esp-3);
+}
+
+.vitrina__detalle p {
+  max-width: 48ch;
+  margin: 0;
+}
+
+.vitrina__estado {
+  flex-shrink: 0;
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+}
+
+
 /* =====================================================================
    11. PROCESO
    ---------------------------------------------------------------------
@@ -1844,6 +1996,20 @@ p {
 
   .proyectos__grilla {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Vitrina: la lista ocupa poco mas de un tercio y el visor el resto.
+     Se pega arriba al scrollear para que los nombres sigan a la vista
+     mientras mirás la imagen. */
+  .vitrina {
+    grid-template-columns: minmax(240px, 0.8fr) 1.6fr;
+    gap: var(--esp-6);
+    align-items: start;
+  }
+
+  .vitrina__lista {
+    position: sticky;
+    top: calc(var(--alto-navbar) + var(--esp-5));
   }
 
   /* La tarjeta final ocupa el ancho de las tres columnas.

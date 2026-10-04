@@ -243,6 +243,129 @@ function activarBotonFlotante() {
 
 
 /* =====================================================================
+   5b. VITRINA DE PROYECTOS
+   ---------------------------------------------------------------------
+   Lista de nombres + vista grande. Implementa el patron de pestañas:
+   click y flechas del teclado, con un ciclado automatico que se frena
+   en cuanto la persona interactua.
+   ===================================================================== */
+function activarVitrina() {
+  const vitrina = document.getElementById("vitrina");
+  if (!vitrina) return;
+
+  const pestanas = [...vitrina.querySelectorAll('[role="tab"]')];
+  const paneles = [...vitrina.querySelectorAll('[role="tabpanel"]')];
+  if (pestanas.length < 2) return;
+
+  let actual = pestanas.findIndex((p) => p.getAttribute("aria-selected") === "true");
+  if (actual < 0) actual = 0;
+
+  /**
+   * Muestra el proyecto numero `indice`.
+   * @param {boolean} moverFoco  true cuando el cambio vino del teclado:
+   *   ahi hay que llevar el foco al nuevo boton. Con el mouse no, porque
+   *   robarle el foco a alguien que solo paso el cursor es molesto.
+   */
+  function mostrar(indice, moverFoco) {
+    if (indice === actual) return;
+
+    pestanas.forEach((pestana, i) => {
+      const elegida = i === indice;
+      pestana.setAttribute("aria-selected", elegida ? "true" : "false");
+      // Solo la pestaña activa entra en el recorrido del Tab. Las otras
+      // se alcanzan con las flechas. Es como funcionan las pestañas en
+      // cualquier programa: un Tab para entrar al grupo, flechas adentro.
+      pestana.tabIndex = elegida ? 0 : -1;
+
+      paneles[i].classList.toggle("vitrina__panel--activo", elegida);
+      // hidden saca el panel del arbol de accesibilidad y del Tab. Se
+      // quita ANTES de la animacion y se pone DESPUES, para que el
+      // fundido se llegue a ver.
+      if (elegida) paneles[i].hidden = false;
+    });
+
+    const anterior = actual;
+    actual = indice;
+
+    // 320ms = lo que dura --transicion-normal en el CSS.
+    setTimeout(() => {
+      if (actual !== anterior) paneles[anterior].hidden = true;
+    }, 320);
+
+    if (moverFoco) pestanas[indice].focus();
+  }
+
+  // --- Mouse y tacto -------------------------------------------------
+  pestanas.forEach((pestana, i) => {
+    pestana.addEventListener("click", () => {
+      detenerCiclado();
+      mostrar(i, false);
+    });
+    // En desktop basta con pasar el cursor. En tactil este evento no
+    // existe, asi que ahi manda el click de arriba.
+    pestana.addEventListener("mouseenter", () => {
+      detenerCiclado();
+      mostrar(i, false);
+    });
+  });
+
+  // --- Teclado --------------------------------------------------------
+  vitrina.addEventListener("keydown", (evento) => {
+    const mapa = {
+      ArrowDown: actual + 1,
+      ArrowRight: actual + 1,
+      ArrowUp: actual - 1,
+      ArrowLeft: actual - 1,
+      Home: 0,
+      End: pestanas.length - 1,
+    };
+    if (!(evento.key in mapa)) return;
+    evento.preventDefault();
+    detenerCiclado();
+    // El modulo hace que de la ultima se pase a la primera y al reves.
+    const destino = (mapa[evento.key] + pestanas.length) % pestanas.length;
+    mostrar(destino, true);
+  });
+
+  // --- Ciclado automatico ---------------------------------------------
+  // Va pasando los proyectos solo, como una demostracion. Se frena para
+  // siempre apenas la persona toca algo: a partir de ahi manda ella.
+  let reloj = null;
+
+  function detenerCiclado() {
+    if (reloj) {
+      clearInterval(reloj);
+      reloj = null;
+    }
+  }
+
+  function arrancarCiclado() {
+    // Si pidieron menos movimiento, no se mueve nada solo.
+    if (prefiereMenosMovimiento()) return;
+    reloj = setInterval(() => {
+      mostrar((actual + 1) % pestanas.length, false);
+    }, 4500);
+  }
+
+  // Solo cicla mientras la seccion esta a la vista: no tiene sentido
+  // gastar animacion si la persona esta leyendo otra parte de la pagina.
+  const vigia = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((entrada) => {
+        if (entrada.isIntersecting && !reloj) arrancarCiclado();
+        else if (!entrada.isIntersecting) detenerCiclado();
+      });
+    },
+    { threshold: 0.4 }
+  );
+  vigia.observe(vitrina);
+
+  // Al enfocar con teclado tambien se frena.
+  vitrina.addEventListener("focusin", detenerCiclado);
+}
+
+
+/* =====================================================================
    6. ACORDEON DEL PROCESO
    ---------------------------------------------------------------------
    Al tocar una etapa se abre su panel y se cierran las demas.
@@ -375,6 +498,7 @@ function iniciar() {
   activarNavbarScroll();
   activarLinkActivo();
   activarBotonFlotante();
+  activarVitrina();
   activarProceso();
   activarFormulario();
 }

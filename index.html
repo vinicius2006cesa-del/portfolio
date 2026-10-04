@@ -158,7 +158,7 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610040220">
+  <link rel="stylesheet" href="css/styles.css?v=202610041559">
 </head>
 
 <body>
@@ -390,98 +390,115 @@
           <p>Landing pages, portfolios y sitios institucionales que diseñé y desarrollé.</p>
         </div>
 
-        <div class="proyectos__grilla" data-escalonar>
+        <!-- ============================================================
+             VITRINA DE PROYECTOS
+             A la izquierda los nombres, a la derecha la vista grande.
+             Al elegir un nombre, la vista cambia con un fundido.
 
-          <!-- ============================================================
-               PARA AGREGAR UN PROYECTO NUEVO:
-               copiá un bloque <article class="proyecto"> entero, pegalo
-               antes de la tarjeta oscura del final y cambiá:
-                 1. el src de la imagen
-                 2. el alt de la imagen (describí lo que se ve)
-                 3. la categoria, el titulo y la descripcion
-                 4. los tags de tecnologia
+             Esta armado como un grupo de PESTAÑAS (role="tablist"), que
+             es el patron accesible estandar para esto: quien navega con
+             teclado se mueve con las flechas y un lector de pantalla
+             anuncia "pestaña 2 de 3" en vez de leer una lista de botones
+             sueltos.
 
-               CUANDO EL SITIO ESTE ONLINE, reemplazá esta linea:
-                 <p class="proyecto__estado">Próximamente</p>
-               por esta otra, con la direccion real:
-                 <a class="proyecto__demo" href="https://..."
-                    target="_blank" rel="noopener noreferrer">Ver demo</a>
+             PARA AGREGAR O CAMBIAR UN PROYECTO hacen falta DOS bloques,
+             y los ids tienen que coincidir entre si:
+               1. un <button role="tab"> en la lista, con id="vt-04"
+                  y aria-controls="vp-04"
+               2. un <div role="tabpanel"> en el visor, con id="vp-04"
+                  y aria-labelledby="vt-04"
+             El que este activo lleva aria-selected="true" y tabindex="0";
+             los demas aria-selected="false", tabindex="-1" y el atributo
+             hidden. El JS se encarga del resto.
+             ============================================================ -->
+        <div class="vitrina aparece" id="vitrina">
 
-               No hace falta tocar el CSS: la grilla se acomoda sola.
-               ============================================================ -->
+          <div class="vitrina__lista" role="tablist"
+               aria-label="Proyectos" aria-orientation="vertical">
 
-          <article class="proyecto aparece">
-            <div class="proyecto__imagen">
-              <!-- loading="lazy" le dice al navegador que no descargue esta
-                   imagen hasta que estes por llegar a ella. Acelera la carga
-                   inicial del sitio. -->
-              <img src="assets/img/proyecto-landing.svg"
-                   alt="Vista de una landing page para campañas con un botón de contacto destacado"
-                   width="1200" height="750" loading="lazy">
-            </div>
-            <div class="proyecto__cuerpo">
-              <p class="proyecto__categoria">Landing page</p>
-              <h3>Landing page para campañas</h3>
-              <p>
-                Una sola página con una oferta clara, un botón directo a WhatsApp
-                y carga rápida en celulares.
-              </p>
-              <div class="proyecto__pie">
-                <p class="proyecto__estado">Próximamente</p>
+            <button class="vitrina__nombre" type="button"
+                    role="tab" id="vt-01" aria-controls="vp-01"
+                    aria-selected="true" tabindex="0">
+              <span class="vitrina__indice" aria-hidden="true">01</span>
+              <span class="vitrina__texto">
+                <span class="vitrina__titulo">Landing page para campañas</span>
+                <span class="vitrina__rubro">Landing page</span>
+              </span>
+            </button>
+
+            <button class="vitrina__nombre" type="button"
+                    role="tab" id="vt-02" aria-controls="vp-02"
+                    aria-selected="false" tabindex="-1">
+              <span class="vitrina__indice" aria-hidden="true">02</span>
+              <span class="vitrina__texto">
+                <span class="vitrina__titulo">Portfolio profesional</span>
+                <span class="vitrina__rubro">Portfolio</span>
+              </span>
+            </button>
+
+            <button class="vitrina__nombre" type="button"
+                    role="tab" id="vt-03" aria-controls="vp-03"
+                    aria-selected="false" tabindex="-1">
+              <span class="vitrina__indice" aria-hidden="true">03</span>
+              <span class="vitrina__texto">
+                <span class="vitrina__titulo">Sitio institucional para pymes</span>
+                <span class="vitrina__rubro">Sitio institucional</span>
+              </span>
+            </button>
+
+          </div>
+
+          <div class="vitrina__visor">
+
+            <div class="vitrina__panel vitrina__panel--activo"
+                 role="tabpanel" id="vp-01" aria-labelledby="vt-01">
+              <div class="vitrina__imagen">
+                <img src="assets/img/proyecto-landing.svg" alt="Vista de una landing page para campañas con un botón de contacto destacado"
+                     width="1200" height="750" loading="lazy">
+              </div>
+              <div class="vitrina__detalle">
+                <p>Una sola página con una oferta clara, un botón directo a WhatsApp y carga rápida en celulares.</p>
+                <p class="vitrina__estado">Próximamente</p>
               </div>
             </div>
-          </article>
 
-          <article class="proyecto aparece">
-            <div class="proyecto__imagen">
-              <img src="assets/img/proyecto-portfolio.svg"
-                   alt="Vista de un portfolio profesional mostrando trabajos realizados"
-                   width="1200" height="750" loading="lazy">
-            </div>
-            <div class="proyecto__cuerpo">
-              <p class="proyecto__categoria">Portfolio</p>
-              <h3>Portfolio profesional</h3>
-              <p>
-                Un sitio personal para mostrar tu trabajo, contar quién sos y
-                recibir consultas.
-              </p>
-              <div class="proyecto__pie">
-                <p class="proyecto__estado">Próximamente</p>
+            <div class="vitrina__panel"
+                 role="tabpanel" id="vp-02" aria-labelledby="vt-02" hidden>
+              <div class="vitrina__imagen">
+                <img src="assets/img/proyecto-portfolio.svg" alt="Vista de un portfolio profesional con una galería de trabajos"
+                     width="1200" height="750" loading="lazy">
+              </div>
+              <div class="vitrina__detalle">
+                <p>Un sitio personal para mostrar tu trabajo, contar quién sos y recibir consultas.</p>
+                <p class="vitrina__estado">Próximamente</p>
               </div>
             </div>
-          </article>
 
-          <article class="proyecto aparece">
-            <div class="proyecto__imagen">
-              <img src="assets/img/proyecto-institucional.svg"
-                   alt="Vista de un sitio institucional para una pyme, con secciones de empresa y servicios"
-                   width="1200" height="750" loading="lazy">
-            </div>
-            <div class="proyecto__cuerpo">
-              <p class="proyecto__categoria">Sitio institucional</p>
-              <h3>Sitio institucional para pymes</h3>
-              <p>
-                Empresa, servicios y contacto en un sitio ordenado, pensado para
-                generar confianza.
-              </p>
-              <div class="proyecto__pie">
-                <p class="proyecto__estado">Próximamente</p>
+            <div class="vitrina__panel"
+                 role="tabpanel" id="vp-03" aria-labelledby="vt-03" hidden>
+              <div class="vitrina__imagen">
+                <img src="assets/img/proyecto-institucional.svg" alt="Vista de un sitio institucional con secciones de empresa, servicios y contacto"
+                     width="1200" height="750" loading="lazy">
+              </div>
+              <div class="vitrina__detalle">
+                <p>Empresa, servicios y contacto en un sitio ordenado, pensado para generar confianza.</p>
+                <p class="vitrina__estado">Próximamente</p>
               </div>
             </div>
-          </article>
 
-          <!-- Tarjeta de cierre: ocupa el ancho completo de la grilla -->
-          <aside class="proyecto-cta aparece">
-            <div class="proyecto-cta__texto">
-              <h3>¿Tu proyecto puede ser el próximo?</h3>
-              <p>Estoy sumando nuevos trabajos. Si tenés una idea, contáctame.</p>
-            </div>
-            <a class="btn btn--primario btn--grande btn--flecha" href="#contacto">
-              Hablemos
-            </a>
-          </aside>
+          </div>
 
         </div>
+
+        <aside class="proyecto-cta aparece">
+          <div class="proyecto-cta__texto">
+            <h3>¿Tu proyecto puede ser el próximo?</h3>
+            <p>Estoy sumando nuevos trabajos. Si tenés una idea, contáctame.</p>
+          </div>
+          <a class="btn btn--primario btn--grande btn--flecha" href="#contacto">
+            Hablemos
+          </a>
+        </aside>
       </div>
     </section>
 
@@ -931,7 +948,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610040220" defer></script>
+  <script src="js/main.js?v=202610041559" defer></script>
 
 </body>
 </html>
