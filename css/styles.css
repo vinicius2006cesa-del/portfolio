@@ -573,15 +573,18 @@ p {
 }
 
 .navbar__logo {
+  /* relative para que el nombre absoluto se posicione contra la V. */
+  position: relative;
   display: flex;
   align-items: center;
-  /* gap 0: el espacio entre la V y el nombre lo pone el padding del
-     nombre, asi cuando esta colapsado no queda un hueco suelto. */
-  gap: 0;
   font-family: var(--fuente-titulos);
-  font-size: var(--texto-sm);
+  /* Mas grande que antes (--texto-sm se veia chico al lado de una V de
+     26px) y con el tracking cerrado del logo: eso es lo que hace que el
+     texto se lea como parte de la marca y no como una etiqueta pegada. */
+  font-size: 1.05rem;
   font-weight: var(--peso-extra);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.03em;
+  line-height: 1;
   color: var(--color-oscuro-texto);
 }
 
@@ -605,28 +608,43 @@ p {
 
    No se usa display:none ni visibility:hidden a proposito: eso sacaria el
    texto del arbol de accesibilidad y el enlace se quedaria sin nombre. */
+/* position:absolute es la clave: el nombre se dibuja ENCIMA de la barra,
+   fuera del flujo, asi que al aparecer no empuja ni un pixel a los links
+   ni al boton. Antes usaba max-width y todo el navbar se corria.
+   left:100% lo arranca justo donde termina la V. */
 .navbar__logo-nombre {
-  display: block;
-  max-width: 0;
-  overflow: hidden;
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  translate: 0 -50%;
+  /* Entra deslizandose unos pocos pixeles, no de la nada: el movimiento
+     corto hace que se lea como "sale de la V" y no como un cartel que
+     aparece de golpe. */
+  transform: translateX(-6px);
   opacity: 0;
-  transition: max-width var(--transicion-normal),
+  pointer-events: none;
+  white-space: nowrap;
+  transition: transform var(--transicion-normal),
               opacity var(--transicion-normal);
 }
 
-/* width:max-content es la clave: sin eso el span adopta el ancho de su
-   padre (que vale 0 mientras esta colapsado) en vez de medir su propio
-   texto, y nunca hay nada que desplegar. */
 .navbar__logo-nombre > span {
   display: block;
-  width: max-content;
-  white-space: nowrap;
-  padding-left: var(--esp-3);
+  padding-left: 0.6em;
+}
+
+/* "Estudio web" en un tono mas bajo y sin cursiva: es una aclaracion,
+   no parte del nombre. Se usa <em> en el HTML por semantica y aca se le
+   quita la inclinacion. */
+.navbar__logo-nombre em {
+  font-style: normal;
+  font-weight: var(--peso-medio);
+  color: var(--color-oscuro-suave);
 }
 
 .navbar__logo:hover .navbar__logo-nombre,
 .navbar__logo:focus-visible .navbar__logo-nombre {
-  max-width: 10rem;
+  transform: translateX(0);
   opacity: 1;
 }
 
@@ -1453,23 +1471,6 @@ p {
 .contacto__alternativa p {
   font-weight: var(--peso-semi);
   color: var(--color-texto);
-}
-
-/* Linea de tiempo de respuesta */
-.respuesta-rapida {
-  display: flex;
-  align-items: center;
-  gap: var(--esp-2);
-  margin-bottom: var(--esp-5);
-  font-size: var(--texto-sm);
-  color: var(--color-texto-suave);
-}
-
-.respuesta-rapida svg {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  color: var(--color-acento-legible);
 }
 
 /* --- Formulario -------------------------------------------------------- */
