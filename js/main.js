@@ -243,6 +243,88 @@ function activarBotonFlotante() {
 
 
 /* =====================================================================
+   4b. DETALLES DEL HERO
+   ---------------------------------------------------------------------
+   La hora local de Rosario y el leve movimiento de la V del fondo.
+   Los dos son adorno: si este archivo no corre, la pagina se ve igual
+   salvo por la hora, que deja el texto de reserva del HTML.
+   ===================================================================== */
+function activarHoraLocal() {
+  const salida = document.getElementById("hora-local");
+  if (!salida) return;
+
+  function pintar() {
+    // timeZone fijo a proposito: queremos MI hora, no la de quien mira.
+    // Ese es el punto del dato: que se note que hay alguien en un lugar.
+    const hora = new Intl.DateTimeFormat("es-AR", {
+      timeZone: "America/Argentina/Cordoba",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(new Date());
+    salida.textContent = hora + " hora local";
+  }
+
+  pintar();
+  setInterval(pintar, 30000);
+}
+
+
+function activarFiligrana() {
+  const v = document.querySelector(".hero__filigrana");
+  const hero = document.querySelector(".hero");
+  if (!v || !hero) return;
+
+  // Solo con mouse de verdad. En tactil no hay cursor que seguir, y
+  // ademas moverla gastaria bateria para nada.
+  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  if (prefiereMenosMovimiento()) return;
+
+  let pendiente = false;
+  let x = 0;
+  let y = 0;
+
+  function mover() {
+    pendiente = false;
+    v.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  }
+
+  hero.addEventListener(
+    "mousemove",
+    (evento) => {
+      const caja = hero.getBoundingClientRect();
+      // -1 a 1 segun donde este el cursor dentro del hero
+      const dx = (evento.clientX - caja.left) / caja.width - 0.5;
+      const dy = (evento.clientY - caja.top) / caja.height - 0.5;
+      // 18px de recorrido maximo. Mas que eso se nota y distrae; menos,
+      // no se percibe. El signo negativo hace que la V se aleje del
+      // cursor, que da mas sensacion de profundidad que seguirlo.
+      x = -dx * 18;
+      y = -dy * 18;
+
+      // requestAnimationFrame: el mousemove dispara decenas de veces por
+      // segundo, pero la pantalla solo se dibuja 60. Sin esto estariamos
+      // calculando posiciones que nadie llega a ver.
+      if (!pendiente) {
+        pendiente = true;
+        requestAnimationFrame(mover);
+      }
+    },
+    { passive: true }
+  );
+
+  hero.addEventListener("mouseleave", () => {
+    x = 0;
+    y = 0;
+    if (!pendiente) {
+      pendiente = true;
+      requestAnimationFrame(mover);
+    }
+  });
+}
+
+
+/* =====================================================================
    5b. VITRINA DE PROYECTOS
    ---------------------------------------------------------------------
    Lista de nombres + vista grande. Implementa el patron de pestañas:
@@ -498,6 +580,8 @@ function iniciar() {
   activarNavbarScroll();
   activarLinkActivo();
   activarBotonFlotante();
+  activarHoraLocal();
+  activarFiligrana();
   activarVitrina();
   activarProceso();
   activarFormulario();

@@ -756,17 +756,44 @@ p {
   padding-top: var(--esp-7);
   overflow: hidden;
 
-  /* CAPA 1 de profundidad: la V de marca, gigante y apenas visible,
-     saliendose por el borde derecho. Es la misma pieza que usamos en la
-     imagen de compartir, asi que el sitio y lo que se ve al compartirlo
-     hablan el mismo idioma.
-     La transparencia viene dentro del SVG: background-image no acepta
-     opacity, y gastar un pseudo-elemento solo para eso seria de mas
-     (el hero ya usa ::before y ::after). */
-  background-image: url("../assets/marca/v-filigrana.svg");
-  background-repeat: no-repeat;
-  background-position: right -120px top 40px;
-  background-size: 520px auto;
+  /* CAPA 1: un degradado vertical muy leve. Arriba apenas mas claro que
+     abajo. Es casi imperceptible mirandolo de frente, pero es lo que
+     evita que el crema se lea como una pared plana de un solo color. */
+  background-image: linear-gradient(
+    180deg,
+    #FAF3E4 0%,
+    var(--color-fondo) 55%
+  );
+}
+
+/* CAPA 2: la V de marca, gigante y apenas visible, saliendose por el
+   borde derecho. Es la misma pieza de la imagen de compartir, asi que el
+   sitio y lo que se ve al compartirlo hablan el mismo idioma.
+   El JS la desplaza unos pixeles siguiendo el mouse (ver main.js). */
+.hero__filigrana {
+  position: absolute;
+  top: 40px;
+  right: -120px;
+  width: 520px;
+  height: 520px;
+  background: url("../assets/marca/v-filigrana.svg") no-repeat center / contain;
+  pointer-events: none;
+  /* will-change le avisa al navegador que esto se va a mover, asi lo
+     pone en su propia capa y el movimiento no obliga a repintar el
+     resto del hero. */
+  will-change: transform;
+  /* Transicion larga y suave: el JS actualiza la posicion a cada cuadro,
+     asi que esto no frena el seguimiento del mouse, pero hace que al
+     sacar el cursor la V vuelva flotando en vez de pegar un salto. */
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Si pidieron menos movimiento, el JS ni siquiera engancha el mouse;
+   esto es el cinturon por si algo cambia en el futuro. */
+@media (prefers-reduced-motion: reduce) {
+  .hero__filigrana {
+    transform: none !important;
+  }
 }
 
 /* Resplandor suave detras del titulo. Se hace con ::before, un
@@ -774,16 +801,21 @@ p {
 .hero::before {
   content: "";
   position: absolute;
-  top: -220px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(1000px, 140%);
-  height: 560px;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(37, 99, 235, 0.14) 0%,
-    rgba(37, 99, 235, 0) 70%
-  );
+  inset: -200px 0 0 0;
+  /* Dos focos en vez de uno: el azul desde arriba y uno calido desde
+     abajo a la izquierda. Dos fuentes de luz es lo que hace que una
+     superficie se lea con volumen; con una sola queda plana. */
+  background:
+    radial-gradient(
+      ellipse 60% 70% at 50% 0%,
+      rgba(37, 99, 235, 0.16) 0%,
+      rgba(37, 99, 235, 0) 70%
+    ),
+    radial-gradient(
+      ellipse 55% 60% at 8% 95%,
+      rgba(224, 198, 144, 0.30) 0%,
+      rgba(224, 198, 144, 0) 70%
+    );
   pointer-events: none;   /* que no bloquee los clics de los botones */
 }
 
@@ -958,6 +990,38 @@ p {
 
   .marquee__pista {
     animation: none !important;
+  }
+}
+
+
+/* --- Franja de detalle al pie del hero --------------------------------
+   Datos chicos y espaciados. No informan casi nada, y justamente por eso
+   funcionan: son el tipo de detalle que solo pone alguien que cuida el
+   trabajo, y eso es lo que el visitante termina leyendo entre lineas. */
+.hero__detalle {
+  /* El contenedor del hero es flex en columna con align-items:center, o
+     sea que sus hijos se encogen a su contenido. Sin esto la franja
+     quedaria angosta y centrada en vez de ir de borde a borde. */
+  align-self: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-2) var(--esp-5);
+  margin-top: var(--esp-8);
+  padding-top: var(--esp-4);
+  border-top: 1px solid var(--color-borde);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+}
+
+/* En celular las coordenadas son lo primero que sobra. */
+@media (max-width: 560px) {
+  .hero__coordenadas {
+    display: none;
   }
 }
 
