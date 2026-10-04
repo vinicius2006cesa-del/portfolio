@@ -225,6 +225,27 @@ y mirá la pestaña Console. Si algo está bloqueado vas a ver un mensaje que
 dice *"violates the following Content Security Policy directive"* con el
 dominio que falta.
 
+### Caché: por qué a veces publicás y no ves el cambio
+
+El mismo `_headers` dice cuánto tiempo guarda el navegador cada archivo.
+
+| Archivo | Cuánto se guarda | Por qué |
+|---|---|---|
+| HTML | nada, revalida siempre | tus cambios se ven al instante |
+| `css/` y `js/` | nada, revalida siempre | si quedan viejos, el sitio se ve roto |
+| `assets/img/` | 1 hora | las vas a reemplazar por capturas reales |
+| `assets/marca/` | 1 semana | el logo casi no cambia |
+
+**No uses `immutable`.** Significa "este archivo no cambia nunca, ni revises",
+y solo es válido si el nombre del archivo cambia junto con el contenido
+(`styles.a3f9.css`). Con nombres fijos como los de acá, dejaría a los
+visitantes atrapados con la versión vieja hasta que venza el plazo, sin forma
+de forzar la actualización.
+
+**Si igual ves algo viejo:** `Ctrl + F5` (o `Ctrl + Shift + R`) fuerza al
+navegador a descargar todo de nuevo ignorando lo que tenga guardado. Un
+refresco normal con F5 no alcanza.
+
 ## Formulario (Web3Forms)
 
 Las consultas del formulario llegan a tu mail.

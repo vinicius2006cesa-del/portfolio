@@ -40,7 +40,34 @@
   #   cloudflareinsights.com         -> a donde manda la medicion
   Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.web3forms.com https://cloudflareinsights.com; form-action 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
 
-# Los archivos de marca y las imagenes no cambian casi nunca: que el
-# navegador los guarde un ano en vez de volver a pedirlos en cada visita.
-/assets/*
-  Cache-Control: public, max-age=31536000, immutable
+# =====================================================================
+# Cuanto tiempo guarda el navegador cada archivo.
+#
+# OJO con "immutable": significa "este archivo NO va a cambiar nunca, ni
+# te molestes en revisar". Solo sirve si el NOMBRE del archivo cambia
+# cuando cambia el contenido (styles.a3f9.css y asi). Como aca los
+# nombres son fijos, usar immutable dejaria a los visitantes con la
+# version vieja hasta que venza el plazo, sin forma de forzar nada.
+# Por eso no se usa en ningun lado de este archivo.
+# =====================================================================
+
+# El CSS y el JS son los que mas cambian, y cuando quedan viejos el
+# sitio se ve roto (el navbar blanco con el logo invisible, por ejemplo).
+# max-age=0 no significa "no guardar": el navegador igual se lo queda,
+# pero pregunta siempre si hay algo nuevo. Si no cambio, el servidor
+# responde "304 sin cambios" y no se descarga nada. Es casi gratis.
+/css/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/js/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Las imagenes de los proyectos y la de compartir se van a reemplazar
+# cuando tengas las capturas reales. Una hora alcanza para que ayude
+# sin dejarte esperando.
+/assets/img/*
+  Cache-Control: public, max-age=3600
+
+# Los archivos de marca cambian muy de vez en cuando: una semana.
+/assets/marca/*
+  Cache-Control: public, max-age=604800
