@@ -533,6 +533,48 @@ p {
 }
 
 
+/* --- La V del logo usada como PRIMERA LETRA --------------------------
+   Permite escribir "V" + "inicius Cesa" de modo que la V dibujada del
+   logo haga de letra inicial de la palabra.
+
+   Las medidas no son a ojo, salen del glifo real de Outfit 800:
+     - la tinta de la "V" mide 0.71em de alto y 0.72em de avance
+     - dentro del SVG, la tinta ocupa 0.9468 del lado del viewBox
+     => el cuadro del SVG tiene que medir 0.71 / 0.9468 = 0.75em
+
+   Los margenes negativos compensan el aire que el SVG trae adentro, para
+   que el espacio entre la V y la "i" sea el mismo que entre dos letras
+   cualquiera. Como todo esta en em, funciona a cualquier tamano.
+   ------------------------------------------------------------------- */
+.marca-v {
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  margin-left: -0.019em;    /* aire sobrante a la izquierda del SVG */
+  margin-right: -0.009em;   /* iguala el avance al del glifo real */
+  vertical-align: -0.02em;  /* apoya la V sobre la linea de base */
+  background: url("../assets/marca/v-crema.svg") no-repeat center / contain;
+}
+
+/* Sobre fondo claro la V va en marino. */
+.marca-v--marino {
+  background-image: url("../assets/marca/v-marino.svg");
+}
+
+/* Texto que solo leen los lectores de pantalla. Hace falta porque la V
+   es una imagen: sin esto el titulo se anunciaria como "inicius Cesa". */
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+
 /* =====================================================================
    7. NAVBAR
    ---------------------------------------------------------------------
@@ -578,21 +620,14 @@ p {
   display: flex;
   align-items: center;
   font-family: var(--fuente-titulos);
-  /* Mas grande que antes (--texto-sm se veia chico al lado de una V de
-     26px) y con el tracking cerrado del logo: eso es lo que hace que el
-     texto se lea como parte de la marca y no como una etiqueta pegada. */
-  font-size: 1.05rem;
+  /* La V se dimensiona en em (0.75em), asi que el tamano de letra define
+     cuan grande se ve el simbolo. A 1.7rem la V mide unos 20px: se lee
+     como logo cuando esta sola y como letra cuando aparece el resto. */
+  font-size: 1.7rem;
   font-weight: var(--peso-extra);
   letter-spacing: -0.03em;
   line-height: 1;
   color: var(--color-oscuro-texto);
-}
-
-.navbar__logo img {
-  /* Cuadrado fijo: la V es un simbolo, no un bloque de texto. */
-  width: 26px;
-  height: 26px;
-  flex-shrink: 0;
 }
 
 /* El nombre colapsado, que se despliega al pasar el cursor.
@@ -630,7 +665,8 @@ p {
 
 .navbar__logo-nombre > span {
   display: block;
-  padding-left: 0.6em;
+  /* Sin separacion: el texto continua la palabra que empieza la V. */
+  padding-left: 0;
 }
 
 /* "Estudio web" en un tono mas bajo y sin cursiva: es una aclaracion,
