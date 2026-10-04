@@ -13,7 +13,7 @@
   <!-- ===================================================================
        SEO — lo que ve Google
        =================================================================== -->
-  <title>Vinicius Cesa — Diseño y desarrollo web que convierte</title>
+  <title>Vince Web Studio — Diseño y desarrollo web que convierte</title>
   <meta name="description" content="Diseño y desarrollo landing pages, portfolios y sitios institucionales que convierten visitas en consultas reales.">
   <meta name="author" content="Vinicius Cesa">
   <meta name="robots" content="index, follow">
@@ -28,8 +28,8 @@
        =================================================================== -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_AR">
-  <meta property="og:site_name" content="Vinicius Cesa">
-  <meta property="og:title" content="Vinicius Cesa — Diseño y desarrollo web que convierte">
+  <meta property="og:site_name" content="Vince Web Studio">
+  <meta property="og:title" content="Vince Web Studio — Diseño y desarrollo web que convierte">
   <meta property="og:description" content="Diseño y desarrollo landing pages, portfolios y sitios institucionales que convierten visitas en consultas reales.">
   <meta property="og:url" content="https://viniciuscesa.com/">
   <!-- La imagen que se ve al compartir el link. Tiene que ser PNG o JPG
@@ -38,18 +38,19 @@
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Vinicius Cesa — diseño y desarrollo web">
+  <meta property="og:image:alt" content="Vince Web Studio — diseño y desarrollo web">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Vinicius Cesa — Diseño y desarrollo web que convierte">
+  <meta name="twitter:title" content="Vince Web Studio — Diseño y desarrollo web que convierte">
   <meta name="twitter:description" content="Diseño y desarrollo landing pages, portfolios y sitios institucionales que convierten visitas en consultas reales.">
   <meta name="twitter:image" content="https://viniciuscesa.com/assets/img/og-image.png">
 
   <!-- ===================================================================
        FAVICON Y COLOR DE MARCA
        =================================================================== -->
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <meta name="theme-color" content="#FFFFFF">
+  <link rel="icon" href="assets/marca/vince-icono-marino.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/marca/apple-touch-icon.png">
+  <meta name="theme-color" content="#0D1B2A">
 
   <!-- ===================================================================
        FUENTES
@@ -59,7 +60,7 @@
        =================================================================== -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -76,12 +77,13 @@
   <header class="navbar" id="navbar">
     <div class="contenedor navbar__interior">
 
-      <!-- La imagen lleva alt="" a proposito: el nombre ya esta escrito
-           al lado en texto. Con alt="Vinicius Cesa", un lector de pantalla
-           diria el nombre dos veces seguidas. -->
+      <!-- El logo es una imagen, asi que el texto alternativo hace de
+           nombre del enlace: un lector de pantalla lee
+           "Vince Web Studio, enlace". Por eso NO lleva ademas un
+           aria-label, seria decir lo mismo dos veces. -->
       <a class="navbar__logo" href="#perfil">
-        <img src="assets/img/logo.svg" alt="" width="34" height="34">
-        <span>Vinicius Cesa</span>
+        <img src="assets/marca/vince-logo-crema.svg" alt="Vince Web Studio"
+             width="85" height="27">
       </a>
 
       <!-- Este mismo <nav> es el menu de desktop Y el panel del celular.
@@ -98,7 +100,7 @@
         <!-- Baja al formulario de contacto. Al ser un salto dentro de la
              misma pagina no lleva target="_blank": abrir una pestana nueva
              para ir a otra seccion del mismo sitio seria un error. -->
-        <a class="btn btn--primario btn--flecha navbar__cta" href="#contacto">
+        <a class="btn btn--acento btn--flecha navbar__cta" href="#contacto">
           Agendar llamada
         </a>
       </nav>
@@ -130,7 +132,7 @@
       <div class="contenedor hero__contenido">
 
         <p class="hero__badge aparece">
-          <img src="assets/img/logo.svg" alt="" width="20" height="20">
+          <img src="assets/marca/vince-icono-marino.svg" alt="" width="20" height="20">
           <span class="hero__badge-nombre">Vinicius Cesa</span>
           <span class="hero__separador" aria-hidden="true"></span>
           <span class="hero__punto" aria-hidden="true"></span>
@@ -623,7 +625,7 @@
 
           <!-- Asunto y remitente del mail que te va a llegar -->
           <input type="hidden" name="subject" value="Nueva consulta desde el portfolio">
-          <input type="hidden" name="from_name" value="Portfolio Vinicius Cesa">
+          <input type="hidden" name="from_name" value="Vince Web Studio">
 
           <!-- Campo trampa para bots ("honeypot"). Esta escondido, asi que
                una persona nunca lo ve ni lo completa. Los bots si.
@@ -669,7 +671,10 @@
 
         <!-- Columna 1: marca, que hacés y las redes -->
         <div class="footer__marca-col">
-          <p class="footer__marca">Vinicius Cesa</p>
+          <!-- En el pie entra la version completa con la bajada
+               "Web Studio", que en el navbar seria ilegible de chica. -->
+          <img class="footer__marca" src="assets/marca/vince-webstudio-crema.svg"
+               alt="Vince Web Studio" width="190" height="79">
           <p class="footer__frase">
             Diseño y desarrollo web para quienes quieren vender más.
             Landing pages, portfolios y sitios institucionales para
@@ -759,7 +764,7 @@
 
       <div class="footer__inferior">
         <p>
-          © 2026 Vinicius Cesa. Todos los derechos reservados.
+          © 2026 Vince Web Studio — Vinicius Cesa. Todos los derechos reservados.
           <span class="footer__privacidad">
             Los datos del formulario se usan únicamente para responder consultas.
           </span>

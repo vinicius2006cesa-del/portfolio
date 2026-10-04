@@ -1,7 +1,7 @@
 Reemplazá los archivos de esta carpeta por tus imágenes reales,
 manteniendo exactamente los mismos nombres. Así no hace falta tocar el código.
 
-logo.png                    -> tu logo (cuadrado, fondo transparente)
+(el logo de la marca ya no va aca: vive en assets/marca/)
 proyecto-landing.jpg        -> captura del proyecto 1 (1200 x 750 px)
 proyecto-portfolio.jpg      -> captura del proyecto 2 (1200 x 750 px)
 proyecto-institucional.jpg  -> captura del proyecto 3 (1200 x 750 px)

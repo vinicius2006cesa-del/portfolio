@@ -1,0 +1,58 @@
+KIT DE MARCA — Vince Web Studio
+================================
+
+Esta carpeta es el ARCHIVO COMPLETO del logo: todas las variantes en todos
+los tamanos. Sirve para cuando necesites el logo FUERA de la web — redes
+sociales, una tarjeta, un presupuesto, una factura, lo que sea.
+
+OJO, no confundir con la otra carpeta de marca:
+
+  assets/marca/   Los 7 archivos que USA la web. El HTML apunta ahi.
+                  Si borras o renombras algo de esa carpeta, el sitio se
+                  rompe (se queda sin logo y sin favicon).
+
+  kit-marca/      Esta. Es solo un archivo de respaldo. Nada del sitio la
+                  mira. Podes agregar o sacar lo que quieras sin romper nada.
+
+
+QUE HAY ACA
+-----------
+
+svg/    Vectorial. Se agranda infinito sin pixelarse. Es el formato que
+        conviene mandar a una imprenta o a un disenador.
+
+png/    Imagen comun, en varios tamanos. Para cuando algo no acepta SVG
+        (Instagram, WhatsApp, Word). Elegi el tamano segun el uso:
+
+          32px    favicon viejo
+          180px   icono de iPhone
+          512px   icono de Android, foto de perfil chica
+          1024px  foto de perfil en redes
+          800px   logo horizontal en un documento
+          1600px  logo horizontal en una presentacion
+          3200px  logo horizontal para imprimir
+
+preview.png  La hoja de contacto con las 6 variantes juntas, para ver
+preview.svg  todo de un vistazo.
+
+
+LAS VARIANTES
+-------------
+
+  vince-logo-*        La palabra "Vince" sola
+  vince-webstudio-*   "Vince" con la bajada "Web Studio" debajo
+  vince-icono-*       El cuadradito redondeado con la V
+
+  *-marino   Para fondos CLAROS (la tinta es azul marino)
+  *-crema    Para fondos OSCUROS (la tinta es crema)
+
+Regla simple: el nombre dice de que color es la TINTA, no el fondo.
+
+
+LOS COLORES
+-----------
+
+  Azul marino  #0D1B2A
+  Crema        #F5EBD7
+  Azul         #2563EB   (sobre fondo claro)
+  Azul claro   #3B7BFF   (sobre fondo marino)

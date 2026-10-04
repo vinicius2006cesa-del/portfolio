@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Página no encontrada — Vince Web Studio</title>
+  <meta name="description" content="La página que buscabas no existe o cambió de lugar.">
+
+  <!-- noindex: le pide a Google que NO guarde esta pagina en sus
+       resultados. Una pagina de error no deberia aparecer en busquedas. -->
+  <meta name="robots" content="noindex">
+
+  <link rel="icon" href="/assets/marca/vince-icono-marino.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/marca/apple-touch-icon.png">
+  <meta name="theme-color" content="#0D1B2A">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;800&display=swap" rel="stylesheet">
+
+  <!-- Las rutas arrancan con "/" a proposito. Esta pagina se muestra en
+       cualquier direccion inexistente, incluso en una profunda como
+       /algo/otra-cosa; con rutas relativas el CSS no cargaria desde ahi. -->
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+
+  <a class="saltar-contenido" href="#contenido">Saltar al contenido</a>
+
+  <header class="navbar navbar--scrolleado">
+    <div class="contenedor navbar__interior">
+      <a class="navbar__logo" href="/">
+        <img src="/assets/marca/vince-logo-crema.svg" alt="Vince Web Studio"
+             width="85" height="27">
+      </a>
+      <a class="btn btn--secundario" href="/">Volver al sitio</a>
+    </div>
+  </header>
+
+  <main class="error" id="contenido">
+    <div class="contenedor error__contenido">
+
+      <p class="etiqueta">Error 404</p>
+
+      <h1 class="error__titulo">Esta página no existe.</h1>
+
+      <p class="error__texto">
+        Puede que el enlace esté mal escrito, o que la página haya cambiado
+        de lugar. Desde el inicio llegás a todo.
+      </p>
+
+      <div class="error__botones">
+        <a class="btn btn--acento btn--grande btn--flecha" href="/">Ir al inicio</a>
+        <a class="btn btn--secundario btn--grande" href="/#contacto">Escribirme</a>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+# =====================================================================
+# Cabeceras HTTP — Cloudflare Pages lee este archivo solo.
+# No hay que configurar nada en el panel ni ejecutar ningun comando:
+# se aplica en el deploy, igual que el resto del sitio.
+#
+# Para comprobar que estan activas despues de publicar:
+#   curl -I https://viniciuscesa.com/
+# =====================================================================
+
+/*
+  # Evita que otro sitio meta el tuyo dentro de un <iframe> invisible
+  # para enganar a la gente a hacer clic (clickjacking).
+  X-Frame-Options: DENY
+
+  # El navegador respeta el tipo de archivo que declara el servidor y no
+  # intenta "adivinarlo". Sin esto, un .txt podria ejecutarse como script.
+  X-Content-Type-Options: nosniff
+
+  # Cuando alguien sale de tu sitio, el otro sitio ve que viniste de
+  # viniciuscesa.com pero no de que pagina exacta.
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Apaga permisos del navegador que este sitio no usa. Si alguna vez te
+  # inyectaran codigo, no podria pedir la camara ni la ubicacion.
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=()
+
+  # Obliga a los navegadores a entrar siempre por HTTPS durante un ano.
+  # Sin "includeSubDomains" a proposito: los subdominios del mail son
+  # otra cosa y no conviene atarlos a esta regla.
+  Strict-Transport-Security: max-age=31536000
+
+  # Lista blanca de lo unico que el navegador tiene permitido cargar o
+  # contactar. Si manana alguien lograra inyectar un script en la pagina,
+  # el navegador se niega a ejecutarlo porque no esta en esta lista.
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.web3forms.com; form-action 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+
+# Los archivos de marca y las imagenes no cambian casi nunca: que el
+# navegador los guarde un ano en vez de volver a pedirlos en cada visita.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

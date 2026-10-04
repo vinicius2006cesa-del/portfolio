@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+<title>Generar la imagen de previsualización</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;800&display=swap" rel="stylesheet">
+<style>
+ body{margin:0;padding:28px;background:#1b1b1f;color:#eee;
+      font:15px/1.6 system-ui,sans-serif}
+ canvas{display:block;width:100%;max-width:720px;border-radius:8px}
+ p{max-width:720px} a{color:#7FB0FF} code{background:#000;padding:2px 6px;border-radius:4px}
+</style></head><body>
+
+<p><strong>Generador de <code>assets/img/og-image.png</code></strong> — la imagen
+que se ve cuando compartís el link por WhatsApp, Twitter o LinkedIn.</p>
+<p>Para regenerarla: cambiá el texto en el bloque "TITULAR" de abajo, abrí este
+archivo con el servidor local (no con doble clic: la fuente y el logo necesitan
+cargarse por HTTP), y hacé clic en el botón. Se descarga el PNG; copialo a
+<code>assets/img/</code> pisando el que está.</p>
+
+<p><button id="bajar" style="font:600 15px system-ui;padding:10px 18px;
+   border:0;border-radius:8px;background:#2563EB;color:#fff;cursor:pointer">
+   Descargar og-image.png</button></p>
+
+<canvas id="c" width="1200" height="630"></canvas>
+
+<script>
+/* ---- TITULAR: cambiá estas cuatro líneas y listo ---- */
+const LINEA_SUAVE_1 = 'Tu web no necesita';
+const LINEA_SUAVE_2 = 'verse bien.';
+const LINEA_FUERTE  = ['Necesita ', 'vender', ' mejor.'];  // el del medio va en la caja azul
+const DOMINIO       = 'viniciuscesa.com';
+
+/* ---- colores de marca ---- */
+const MARINO='#0D1B2A', CREMA='#F5EBD7', AZUL='#2563EB', SUAVE='#8FA2B5';
+
+const c=document.getElementById('c'), x=c.getContext('2d');
+
+function cajaRedonda(ctx,px,py,w,h,r){ctx.beginPath();ctx.moveTo(px+r,py);
+  ctx.arcTo(px+w,py,px+w,py+h,r);ctx.arcTo(px+w,py+h,px,py+h,r);
+  ctx.arcTo(px,py+h,px,py,r);ctx.arcTo(px,py,px+w,py,r);ctx.closePath();}
+
+async function dibujar(){
+  await document.fonts.load('800 82px Outfit');
+  await document.fonts.load('500 27px Outfit');
+  await document.fonts.ready;
+
+  // Fondo marino PLANO. Sin degradado a proposito: un degradado suave
+  // obliga al PNG a guardar miles de colores distintos y la imagen salta
+  // de 80 KB a 370 KB. Colores planos = archivo chico.
+  x.fillStyle=MARINO; x.fillRect(0,0,1200,630);
+
+  // Marca de agua: solo los dos trazos de la V, sin el cuadrado redondeado
+  // del icono (a baja opacidad ese fondo se nota como una caja rara).
+  const svgV='<svg xmlns="http://www.w3.org/2000/svg" viewBox="100 100 310 310">'
+    +'<path fill="#F5EBD7" d="M301.94 117.76 L394.67 117.76 L302.79 381.48 L260.25 248.77 Z"/>'
+    +'<path fill="#F5EBD7" d="M117.33 117.76 L210.06 117.76 L298.54 394.24 L213.46 394.24 Z"/></svg>';
+  const icono=new Image();
+  await new Promise((ok,err)=>{icono.onload=ok;icono.onerror=err;
+    icono.src='data:image/svg+xml;base64,'+btoa(svgV);});
+  x.save(); x.globalAlpha=0.07; x.drawImage(icono,845,105,430,430); x.restore();
+
+  // logo vectorial (la ruta sube un nivel: este archivo vive en herramientas/)
+  const logo=new Image();
+  await new Promise((ok,err)=>{logo.onload=ok;logo.onerror=err;
+    logo.src='../assets/marca/vince-webstudio-crema.svg';});
+  const lw=290;
+  x.drawImage(logo,80,66,lw,lw*(1133.1/2719.4));
+
+  // titular
+  x.textBaseline='alphabetic';
+  x.letterSpacing='-3px';
+  x.font='800 82px Outfit';
+
+  x.fillStyle=SUAVE;
+  x.fillText(LINEA_SUAVE_1,80,340);
+  x.fillText(LINEA_SUAVE_2,80,428);
+
+  // ultima linea, con la palabra del medio dentro de una caja azul
+  const [a,b,d]=LINEA_FUERTE;
+  const base=516, pad=20, aire=10;   // "aire" = separacion entre el texto y la caja
+  let px=80;
+  x.fillStyle=CREMA; x.fillText(a,px,base); px+=x.measureText(a).width;
+
+  const inicio=px+aire, wb=x.measureText(b).width;
+  x.fillStyle=AZUL; cajaRedonda(x,inicio-pad,base-69,wb+pad*2,94,20); x.fill();
+  x.fillStyle='#FFFFFF'; x.fillText(b,inicio,base);
+
+  x.fillStyle=CREMA; x.fillText(d,inicio+wb+pad,base);
+
+  // pie
+  x.letterSpacing='0px';
+  x.font='500 27px Outfit';
+  x.fillStyle=SUAVE;
+  x.fillText(DOMINIO,80,590);
+
+  // franja de acento inferior
+  x.fillStyle=AZUL; x.fillRect(0,622,1200,8);
+
+  window.__png=c.toDataURL('image/png').split(',')[1];
+  window.__listo=true;
+}
+
+document.getElementById('bajar').onclick=()=>{
+  const a=document.createElement('a');
+  a.download='og-image.png'; a.href=c.toDataURL('image/png'); a.click();
+};
+
+dibujar();
+</script></body></html>

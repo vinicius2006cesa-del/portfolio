@@ -16,6 +16,7 @@
    12. Contacto
    13. Footer
    14. Desktop (media queries)
+   15. Pagina 404
    ===================================================================== */
 
 
@@ -27,38 +28,69 @@
    redecorar el sitio entero.
    ===================================================================== */
 :root {
-  /* --- Colores ----------------------------------------------------
-     Tema claro: fondo blanco, texto casi negro, acento azul. */
-  --color-fondo:          #FFFFFF;
-  --color-fondo-suave:    #F4F5F7;  /* secciones con fondo gris */
-  --color-superficie-alta:#F7F8FA;  /* campos de formulario */
-  --color-borde:          #E6E7EB;
-  --color-borde-fuerte:   #D2D4DA;
+  /* --- Colores de marca ----------------------------------------------
+     Los cuatro colores del logo "Vince". Todo lo de abajo sale de aca.
+     Si algun dia cambia la marca, se cambian estos cuatro y listo. */
+  --marca-marino:         #0D1B2A;  /* azul marino: navbar, footer */
+  --marca-crema:          #F5EBD7;  /* crema: el fondo de todo el sitio */
+  --marca-azul:           #2563EB;  /* azul electrico sobre fondo claro */
+  --marca-azul-claro:     #3B7BFF;  /* el azul que va ENCIMA del marino */
 
-  --color-texto:          #0B0B0D;  /* texto principal */
-  --color-texto-suave:    #55565F;  /* parrafos */
-  --color-texto-tenue:    #6E6F7A;  /* textos chicos secundarios */
-  --color-titulo-suave:   #8A8B95;  /* la primera linea gris del titular */
+  /* --- Fondos ----------------------------------------------------------
+     Tres niveles de crema. Cuanto mas clara, mas "levantada" se ve la
+     superficie: el fondo general es el medio, las secciones alternas
+     van mas oscuras y las tarjetas mas claras. */
+  --color-fondo:          #F5EBD7;  /* crema — fondo general */
+  --color-fondo-suave:    #EFE3CC;  /* crema profunda — secciones alternas */
+  --color-superficie-alta:#FBF5E9;  /* crema clara — tarjetas y campos */
+  --color-borde:          #E2D6BE;  /* bordes decorativos */
+  --color-borde-fuerte:   #8C8270;  /* bordes de campos — 3.2:1 */
 
-  --color-acento:         #2563EB;  /* azul de marca */
-  --color-acento-hover:   #1D4ED8;
-  --color-acento-texto:   #FFFFFF;  /* texto que va ENCIMA del azul */
+  /* --- Texto sobre fondo claro ------------------------------------------
+     El numero es el contraste real medido contra la crema. El minimo
+     accesible (WCAG AA) es 4.5:1 para texto normal y 3:1 para texto
+     grande. Todos estos estan verificados. */
+  --color-texto:          #0D1B2A;  /* 14.7:1 — titulos y texto principal */
+  --color-texto-suave:    #44566A;  /*  6.4:1 — parrafos */
+  --color-texto-tenue:    #566878;  /*  4.9:1 — textos chicos secundarios */
+  --color-titulo-suave:   #7F7F78;  /*  3.4:1 — solo el titular gigante */
 
-  --color-oscuro:         #0B0B0D;  /* fondo del footer y botones negros */
-  --color-oscuro-hover:   #23232A;
-  --color-oscuro-texto:   #FFFFFF;
-  --color-oscuro-suave:   #9A9BA4;  /* texto secundario sobre negro */
-  --color-oscuro-borde:   #26262C;
+  /* --- Acento azul -------------------------------------------------------
+     OJO, esto es importante: el azul de marca sobre crema da 4.37:1,
+     apenas por debajo del minimo. Por eso hay DOS azules.
+       --color-acento          para cajas, botones y titulares grandes
+       --color-acento-legible  para texto chico y links (4.5:1 o mas)
+     A ojo son el mismo azul, pero uno pasa accesibilidad y el otro no. */
+  --color-acento:         #2563EB;  /* superficies y texto grande */
+  --color-acento-legible: #1D4ED8;  /*  5.7:1 — links y texto chico */
+  --color-acento-hover:   #1E40AF;
+  --color-acento-texto:   #FFFFFF;  /*  5.2:1 — texto ENCIMA del azul */
 
-  --color-exito:          #16A34A;
-  --color-error:          #DC2626;
+  /* --- Zonas oscuras (navbar y footer) ------------------------------------
+     Contraste medido contra el marino. Ojo que aca el texto es crema,
+     no blanco: el blanco puro sobre marino "vibra" y cansa la vista. */
+  --color-oscuro:         #0D1B2A;
+  --color-oscuro-hover:   #16293D;
+  --color-oscuro-superficie:#152536;  /* tarjetas dentro de lo oscuro */
+  --color-oscuro-texto:   #F5EBD7;  /* 14.7:1 — crema */
+  --color-oscuro-suave:   #A3B3C4;  /*  8.1:1 — texto secundario */
+  --color-oscuro-borde:   #1E3049;
+  --color-oscuro-acento:  #3B7BFF;  /*  4.5:1 — el azul claro de marca */
+
+  /* --- Estados -------------------------------------------------------------
+     Oscurecidos respecto de los originales: los verdes y rojos "vivos"
+     no llegaban a 4.5:1 sobre crema. */
+  --color-exito:          #136B33;  /*  5.6:1 */
+  --color-error:          #B91C1C;  /*  5.5:1 */
   --color-whatsapp:       #25D366;  /* el verde oficial de WhatsApp */
 
-  /* --- Tipografia --------------------------------------------------
-     Archivo Black: una sola variante, muy pesada. Solo para titulares.
-     Poppins: geometrica y redonda, para todo el resto. */
-  --fuente-titulos: "Archivo Black", "Segoe UI", system-ui, sans-serif;
-  --fuente-texto:   "Poppins", "Segoe UI", system-ui, sans-serif;
+  /* --- Tipografia ------------------------------------------------------------
+     Outfit, la misma del logo. UNA sola familia para todo el sitio:
+     el peso 800 para titulares (igual que la palabra "Vince") y
+     400/500/600 para el resto. Menos fuentes = carga mas rapida y
+     el conjunto se ve mas coherente que mezclando dos familias. */
+  --fuente-titulos: "Outfit", "Segoe UI", system-ui, sans-serif;
+  --fuente-texto:   "Outfit", "Segoe UI", system-ui, sans-serif;
 
   /* clamp(minimo, ideal, maximo): el texto crece solo entre celular y
      desktop, sin necesidad de media queries. */
@@ -75,8 +107,9 @@
   --peso-medio:   500;
   --peso-semi:    600;
   --peso-bold:    700;
+  --peso-extra:   800;  /* el peso del logo — para titulares */
 
-  --altura-linea-titulo: 0.95;
+  --altura-linea-titulo: 1.02;  /* en caja normal las letras bajas (g, y, p) necesitan aire */
   --altura-linea-texto:  1.65;
 
   /* --- Espaciados --------------------------------------------------- */
@@ -132,6 +165,17 @@
 }
 
 html {
+  /* Las animaciones de aparicion corren los elementos de costado antes
+     de revelarlos (aparece--izq / aparece--der). Mientras estan en esa
+     posicion sobresalen unos pixeles y aparece una barra de scroll
+     horizontal en TODA la pagina. Esto la corta.
+     "clip" es mejor que "hidden" porque no convierte al elemento en un
+     contenedor de scroll, asi el scroll suave de aca abajo sigue
+     funcionando. La linea de hidden queda como respaldo para
+     navegadores viejos que no entienden clip. */
+  overflow-x: hidden;
+  overflow-x: clip;
+
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--alto-navbar) + var(--esp-4));
   -webkit-text-size-adjust: 100%;
@@ -199,10 +243,15 @@ body {
    bien y podes cambiar de idea sin reescribir nada. */
 h1, h2 {
   font-family: var(--fuente-titulos);
-  font-weight: var(--peso-normal);   /* Archivo Black ya es pesadisima */
+  /* Outfit 800: el mismo peso con el que esta dibujada la palabra
+     "Vince" del logo. Antes aca iba 400 porque Archivo Black ya venia
+     pesadisima de fabrica; Outfit no, hay que pedirle el peso. */
+  font-weight: var(--peso-extra);
   line-height: var(--altura-linea-titulo);
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
+  /* Tracking negativo: en tamanos grandes las letras quedan muy
+     separadas, juntarlas un poco hace que el titular se lea como un
+     bloque solido en vez de letras sueltas. */
+  letter-spacing: -0.03em;
   text-wrap: balance;
 }
 
@@ -379,7 +428,7 @@ p {
   border: 1px solid var(--color-borde);
   border-radius: var(--radio-full);
   background-color: var(--color-fondo);
-  color: var(--color-acento);
+  color: var(--color-acento-legible);
   font-size: var(--texto-xs);
   font-weight: var(--peso-semi);
   letter-spacing: 0.06em;
@@ -489,8 +538,10 @@ p {
   height: var(--alto-navbar);
   display: flex;
   align-items: center;
-  /* Fondo semitransparente + desenfoque: efecto "vidrio esmerilado" */
-  background-color: rgba(255, 255, 255, 0.78);
+  /* Fondo semitransparente + desenfoque: efecto "vidrio esmerilado".
+     Es el marino #0D1B2A con transparencia, para que la crema de abajo
+     se insinue al hacer scroll. */
+  background-color: rgba(13, 27, 42, 0.82);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid transparent;
@@ -500,8 +551,8 @@ p {
 
 /* El JS agrega esta clase cuando bajas: la barra se despega del contenido */
 .navbar--scrolleado {
-  background-color: rgba(255, 255, 255, 0.94);
-  border-bottom-color: var(--color-borde);
+  background-color: rgba(13, 27, 42, 0.96);
+  border-bottom-color: var(--color-oscuro-borde);
 }
 
 .navbar__interior {
@@ -517,14 +568,16 @@ p {
   gap: var(--esp-3);
   font-family: var(--fuente-titulos);
   font-size: var(--texto-sm);
-  text-transform: uppercase;
+  font-weight: var(--peso-extra);
   letter-spacing: -0.01em;
-  color: var(--color-texto);
+  color: var(--color-oscuro-texto);
 }
 
 .navbar__logo img {
-  width: 34px;
-  height: 34px;
+  /* Alto fijo y ancho automatico: el logo nunca se deforma, se
+     adapta solo si algun dia cambia la proporcion del archivo. */
+  height: 27px;
+  width: auto;
 }
 
 /* --- El menu en celular: panel que baja desde la barra --------------- */
@@ -538,8 +591,8 @@ p {
   flex-direction: column;
   gap: var(--esp-5);
   padding: var(--esp-6) var(--esp-5) var(--esp-7);
-  background-color: var(--color-fondo);
-  border-bottom: 1px solid var(--color-borde);
+  background-color: var(--color-oscuro);
+  border-bottom: 1px solid var(--color-oscuro-borde);
   box-shadow: var(--sombra-md);
 
   /* Estado cerrado. visibility: hidden saca los links del recorrido
@@ -569,17 +622,17 @@ p {
   padding: var(--esp-3) 0;
   font-size: var(--texto-lg);
   font-weight: var(--peso-medio);
-  color: var(--color-texto-suave);
+  color: var(--color-oscuro-suave);
   transition: color var(--transicion-rapida);
 }
 
 .navbar__link:hover {
-  color: var(--color-texto);
+  color: var(--color-oscuro-texto);
 }
 
 /* El JS marca con esta clase el link de la seccion que estas viendo */
 .navbar__link--activo {
-  color: var(--color-texto);
+  color: var(--color-oscuro-texto);
   font-weight: var(--peso-semi);
 }
 
@@ -607,7 +660,7 @@ p {
   width: 100%;
   height: 2px;
   border-radius: 2px;
-  background-color: var(--color-texto);
+  background-color: var(--color-oscuro-texto);
   transition: transform var(--transicion-rapida),
               opacity var(--transicion-rapida);
 }
@@ -800,6 +853,7 @@ p {
   gap: var(--esp-6);
   font-family: var(--fuente-titulos);
   font-size: var(--texto-xl);
+  font-weight: var(--peso-extra);
   text-transform: uppercase;
   color: var(--color-texto-tenue);
   white-space: nowrap;
@@ -938,7 +992,7 @@ p {
   padding: var(--esp-1) var(--esp-3);
   border-radius: var(--radio-full);
   background-color: var(--color-fondo-suave);
-  color: var(--color-acento);
+  color: var(--color-acento-legible);
   font-size: var(--texto-xs);
   font-weight: var(--peso-semi);
   letter-spacing: 0.04em;
@@ -978,7 +1032,7 @@ p {
   gap: var(--esp-1);
   font-size: var(--texto-sm);
   font-weight: var(--peso-semi);
-  color: var(--color-acento);
+  color: var(--color-acento-legible);
   white-space: nowrap;
 }
 
@@ -1006,8 +1060,8 @@ p {
 .proyecto-cta h3 {
   font-family: var(--fuente-titulos);
   font-size: var(--texto-2xl);
-  font-weight: var(--peso-normal);
-  text-transform: uppercase;
+  font-weight: var(--peso-extra);
+  letter-spacing: -0.02em;
   line-height: var(--altura-linea-titulo);
 }
 
@@ -1071,7 +1125,8 @@ p {
   flex-shrink: 0;   /* que el numero nunca se comprima */
   font-family: var(--fuente-titulos);
   font-size: var(--texto-lg);
-  color: var(--color-acento);
+  font-weight: var(--peso-extra);
+  color: var(--color-acento-legible);
 }
 
 .etapa__texto {
@@ -1176,7 +1231,7 @@ p {
   flex-shrink: 0;
   width: 16px;
   height: 16px;
-  color: var(--color-acento);
+  color: var(--color-acento-legible);
 }
 
 /* --- Formulario -------------------------------------------------------- */
@@ -1342,15 +1397,9 @@ p {
 }
 
 .footer__marca {
-  font-family: var(--fuente-titulos);
-  font-size: clamp(1.8rem, 5vw, 2.6rem);
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  /* Hay que pedir el color explicitamente: la regla general
-     "p { color: ... }" es gris para fondo blanco, y le gana al blanco
-     que este parrafo heredaria del footer. */
-  color: var(--color-oscuro-texto);
+  display: block;
+  width: clamp(150px, 42vw, 190px);
+  height: auto;
 }
 
 .footer__frase {
@@ -1615,7 +1664,7 @@ p {
    bien los colores. */
 .legal__seccion a,
 .legal__encabezado a {
-  color: var(--color-acento);
+  color: var(--color-acento-legible);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -1645,6 +1694,45 @@ p {
   border-top: none;
 }
 
+
+
+/* =====================================================================
+   15. PAGINA 404
+   --------------------------------------------------------------------
+   Se muestra en cualquier direccion que no exista. Cloudflare Pages
+   usa el archivo 404.html de la raiz automaticamente: no hay que
+   configurar nada.
+   ===================================================================== */
+.error {
+  /* place-items centra en los dos ejes de una sola linea. El calc()
+     descuenta la altura de la barra fija para que el bloque quede
+     centrado en lo que realmente se ve, y no un poco mas abajo. */
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - var(--alto-navbar));
+  padding: var(--esp-8) 0;
+  text-align: center;
+}
+
+.error__contenido {
+  max-width: 34rem;
+}
+
+.error__titulo {
+  margin-top: var(--esp-4);
+}
+
+.error__texto {
+  margin-top: var(--esp-4);
+}
+
+.error__botones {
+  display: flex;
+  flex-wrap: wrap;   /* en celular los botones se apilan solos */
+  justify-content: center;
+  gap: var(--esp-3);
+  margin-top: var(--esp-6);
+}
 
 /* =====================================================================
    14. DESKTOP
