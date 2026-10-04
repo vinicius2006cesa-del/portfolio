@@ -225,18 +225,16 @@ function activarBotonFlotante() {
   if (!boton) return;
 
   function revisar() {
-    // 600px es, mas o menos, cuando terminaste de pasar el inicio
-    const pasoElInicio = window.scrollY > 600;
-
     // Cuanto falta para el fondo de la pagina:
     //   alto de la ventana + lo que scrolleaste = donde termina lo que ves
     //   scrollHeight = alto total del documento
     const llegoAlFinal =
       window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 160;
 
-    // Lo escondemos en el footer por dos motivos: ahi el boton tapaba el
-    // "Volver arriba", y ademas ya tenes todos los contactos a la vista.
-    boton.classList.toggle("wsp-flotante--visible", pasoElInicio && !llegoAlFinal);
+    // El boton se ve desde el primer momento. Lo unico que lo esconde es
+    // llegar al pie: ahi tapaba el "Volver arriba" y ademas ya tenes el
+    // WhatsApp, el mail y el telefono escritos a la vista.
+    boton.classList.toggle("wsp-flotante--visible", !llegoAlFinal);
   }
 
   window.addEventListener("scroll", revisar, { passive: true });

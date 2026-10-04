@@ -1,0 +1,11 @@
+# robots.txt — le dice a los buscadores que pueden mirar.
+# "Allow: /" = todo. Un sitio chico no tiene nada que esconder, y
+# bloquear cosas sin necesidad es una de las formas mas comunes de
+# arruinarse el SEO solo.
+
+User-agent: *
+Allow: /
+
+# El mapa del sitio. Es la forma estandar de avisarle a cualquier
+# buscador donde esta, sin tener que cargarlo a mano en cada uno.
+Sitemap: https://viniciuscesa.com/sitemap.xml

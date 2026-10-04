@@ -6,7 +6,10 @@
 
   <title>Información legal — Vince Web Studio</title>
   <meta name="description" content="Aviso legal, términos y condiciones, política de privacidad y política de cookies de Vince Web Studio, nombre comercial de Vinicius Cesa.">
-  <link rel="canonical" href="https://viniciuscesa.com/legal.html">
+  <!-- La canonica apunta a /legal y no a /legal.html porque Cloudflare
+       sirve la pagina en esa direccion: /legal.html redirige con un 308.
+       Una canonica que apunta a una redireccion es un error de SEO. -->
+  <link rel="canonical" href="https://viniciuscesa.com/legal">
 
   <link rel="icon" href="assets/marca/vince-icono-marino.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/marca/apple-touch-icon.png">
@@ -19,7 +22,7 @@
   <!-- Misma hoja de estilos que el resto del sitio: los colores y las
        tipografias salen de las mismas variables, asi nunca se
        desincroniza el diseno entre paginas. -->
-  <link rel="stylesheet" href="css/styles.css?v=202610040002">
+  <link rel="stylesheet" href="css/styles.css?v=202610040124">
 </head>
 
 <body class="pagina-legal">

@@ -10,6 +10,8 @@ index.html                  Todo el contenido de la página
 legal.html                  Aviso legal, términos, privacidad y cookies
 404.html                    Se muestra en cualquier dirección que no exista
 _headers                    Cabeceras de seguridad (lo lee Cloudflare Pages)
+robots.txt                  Permiso de rastreo para los buscadores
+sitemap.xml                 Lista de páginas para Google
 publicar.sh                 El script detras de `git publicar`
 css/styles.css              Estilos. Las variables de diseño están arriba de todo
 js/main.js                  Comportamiento (menú, animaciones, acordeón, formulario)
@@ -165,6 +167,71 @@ curl -I https://viniciuscesa.com/
 
 Si el deploy falla, el detalle está en el panel de Cloudflare Pages, en la
 pestaña de deployments del proyecto.
+
+## SEO: qué está hecho y qué falta
+
+SEO es que Google entienda tu sitio y lo muestre cuando alguien busca lo que
+hacés. Se divide en tres partes, y **solo una es técnica**.
+
+### 1. Técnico — hecho
+
+Es lo único que se arregla tocando código. Ya está todo:
+
+| Qué | Dónde | Para qué |
+|---|---|---|
+| `<title>` y `description` | `<head>` de cada página | es el texto que Google muestra en los resultados |
+| `canonical` | `<head>` | evita que la misma página cuente como dos |
+| Un solo `<h1>` por página | el titular grande | le dice a Google de qué trata la página |
+| `robots.txt` | raíz | permite el rastreo y apunta al sitemap |
+| `sitemap.xml` | raíz | la lista de páginas que querés indexadas |
+| JSON-LD | `<head>` de `index.html` | le dice **qué sos**: un estudio de diseño web en Rosario |
+| HTTPS, carga rápida, responsive | ya estaba | los tres son factores de posicionamiento |
+
+**Ojo con la canónica:** tiene que apuntar a la dirección FINAL. Cloudflare
+sirve `/legal.html` como `/legal` (redirige), así que la canónica dice `/legal`.
+Apuntar a una redirección es un error clásico.
+
+**El JSON-LD no se ve en la página.** Es información para los buscadores en un
+formato que entienden sin adivinar: tu nombre, ciudad, teléfono y los cinco
+servicios. Es lo que habilita que Google te asocie a búsquedas tipo
+"diseño web rosario". Si cambiás servicios o datos de contacto, **actualizalo
+también ahí**, o le vas a estar diciendo dos cosas distintas.
+
+Comprobalo después de publicar en
+[search.google.com/test/rich-results](https://search.google.com/test/rich-results).
+
+### 2. Contenido — es lo que más pesa, y es tuyo
+
+Google posiciona páginas que responden preguntas reales. Lo técnico lo habilita;
+el contenido lo gana. Esto no lo puede hacer el código:
+
+- **Los proyectos reales.** Tres capturas con una descripción de qué problema
+  resolviste valen más que cualquier etiqueta `<meta>`.
+- **Páginas específicas.** Una página "Diseño web en Rosario" posiciona para esa
+  búsqueda; la home sola compite contra todo el mundo.
+- **Textos que usen las palabras que la gente busca.** No "soluciones digitales
+  integrales" sino "página web para mi negocio".
+
+### 3. Autoridad — tiempo
+
+Que otros sitios te enlacen. No hay atajo y no se compra sin riesgo.
+
+### Lo que tenés que hacer vos (no lo puedo hacer yo)
+
+**Google Search Console** — es gratis y es donde ves si Google te encontró.
+
+1. Entrá a [search.google.com/search-console](https://search.google.com/search-console)
+2. Agregá la propiedad con **prefijo de URL**: `https://viniciuscesa.com`
+3. Para verificar, elegí **Etiqueta HTML**. Te da una línea tipo
+   `<meta name="google-site-verification" content="...">`
+4. **Pasámela y la agrego al `<head>`.** Publicás y tocás "Verificar".
+5. Una vez verificado, andá a **Sitemaps** y cargá `sitemap.xml`
+
+Después de eso, en unos días vas a ver por qué búsquedas aparecés y cuántos
+clics recibís. Eso es lo que te va a decir qué textos cambiar.
+
+**Un aviso honesto:** no esperes resultados en una semana. Un sitio nuevo tarda
+entre uno y tres meses en empezar a aparecer, y eso con contenido real cargado.
 
 ## Seguridad: qué es público y qué no
 

@@ -62,7 +62,110 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/styles.css?v=202610040002">
+  <!-- ===================================================================
+       DATOS ESTRUCTURADOS (JSON-LD)
+       Esto no se ve en la pagina: es informacion para los buscadores.
+       Les dice QUE sos (un estudio de diseno web), donde estas, como
+       contactarte y que servicios ofreces, en un formato que entienden
+       sin tener que adivinarlo leyendo los textos.
+
+       Es lo que habilita que Google muestre el panel lateral con tus
+       datos y que te asocie a busquedas locales tipo
+       "diseno web rosario".
+
+       NO lleva el mail a proposito: Cloudflare reescribe las direcciones
+       de correo que encuentra en el HTML para esconderlas de los bots,
+       y al hacerlo romperia este bloque.
+
+       Para comprobar que esta bien despues de publicar:
+       https://search.google.com/test/rich-results
+       =================================================================== -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "Vince Web Studio",
+      "alternateName": "Vinicius Cesa",
+      "description": "Diseño y desarrollo de sitios web para emprendedores, profesionales y pymes: landing pages, portfolios y sitios institucionales pensados para convertir visitas en consultas.",
+      "url": "https://viniciuscesa.com/",
+      "image": "https://viniciuscesa.com/assets/img/og-image.png",
+      "logo": "https://viniciuscesa.com/assets/marca/vince-icono-marino.svg",
+      "telephone": "+5493772642065",
+      "priceRange": "$$",
+      "founder": {
+        "@type": "Person",
+        "name": "Vinicius Cesa",
+        "jobTitle": "Diseñador y desarrollador web"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Rosario",
+        "addressRegion": "Santa Fe",
+        "addressCountry": "AR"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Argentina"
+      },
+      "availableLanguage": "es",
+      "knowsAbout": [
+        "Diseño web",
+        "Desarrollo web",
+        "UX/UI",
+        "SEO",
+        "Landing pages",
+        "Sitios institucionales"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Diseño web",
+              "description": "Identidad visual del sitio: colores, tipografías y jerarquía."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Desarrollo web",
+              "description": "Sitios a medida en código propio, rápidos y sin plugins."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "UX/UI",
+              "description": "Diseño del recorrido del visitante hasta el contacto."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Mantenimiento",
+              "description": "Actualizaciones de contenido y revisiones periódicas."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "SEO",
+              "description": "Optimización técnica y de contenidos para buscadores."
+            }
+          }
+        ]
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="css/styles.css?v=202610040124">
 </head>
 
 <body>
@@ -197,7 +300,7 @@
       <div class="contenedor">
 
         <div class="seccion__encabezado aparece">
-          <p class="etiqueta">Qué puedo construir</p>
+          <p class="etiqueta">En qué te puedo ayudar</p>
           <h2>Servicios que transforman tu negocio</h2>
           <p>
             Soluciones digitales para emprendedores, profesionales y pymes que
@@ -209,50 +312,134 @@
              asi entran uno atras de otro en vez de todos de golpe. -->
         <div class="servicios__grilla" data-escalonar>
 
-          <!-- Los iconos son SVG escritos directamente en el HTML.
-               Asi heredan el color del CSS y no son un archivo aparte
-               que el navegador tenga que ir a buscar.
-               aria-hidden porque son decorativos: el titulo ya dice todo. -->
+          <!-- Los iconos son SVG escritos directamente en el HTML. Asi
+               heredan el color del CSS y no son un archivo aparte que el
+               navegador tenga que ir a buscar.
+               aria-hidden porque son decorativos: el titulo ya dice todo.
+
+               PARA AGREGAR O SACAR UN SERVICIO: copia un <article> entero
+               y cambiale el numero, el icono, el titulo y el texto. Si
+               cambias la CANTIDAD, mira el comentario de .servicios__grilla
+               en el CSS (seccion 14): el reparto en columnas esta pensado
+               para cinco. -->
+
           <article class="servicio aparece">
-            <div class="servicio__icono">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="2" y="3" width="20" height="14" rx="2"></rect>
-                <path d="M8 21h8M12 17v4"></path>
-              </svg>
+            <div class="servicio__cabecera">
+              <div class="servicio__icono">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle>
+                </svg>
+              </div>
+              <span class="servicio__numero">01</span>
             </div>
-            <h3>Desarrollo Web</h3>
+            <h3>Diseño web</h3>
             <p>
-              Sitios institucionales y portfolios a medida, rápidos, adaptados a
-              celulares y con una estructura pensada para generar confianza.
+              El aspecto de tu sitio: colores, tipografías, fotos y cómo se ordena
+              todo. Lo primero que ve alguien que no te conoce, y lo que decide si
+              te toma en serio.
             </p>
             <ul class="tags">
-              <li class="tag">Institucional</li>
-              <li class="tag">Portfolio</li>
+              <li class="tag">Identidad</li>
+              <li class="tag">Confianza</li>
               <li class="tag">Responsive</li>
             </ul>
           </article>
 
           <article class="servicio aparece">
-            <div class="servicio__icono">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M13 2 4.5 12.5H11l-1 9.5 8.5-10.5H12l1-9.5z"></path>
-              </svg>
+            <div class="servicio__cabecera">
+              <div class="servicio__icono">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+              </div>
+              <span class="servicio__numero">02</span>
             </div>
-            <h3>Landing Pages</h3>
+            <h3>Desarrollo web</h3>
             <p>
-              Páginas para campañas con una oferta, un CTA y un recorrido pensado
-              para convertir visitas en consultas.
+              Lo que hace que funcione. Código hecho a mano, sin plantillas: carga
+              rápido, anda bien en cualquier celular y no depende de plugins que
+              un día se rompen.
             </p>
             <ul class="tags">
-              <li class="tag">Lead gen</li>
+              <li class="tag">Código propio</li>
+              <li class="tag">Carga rápida</li>
+              <li class="tag">Sin plugins</li>
+            </ul>
+          </article>
+
+          <article class="servicio aparece">
+            <div class="servicio__cabecera">
+              <div class="servicio__icono">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path><path d="M13 13l6 6"></path>
+                </svg>
+              </div>
+              <span class="servicio__numero">03</span>
+            </div>
+            <h3>UX / UI</h3>
+            <p>
+              El recorrido que hace el visitante hasta escribirte: qué lee
+              primero, dónde va cada botón y qué lo frena. Es la diferencia entre
+              un sitio lindo y uno que vende.
+            </p>
+            <ul class="tags">
+              <li class="tag">Recorrido</li>
               <li class="tag">CTA claro</li>
               <li class="tag">Conversión</li>
             </ul>
           </article>
 
+          <article class="servicio aparece">
+            <div class="servicio__cabecera">
+              <div class="servicio__icono">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                </svg>
+              </div>
+              <span class="servicio__numero">04</span>
+            </div>
+            <h3>Mantenimiento</h3>
+            <p>
+              Tu sitio al día sin que tengas que tocar nada: cambios de texto,
+              fotos nuevas, precios actualizados y revisiones de que todo siga
+              funcionando.
+            </p>
+            <ul class="tags">
+              <li class="tag">Cambios</li>
+              <li class="tag">Soporte</li>
+              <li class="tag">Al día</li>
+            </ul>
+          </article>
+
+          <article class="servicio aparece">
+            <div class="servicio__cabecera">
+              <div class="servicio__icono">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path><path d="M11 8v6M8 11h6"></path>
+                </svg>
+              </div>
+              <span class="servicio__numero">05</span>
+            </div>
+            <h3>SEO</h3>
+            <p>
+              Que Google te encuentre. Trabajo la estructura, los textos y la
+              parte técnica para que aparezcas cuando alguien busca lo que hacés,
+              sin pagar publicidad.
+            </p>
+            <ul class="tags">
+              <li class="tag">Google</li>
+              <li class="tag">Palabras clave</li>
+              <li class="tag">Técnico</li>
+            </ul>
+          </article>
+
         </div>
+
       </div>
     </section>
 
@@ -788,8 +975,9 @@
 
   <!-- ===================================================================
        BOTON FLOTANTE DE WHATSAPP
-       Aparece recien cuando bajas del inicio: arriba ya hay dos botones
-       grandes y un tercero seria ruido. El JS le pone la clase --visible.
+       Visible desde el primer momento. El JS solo lo esconde al llegar
+       al pie, donde tapaba el "Volver arriba" y los contactos ya estan
+       escritos a la vista.
        =================================================================== -->
   <a class="wsp-flotante"
      id="wsp-flotante"
@@ -808,7 +996,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610040002" defer></script>
+  <script src="js/main.js?v=202610040124" defer></script>
 
 </body>
 </html>
