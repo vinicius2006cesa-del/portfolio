@@ -215,6 +215,16 @@ curl -I https://viniciuscesa.com/
 Si alguna vez agregás algo externo (Google Analytics, un video de YouTube, una
 fuente nueva), **hay que sumar ese dominio a la política o no va a cargar**.
 
+Ya pasó una vez: Cloudflare Pages inyecta solo el script de Web Analytics
+(el que cuenta las visitas) y la política lo bloqueaba, porque ese script no
+está escrito en ningún lado del código. Por eso la lista permite
+`static.cloudflareinsights.com` y `cloudflareinsights.com`.
+
+**Cómo darte cuenta si bloqueaste algo sin querer:** abrí el sitio, apretá F12
+y mirá la pestaña Console. Si algo está bloqueado vas a ver un mensaje que
+dice *"violates the following Content Security Policy directive"* con el
+dominio que falta.
+
 ## Formulario (Web3Forms)
 
 Las consultas del formulario llegan a tu mail.

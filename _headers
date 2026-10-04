@@ -32,7 +32,13 @@
   # Lista blanca de lo unico que el navegador tiene permitido cargar o
   # contactar. Si manana alguien lograra inyectar un script en la pagina,
   # el navegador se niega a ejecutarlo porque no esta en esta lista.
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.web3forms.com; form-action 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+  #
+  # Los dominios cloudflareinsights.com son de Web Analytics: Cloudflare
+  # Pages inyecta ese script solo, no esta en el codigo. Sin permitirlo
+  # quedan bloqueadas las estadisticas de visitas.
+  #   static.cloudflareinsights.com  -> de donde baja el script
+  #   cloudflareinsights.com         -> a donde manda la medicion
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.web3forms.com https://cloudflareinsights.com; form-action 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
 
 # Los archivos de marca y las imagenes no cambian casi nunca: que el
 # navegador los guarde un ano en vez de volver a pedirlos en cada visita.
