@@ -1,11 +1,16 @@
-# robots.txt — le dice a los buscadores que pueden mirar.
-# "Allow: /" = todo. Un sitio chico no tiene nada que esconder, y
-# bloquear cosas sin necesidad es una de las formas mas comunes de
-# arruinarse el SEO solo.
+# Cloudflare agrega automaticamente, ARRIBA de este archivo, su lista de
+# bloqueo de bots de IA (GPTBot, ClaudeBot, CCBot, Google-Extended y
+# treinta mas). Esa lista ya incluye un grupo "User-agent: *" que permite
+# todo lo demas, asi que aca NO repetimos uno: dos grupos "User-agent: *"
+# en el mismo archivo son validos pero ambiguos, y cada rastreador puede
+# resolverlos distinto.
+#
+# Googlebot y Bingbot NO estan bloqueados por nada de eso. Lo unico que
+# Cloudflare frena son los bots que entrenan modelos de IA.
+# Se puede apagar desde el panel de Cloudflare, en AI Crawl Control.
+#
+# Lo unico que hace falta agregar es el mapa del sitio: la directiva
+# Sitemap es global, no pertenece a ningun grupo, y funciona este donde
+# este dentro del archivo.
 
-User-agent: *
-Allow: /
-
-# El mapa del sitio. Es la forma estandar de avisarle a cualquier
-# buscador donde esta, sin tener que cargarlo a mano en cada uno.
 Sitemap: https://viniciuscesa.com/sitemap.xml
