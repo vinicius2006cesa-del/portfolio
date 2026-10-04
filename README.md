@@ -383,13 +383,34 @@ al costo.
 
 ## Pendientes
 
-- [ ] Revisar los textos del proceso marcados como `<!-- BORRADOR -->` (etapas 02 a 05)
-- [ ] Reemplazar las imágenes placeholder por las reales
-- [x] Pedir la clave en Web3Forms y pegarla en `index.html`
-- [x] Probar el formulario: llega el mail con todos los datos
-- [ ] Sumar Instagram al footer cuando exista la cuenta (hay dos bloques
-      comentados en `index.html` listos para descomentar)
-- [ ] Decidir si se activan los links legales del footer. Están escritos y
-      comentados al final de `index.html`; necesitan sus páginas reales
-      (`terminos.html`, `privacidad.html`, `cookies.html`, `aviso-legal.html`)
-- [ ] Borrar la copia vieja en `OneDrive\Documents\Portfolio`
+### Contenido (lo tiene que hacer Vinicius)
+
+- [ ] **Capturas reales de los tres proyectos.** Es lo de mayor impacto:
+      hoy las tarjetas dicen "Próximamente" y Google indexa eso.
+- [ ] Revisar los textos del proceso marcados `<!-- BORRADOR -->` (etapas 02 a 05)
+- [ ] Usuario de Instagram. El ícono ya está en el footer sin enlace; se
+      activa agregándole `href`, `target` y `rel` (ver el comentario al lado).
+- [ ] Confirmar la renovación automática del dominio en Hostinger.
+      Es el único riesgo real de que el sitio se caiga.
+
+### Rediseño acordado el 4/10 (pendiente de arrancar)
+
+El criterio general: **menos texto, más directo, mejor animación**. Ya se
+aplicó a los encabezados de sección y a las tarjetas de servicios.
+
+- [ ] **Proyectos: mostrarlos de a uno.** En vez de tres tarjetas chicas, una
+      vista grande con los nombres al costado; al pasar o tocar un nombre, la
+      imagen cambia con una transición suave. Con tres proyectos, una vista
+      grande se ve intencional y tres tarjetas vacías se ven pobres.
+- [ ] **Proceso: sacarle peso.** Pasar las cinco etapas de acordeón a una
+      línea de tiempo compacta: número, título y una sola frase, todo a la
+      vista. Elimina de paso los textos borrador.
+
+### Hechos
+
+- [x] Clave de Web3Forms puesta y formulario probado
+- [x] Página legal única (`legal.html`) con los cuatro apartados enlazados
+      desde el footer
+- [x] Copia vieja en `OneDrive\Documents\Portfolio` eliminada
+- [x] SEO técnico: robots.txt, sitemap.xml, JSON-LD, Search Console
+- [x] Cabeceras de seguridad y página 404
