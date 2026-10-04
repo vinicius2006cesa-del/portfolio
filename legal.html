@@ -22,7 +22,7 @@
   <!-- Misma hoja de estilos que el resto del sitio: los colores y las
        tipografias salen de las mismas variables, asi nunca se
        desincroniza el diseno entre paginas. -->
-  <link rel="stylesheet" href="css/styles.css?v=202610041935">
+  <link rel="stylesheet" href="css/styles.css?v=202610041945">
 </head>
 
 <body class="pagina-legal">
@@ -33,9 +33,11 @@
        completo, alcanza con poder volver. -->
   <header class="navbar navbar--scrolleado">
     <div class="contenedor navbar__interior">
-      <a class="navbar__logo" href="index.html">
-        <img src="assets/marca/v-crema.svg" alt="" width="26" height="26">
-        <span>Vinicius Cesa</span>
+      <a class="navbar__logo" href="index.html"
+         aria-label="Vinicius Cesa, Estudio web — ir al inicio">
+        <span class="navbar__logo-nombre" aria-hidden="true"
+          ><span class="marca-v"></span>inicius Cesa</span>
+        <span class="navbar__logo-rol" aria-hidden="true">Estudio web</span>
       </a>
       <a class="btn btn--secundario" href="index.html">Volver al sitio</a>
     </div>

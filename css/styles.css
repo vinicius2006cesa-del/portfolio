@@ -615,73 +615,50 @@ p {
 }
 
 .navbar__logo {
-  /* relative para que el nombre absoluto se posicione contra la V. */
-  position: relative;
   display: flex;
   align-items: center;
-  font-family: var(--fuente-titulos);
-  /* La V se dimensiona en em (0.75em), asi que el tamano de letra define
-     cuan grande se ve el simbolo. A 1.7rem la V mide unos 20px: se lee
-     como logo cuando esta sola y como letra cuando aparece el resto. */
-  font-size: 1.7rem;
-  font-weight: var(--peso-extra);
-  letter-spacing: -0.03em;
-  line-height: 1;
+  gap: var(--esp-3);
   color: var(--color-oscuro-texto);
 }
 
-/* El nombre colapsado, que se despliega al pasar el cursor.
+/* El nombre y la V son UNA sola palabra: misma familia, mismo cuerpo,
+   mismo peso. La V se dimensiona en em (0.75em), asi que este font-size
+   es el que decide cuan grande se ve el simbolo.
 
-   Se anima max-width. El truco de grid 0fr->1fr del acordeon tambien
-   funciona para ancho (lo probamos), pero deja visible el padding del
-   texto cuando esta cerrado: el logo mide 38px en vez de 26. Con
-   max-width colapsa justo al ancho del simbolo, que es lo que se busca.
-
-   A cambio, el 10rem es un techo escrito a mano, no el ancho real: la
-   transicion llega a su destino antes de ese valor. Si algun dia el
-   nombre fuera mas largo que 10rem, se cortaria.
-
-   No se usa display:none ni visibility:hidden a proposito: eso sacaria el
-   texto del arbol de accesibilidad y el enlace se quedaria sin nombre. */
-/* position:absolute es la clave: el nombre se dibuja ENCIMA de la barra,
-   fuera del flujo, asi que al aparecer no empuja ni un pixel a los links
-   ni al boton. Antes usaba max-width y todo el navbar se corria.
-   left:100% lo arranca justo donde termina la V. */
+   Antes esto estaba colapsado y se desplegaba al pasar el cursor. Se
+   saco: el nombre tiene que leerse siempre, y de paso desaparecio toda
+   la maquinaria de posicionamiento absoluto que hacia falta para que al
+   aparecer no empujara los links. */
 .navbar__logo-nombre {
-  position: absolute;
-  left: 100%;
-  top: 50%;
-  translate: 0 -50%;
-  /* Entra deslizandose unos pocos pixeles, no de la nada: el movimiento
-     corto hace que se lea como "sale de la V" y no como un cartel que
-     aparece de golpe. */
-  transform: translateX(-6px);
-  opacity: 0;
-  pointer-events: none;
+  font-family: var(--fuente-titulos);
+  font-size: 1.75rem;
+  font-weight: var(--peso-extra);
+  letter-spacing: -0.03em;
+  line-height: 1;
   white-space: nowrap;
-  transition: transform var(--transicion-normal),
-              opacity var(--transicion-normal);
 }
 
-.navbar__logo-nombre > span {
-  display: block;
-  /* Sin separacion: el texto continua la palabra que empieza la V. */
-  padding-left: 0;
-}
-
-/* "Estudio web" en un tono mas bajo y sin cursiva: es una aclaracion,
-   no parte del nombre. Se usa <em> en el HTML por semantica y aca se le
-   quita la inclinacion. */
-.navbar__logo-nombre em {
-  font-style: normal;
+/* "Estudio web" NO es parte del nombre: es el rubro. Por eso va chico,
+   en mayusculas, en un tono mas bajo y detras de una linea divisoria.
+   La linea es un borde izquierdo, no un caracter: asi se alinea sola con
+   la altura del texto y no hay que ajustarla a mano. */
+.navbar__logo-rol {
+  padding-left: var(--esp-3);
+  border-left: 1px solid var(--color-oscuro-borde);
+  font-size: var(--texto-xs);
   font-weight: var(--peso-medio);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
   color: var(--color-oscuro-suave);
 }
 
-.navbar__logo:hover .navbar__logo-nombre,
-.navbar__logo:focus-visible .navbar__logo-nombre {
-  transform: translateX(0);
-  opacity: 1;
+/* En celular el rubro se cae: no entra al lado del nombre y de la
+   hamburguesa, y es lo menos importante de los tres. */
+@media (max-width: 1099px) {
+  .navbar__logo-rol {
+    display: none;
+  }
 }
 
 /* --- El menu en celular: panel que baja desde la barra --------------- */
@@ -952,8 +929,13 @@ p {
 }
 
 .hero__titulo {
-  /* Mas ancho que antes: el titular nuevo es una sola frase corta y con
-     14ch se partia en tres renglones de dos palabras. */
+  /* El h1 general usa --texto-4xl (hasta 89px). Aca va mas grande todavia
+     porque el titular es un nombre de dos palabras, no una frase: no se
+     lee, se mira. El tope de 7rem (112px) esta calculado para que
+     "Vinicius Cesa" entre en un solo renglon dentro del contenedor de
+     1180px (medido: 694px de ancho a 120px de cuerpo); mas grande que
+     eso y se parte al medio. */
+  font-size: clamp(2.6rem, 8.5vw, 7.5rem);
   max-width: 18ch;
 }
 
@@ -968,7 +950,11 @@ p {
 }
 
 .hero__subtitulo {
-  max-width: 52ch;
+  /* 56ch y no 52: medido a 1440px, con 52 el renglon cortaba adentro de
+     "se vea serio" y con 56 corta justo despues de la coma. De paso la
+     frase queda de 705px, casi el mismo ancho que el nombre de arriba
+     (695px): los dos bloques se alinean sin tener que fijarlo a mano. */
+  max-width: 56ch;
   font-size: var(--texto-lg);
   /* Base apagada a proposito: el contraste lo hacen las palabras en
      negrita de adentro. Igual cumple accesibilidad (4.9:1 sobre crema),
@@ -2189,10 +2175,6 @@ p {
 
   .navbar__cta {
     width: auto;
-  }
-
-  .navbar__logo {
-    font-size: var(--texto-base);
   }
 
   .hero__contenido {
