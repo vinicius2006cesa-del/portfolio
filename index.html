@@ -157,7 +157,7 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610041632">
+  <link rel="stylesheet" href="css/styles.css?v=202610041825">
 </head>
 
 <body>
@@ -178,7 +178,11 @@
            menos que dibujar el nombre entero dentro de un SVG. -->
       <a class="navbar__logo" href="#perfil">
         <img src="assets/marca/v-crema.svg" alt="" width="26" height="26">
-        <span>Vinicius Cesa</span>
+        <!-- El nombre esta SIEMPRE en el HTML aunque no se vea: es lo que
+             le da nombre accesible al enlace y lo que lee un lector de
+             pantalla. Solo esta colapsado visualmente; se despliega al
+             pasar el cursor o al llegar con el teclado. -->
+        <span class="navbar__logo-nombre"><span>Vinicius Cesa</span></span>
       </a>
 
       <!-- Este mismo <nav> es el menu de desktop Y el panel del celular.
@@ -196,7 +200,7 @@
              misma pagina no lleva target="_blank": abrir una pestana nueva
              para ir a otra seccion del mismo sitio seria un error. -->
         <a class="btn btn--acento btn--flecha navbar__cta" href="#contacto">
-          Agendar llamada
+          Hablemos
         </a>
       </nav>
 
@@ -228,7 +232,6 @@
 
         <p class="hero__badge aparece">
           <img src="assets/marca/icono-marino.svg" alt="" width="20" height="20">
-          <span class="hero__badge-nombre">Vinicius Cesa</span>
           <span class="hero__separador" aria-hidden="true"></span>
           <span class="hero__punto" aria-hidden="true"></span>
           Disponible para nuevos proyectos
@@ -947,7 +950,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610041632" defer></script>
+  <script src="js/main.js?v=202610041825" defer></script>
 
 </body>
 </html>

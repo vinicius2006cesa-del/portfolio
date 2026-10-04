@@ -84,6 +84,14 @@
   --color-error:          #B91C1C;  /*  5.5:1 */
   --color-whatsapp:       #25D366;  /* el verde oficial de WhatsApp */
 
+  /* --- Dorado suave --------------------------------------------------
+     Solo para el distintivo de "disponible". Es el crema de marca con un
+     punto mas de dorado: el salto de BRILLO es minimo (1.04:1 contra el
+     fondo), lo que cambia es el TONO. Por eso lleva ademas un borde
+     dorado, que es lo que de verdad lo despega del fondo. */
+  --color-dorado:         #F7E7BE;
+  --color-dorado-borde:   #E0C690;
+
   /* --- Tipografia ------------------------------------------------------------
      Outfit, la misma del logo. UNA sola familia para todo el sitio:
      el peso 800 para titulares (igual que la palabra "Vince") y
@@ -566,7 +574,9 @@ p {
 .navbar__logo {
   display: flex;
   align-items: center;
-  gap: var(--esp-3);
+  /* gap 0: el espacio entre la V y el nombre lo pone el padding del
+     nombre, asi cuando esta colapsado no queda un hueco suelto. */
+  gap: 0;
   font-family: var(--fuente-titulos);
   font-size: var(--texto-sm);
   font-weight: var(--peso-extra);
@@ -579,6 +589,44 @@ p {
   width: 26px;
   height: 26px;
   flex-shrink: 0;
+}
+
+/* El nombre colapsado, que se despliega al pasar el cursor.
+
+   Se anima max-width. El truco de grid 0fr->1fr del acordeon tambien
+   funciona para ancho (lo probamos), pero deja visible el padding del
+   texto cuando esta cerrado: el logo mide 38px en vez de 26. Con
+   max-width colapsa justo al ancho del simbolo, que es lo que se busca.
+
+   A cambio, el 10rem es un techo escrito a mano, no el ancho real: la
+   transicion llega a su destino antes de ese valor. Si algun dia el
+   nombre fuera mas largo que 10rem, se cortaria.
+
+   No se usa display:none ni visibility:hidden a proposito: eso sacaria el
+   texto del arbol de accesibilidad y el enlace se quedaria sin nombre. */
+.navbar__logo-nombre {
+  display: block;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-width var(--transicion-normal),
+              opacity var(--transicion-normal);
+}
+
+/* width:max-content es la clave: sin eso el span adopta el ancho de su
+   padre (que vale 0 mientras esta colapsado) en vez de medir su propio
+   texto, y nunca hay nada que desplegar. */
+.navbar__logo-nombre > span {
+  display: block;
+  width: max-content;
+  white-space: nowrap;
+  padding-left: var(--esp-3);
+}
+
+.navbar__logo:hover .navbar__logo-nombre,
+.navbar__logo:focus-visible .navbar__logo-nombre {
+  max-width: 10rem;
+  opacity: 1;
 }
 
 /* --- El menu en celular: panel que baja desde la barra --------------- */
@@ -723,9 +771,9 @@ p {
   align-items: center;
   gap: var(--esp-3);
   padding: var(--esp-2) var(--esp-4);
-  border: 1px solid var(--color-borde);
+  border: 1px solid var(--color-dorado-borde);
   border-radius: var(--radio-full);
-  background-color: var(--color-fondo);
+  background-color: var(--color-dorado);
   box-shadow: var(--sombra-sm);
   font-size: var(--texto-xs);
   font-weight: var(--peso-medio);
@@ -735,11 +783,6 @@ p {
 .hero__badge img {
   width: 20px;
   height: 20px;
-}
-
-.hero__badge-nombre {
-  font-weight: var(--peso-semi);
-  color: var(--color-texto);
 }
 
 .hero__separador {
@@ -766,7 +809,6 @@ p {
    la barra de arriba) y dejamos solo el estado, que es lo que importa. */
 @media (max-width: 480px) {
   .hero__badge img,
-  .hero__badge-nombre,
   .hero__separador {
     display: none;
   }
