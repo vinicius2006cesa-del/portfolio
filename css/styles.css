@@ -620,11 +620,11 @@ p {
   display: flex;
   align-items: center;
   /* La V se dimensiona en em (0.75em), asi que este font-size es el que
-     decide cuan grande se ve el simbolo: a 1.75rem mide unos 21px. El
-     nombre hereda todo de aca, por eso la V y el texto se leen como una
-     sola palabra y no como un logo con una frase al lado. */
+     decide cuan grande se ve el simbolo: a 2.1rem mide unos 25px.
+     El nombre NO hereda este cuerpo: lleva el suyo, mas chico. La V es
+     el logo y manda; el nombre la acompana. */
   font-family: var(--fuente-titulos);
-  font-size: 1.75rem;
+  font-size: 2.1rem;
   font-weight: var(--peso-extra);
   letter-spacing: -0.03em;
   line-height: 1;
@@ -644,10 +644,19 @@ p {
 .navbar__logo-desplegable {
   position: absolute;
   left: 100%;
-  top: 50%;
-  translate: 0 -50%;
+  /* Se ancla ABAJO, no al centro: la V y el nombre ya no miden lo mismo,
+     asi que centrarlos los dejaba flotando uno contra el otro. Apoyados
+     los dos en la misma linea de base se leen como un conjunto.
+     El bottom negativo descuenta el hueco que el renglon deja debajo de
+     la base. No esta a ojo: con el bloque apoyado en bottom:0 la base
+     del nombre caia 3.38px MAS ABAJO que la de la V (medido metiendo un
+     span de alto cero con vertical-align:baseline y comparandolo con el
+     borde inferior del SVG menos su 0.02em de aire). 3.38px sobre los
+     33.6 del cuerpo de la V son estos 0.069em. */
+  top: auto;
+  bottom: -0.069em;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: var(--esp-3);
   padding-left: 0;
   white-space: nowrap;
@@ -667,9 +676,10 @@ p {
   opacity: 1;
 }
 
-/* El nombre continua la palabra que empieza la V: hereda familia,
-   cuerpo, peso e interletra del enlace, y no lleva separacion. */
+/* El nombre va mas chico que la V: 1.5rem contra los 2.1 del simbolo.
+   Hereda familia, peso e interletra, pero no el cuerpo. */
 .navbar__logo-nombre {
+  font-size: 1.5rem;
   padding-left: 0;
 }
 
@@ -1102,60 +1112,6 @@ p {
    Datos chicos y espaciados. No informan casi nada, y justamente por eso
    funcionan: son el tipo de detalle que solo pone alguien que cuida el
    trabajo, y eso es lo que el visitante termina leyendo entre lineas. */
-/* Los tres puntos del "como". Mismo idioma visual que la franja de
-   abajo (chico, mayusculas, interletra abierta) para que se lean como
-   datos y no como otro parrafo que compita con la bajada.
-
-   El separador es un ::before en cada <li> menos el primero: asi no hay
-   caracteres sueltos en el HTML que el lector de pantalla tenga que
-   leer. Eso si: el punto vive ADENTRO del li, asi que cuando la fila se
-   apila cae a la izquierda de cada linea y parece una vinieta rota. Por
-   eso abajo de 900px se apaga y la lista pasa a columna. */
-.hero__ficha {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--esp-2) var(--esp-5);
-  margin-top: var(--esp-5);
-  list-style: none;
-  font-size: var(--texto-xs);
-  font-weight: var(--peso-medio);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-texto-tenue);
-}
-
-.hero__ficha li {
-  display: flex;
-  align-items: center;
-  gap: var(--esp-5);
-}
-
-.hero__ficha li + li::before {
-  content: "";
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background-color: var(--color-borde-fuerte);
-}
-
-/* En celular los tres puntos no entran en una linea. Se apilan centrados
-   y sin separadores: ahi el salto de linea ya hace de separador. */
-@media (max-width: 899px) {
-  .hero__ficha {
-    flex-direction: column;
-    /* align-items es necesario: en columna el valor por defecto (stretch)
-       estira cada <li> al ancho del mas largo y el texto queda alineado
-       a la izquierda adentro, no centrado. */
-    align-items: center;
-    gap: var(--esp-2);
-  }
-
-  .hero__ficha li + li::before {
-    display: none;
-  }
-}
-
 .hero__detalle {
   /* El contenedor del hero es flex en columna con align-items:center, o
      sea que sus hijos se encogen a su contenido. Sin esto la franja
@@ -2306,8 +2262,12 @@ p {
     width: auto;
   }
 
+  /* La franja de abajo se apoya en este relleno. Al sacar la ficha de
+     tres puntos el hero quedo con 294px de holgura y la franja muy
+     pegada al borde: con 8rem sube 32px y el aire se reparte parejo
+     arriba del badge y entre los botones y la franja. */
   .hero__contenido {
-    padding-bottom: var(--esp-9);
+    padding-bottom: 8rem;
   }
 
   /* En celular el titulo se limita a 14ch para que no quede una linea
