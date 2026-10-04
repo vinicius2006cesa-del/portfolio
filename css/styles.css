@@ -753,7 +753,9 @@ p {
    ===================================================================== */
 .hero {
   position: relative;
-  padding-top: var(--esp-7);
+  /* Sin relleno arriba: el <body> ya reserva la altura de la barra fija,
+     y el propio contenido se centra solo con las margenes automaticas.
+     Sumar relleno aca empujaba el hero 64px mas abajo del pliegue. */
   overflow: hidden;
 
   /* CAPA 1: un degradado vertical muy leve. Arriba apenas mas claro que
@@ -840,8 +842,24 @@ p {
   flex-direction: column;
   align-items: center;
   gap: var(--esp-5);
-  padding-bottom: var(--esp-8);
   text-align: center;
+
+  /* El hero ocupa la pantalla entera menos la barra de arriba, asi la
+     cinta de servicios queda justo abajo del pliegue y recien aparece
+     cuando la persona baja.
+     svh = "small viewport height": en el celular descuenta la barra del
+     navegador. Con 100vh el contenido queda tapado detras de ella. */
+  min-height: calc(100svh - var(--alto-navbar));
+  padding-bottom: var(--esp-5);
+}
+
+/* Las dos margenes automaticas reparten el espacio sobrante: una arriba
+   del contenido y otra arriba de la franja. Resultado: el bloque central
+   queda centrado y la franja pegada al fondo de la pantalla.
+   Con justify-content:center solo no alcanza, porque las margenes auto
+   se reparten el espacio ANTES de que se aplique el centrado. */
+.hero__badge {
+  margin-top: auto;
 }
 
 .hero__badge {
@@ -994,6 +1012,47 @@ p {
 }
 
 
+/* --- Marcas de esquina -----------------------------------------------
+   Dos angulos finos en las esquinas opuestas del hero, como las marcas
+   de corte de una imprenta. Ocupan el vacio de los costados sin sumar
+   otra copia del logo (que ya aparece en la barra y de fondo) y dan ese
+   aire de plano tecnico que hace que algo se lea como "disenado".
+   Son pura decoracion: van en pseudo-elementos y no en el HTML. */
+.hero__contenido::before,
+.hero__contenido::after {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--color-borde-fuerte);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.hero__contenido::before {
+  top: var(--esp-5);
+  left: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.hero__contenido::after {
+  right: 0;
+  bottom: 86px;      /* por encima de la franja de detalle */
+  border-left: 0;
+  border-top: 0;
+}
+
+/* En celular el hero va justo de alto y las marcas se cruzan con el
+   texto. */
+@media (max-width: 700px) {
+  .hero__contenido::before,
+  .hero__contenido::after {
+    display: none;
+  }
+}
+
+
 /* --- Franja de detalle al pie del hero --------------------------------
    Datos chicos y espaciados. No informan casi nada, y justamente por eso
    funcionan: son el tipo de detalle que solo pone alguien que cuida el
@@ -1003,12 +1062,12 @@ p {
      sea que sus hijos se encogen a su contenido. Sin esto la franja
      quedaria angosta y centrada en vez de ir de borde a borde. */
   align-self: stretch;
+  margin-top: auto;   /* la empuja al borde inferior de la pantalla */
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--esp-2) var(--esp-5);
-  margin-top: var(--esp-8);
   padding-top: var(--esp-4);
   border-top: 1px solid var(--color-borde);
   font-size: var(--texto-xs);
@@ -2126,10 +2185,6 @@ p {
 
   .navbar__logo {
     font-size: var(--texto-base);
-  }
-
-  .hero {
-    padding-top: var(--esp-8);
   }
 
   .hero__contenido {
