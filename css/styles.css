@@ -1766,30 +1766,6 @@ p {
   }
 }
 
-/* --- Servicios: reparto para CINCO tarjetas ---------------------------
-   Con cinco tarjetas en tres columnas, la ultima fila queda con dos y un
-   hueco feo. El truco: una grilla de SEIS columnas invisibles donde cada
-   tarjeta ocupa 2 (=> 3 por fila), y las dos ultimas ocupan 3 (=> media
-   fila cada una). Asi no queda ningun espacio vacio.
-
-   SI CAMBIAS LA CANTIDAD DE SERVICIOS hay que ajustar los nth-child de
-   abajo, o directamente borrar este bloque entero y dejar que use las
-   dos columnas de siempre. */
-@media (min-width: 1000px) {
-  .servicios__grilla {
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  .servicio {
-    grid-column: span 2;
-  }
-
-  .servicio:nth-child(4),
-  .servicio:nth-child(5) {
-    grid-column: span 3;
-  }
-}
-
 @media (min-width: 900px) {
   .navbar__hamburguesa {
     display: none;
