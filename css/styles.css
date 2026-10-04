@@ -615,27 +615,62 @@ p {
 }
 
 .navbar__logo {
+  /* relative: es el ancla del bloque que se despliega. */
+  position: relative;
   display: flex;
   align-items: center;
-  gap: var(--esp-3);
-  color: var(--color-oscuro-texto);
-}
-
-/* El nombre y la V son UNA sola palabra: misma familia, mismo cuerpo,
-   mismo peso. La V se dimensiona en em (0.75em), asi que este font-size
-   es el que decide cuan grande se ve el simbolo.
-
-   Antes esto estaba colapsado y se desplegaba al pasar el cursor. Se
-   saco: el nombre tiene que leerse siempre, y de paso desaparecio toda
-   la maquinaria de posicionamiento absoluto que hacia falta para que al
-   aparecer no empujara los links. */
-.navbar__logo-nombre {
+  /* La V se dimensiona en em (0.75em), asi que este font-size es el que
+     decide cuan grande se ve el simbolo: a 1.75rem mide unos 21px. El
+     nombre hereda todo de aca, por eso la V y el texto se leen como una
+     sola palabra y no como un logo con una frase al lado. */
   font-family: var(--fuente-titulos);
   font-size: 1.75rem;
   font-weight: var(--peso-extra);
   letter-spacing: -0.03em;
   line-height: 1;
+  color: var(--color-oscuro-texto);
+}
+
+/* El nombre y el rubro, que aparecen al pasar el cursor.
+
+   position:absolute es la clave: se dibujan ENCIMA de la barra, fuera
+   del flujo, asi que al aparecer no empujan ni un pixel a los links ni
+   al boton. left:100% los arranca justo donde termina la V.
+
+   No se usa display:none ni visibility:hidden a proposito: eso sacaria
+   el texto del arbol de accesibilidad. Aca no importa tanto porque el
+   nombre accesible lo da el aria-label del enlace, pero mantiene el
+   texto seleccionable y buscable con Ctrl+F. */
+.navbar__logo-desplegable {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  padding-left: 0;
   white-space: nowrap;
+  /* Entra deslizandose unos pocos pixeles, no de la nada: el movimiento
+     corto hace que se lea como "sale de la V" y no como un cartel que
+     aparece de golpe. */
+  transform: translateX(-6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform var(--transicion-normal),
+              opacity var(--transicion-normal);
+}
+
+.navbar__logo:hover .navbar__logo-desplegable,
+.navbar__logo:focus-visible .navbar__logo-desplegable {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* El nombre continua la palabra que empieza la V: hereda familia,
+   cuerpo, peso e interletra del enlace, y no lleva separacion. */
+.navbar__logo-nombre {
+  padding-left: 0;
 }
 
 /* "Estudio web" NO es parte del nombre: es el rubro. Por eso va chico,
@@ -649,12 +684,14 @@ p {
   font-weight: var(--peso-medio);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  white-space: nowrap;
   color: var(--color-oscuro-suave);
 }
 
-/* En celular el rubro se cae: no entra al lado del nombre y de la
-   hamburguesa, y es lo menos importante de los tres. */
+/* El rubro se cae abajo de 1100px. Medido: a 960px el bloque desplegado
+   termina 21px DESPUES de donde arranca "Inicio" (los links van
+   centrados contra la pantalla, asi que no se corren para hacerle
+   lugar). Sin el rubro el bloque mide 163px en vez de 258 y a 900px
+   todavia sobran 51px. Es lo menos importante de los tres. */
 @media (max-width: 1099px) {
   .navbar__logo-rol {
     display: none;
@@ -869,12 +906,23 @@ p {
 /* El badge va arriba, con una separacion fija de la barra. El titulo
    lleva la margen automatica, asi el bloque central se centra en el
    espacio que queda entre el badge y la franja de abajo. */
+/* Dos margenes automaticas en la misma columna (esta y la de la franja
+   de abajo) se reparten la holgura en partes iguales. Con una sola, todo
+   el aire sobrante se juntaba en un solo lugar: primero arriba del
+   nombre, despues abajo de la ficha. Asi el bloque queda centrado y el
+   aire se divide (medido a 1440x900: 95px arriba y 95 abajo). */
 .hero__badge {
-  margin-top: var(--esp-7);
+  margin-top: auto;
 }
 
+/* El titulo NO lleva margin-top:auto. Lo llevaba, y eso hacia que toda
+   la holgura de la pantalla se juntara entre el badge y el nombre: el
+   badge quedaba solo arriba del todo con un hueco de 125px abajo. Ahora
+   la unica margen automatica es la de la franja inferior, asi que el
+   bloque queda arriba, junto, y el aire sobrante cae abajo, que es
+   donde la V del fondo lo llena. */
 .hero__titulo {
-  margin-top: auto;
+  margin-top: var(--esp-4);
 }
 
 .hero__badge {
@@ -933,9 +981,9 @@ p {
      porque el titular es un nombre de dos palabras, no una frase: no se
      lee, se mira. El tope de 7rem (112px) esta calculado para que
      "Vinicius Cesa" entre en un solo renglon dentro del contenedor de
-     1180px (medido: 694px de ancho a 120px de cuerpo); mas grande que
-     eso y se parte al medio. */
-  font-size: clamp(2.6rem, 8.5vw, 7.5rem);
+     1180px (medido: 788px de ancho a 136px de cuerpo, sobre 1140
+     disponibles); mas grande que eso y se parte al medio. */
+  font-size: clamp(2.6rem, 9.5vw, 8.5rem);
   max-width: 18ch;
 }
 
@@ -955,7 +1003,10 @@ p {
      frase queda de 705px, casi el mismo ancho que el nombre de arriba
      (695px): los dos bloques se alinean sin tener que fijarlo a mano. */
   max-width: 56ch;
-  font-size: var(--texto-lg);
+  /* Apenas mas grande que el --texto-lg del resto del sitio (1.2rem):
+     es el unico parrafo de la pagina que compite con un titulo de
+     136px, y al tamano normal se veia perdido debajo. */
+  font-size: clamp(1.1rem, 0.45vw + 1rem, 1.35rem);
   /* Base apagada a proposito: el contraste lo hacen las palabras en
      negrita de adentro. Igual cumple accesibilidad (4.9:1 sobre crema),
      no es texto "gris decorativo". */
@@ -1051,6 +1102,60 @@ p {
    Datos chicos y espaciados. No informan casi nada, y justamente por eso
    funcionan: son el tipo de detalle que solo pone alguien que cuida el
    trabajo, y eso es lo que el visitante termina leyendo entre lineas. */
+/* Los tres puntos del "como". Mismo idioma visual que la franja de
+   abajo (chico, mayusculas, interletra abierta) para que se lean como
+   datos y no como otro parrafo que compita con la bajada.
+
+   El separador es un ::before en cada <li> menos el primero: asi no hay
+   caracteres sueltos en el HTML que el lector de pantalla tenga que
+   leer. Eso si: el punto vive ADENTRO del li, asi que cuando la fila se
+   apila cae a la izquierda de cada linea y parece una vinieta rota. Por
+   eso abajo de 900px se apaga y la lista pasa a columna. */
+.hero__ficha {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--esp-2) var(--esp-5);
+  margin-top: var(--esp-5);
+  list-style: none;
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+}
+
+.hero__ficha li {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-5);
+}
+
+.hero__ficha li + li::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--color-borde-fuerte);
+}
+
+/* En celular los tres puntos no entran en una linea. Se apilan centrados
+   y sin separadores: ahi el salto de linea ya hace de separador. */
+@media (max-width: 899px) {
+  .hero__ficha {
+    flex-direction: column;
+    /* align-items es necesario: en columna el valor por defecto (stretch)
+       estira cada <li> al ancho del mas largo y el texto queda alineado
+       a la izquierda adentro, no centrado. */
+    align-items: center;
+    gap: var(--esp-2);
+  }
+
+  .hero__ficha li + li::before {
+    display: none;
+  }
+}
+
 .hero__detalle {
   /* El contenedor del hero es flex en columna con align-items:center, o
      sea que sus hijos se encogen a su contenido. Sin esto la franja
@@ -2161,11 +2266,35 @@ p {
     visibility: visible;
   }
 
+  /* Los links van centrados contra la PANTALLA, no contra el hueco que
+     dejan el logo y el boton.
+
+     Antes usaban margin-inline:auto, que los centra en el espacio libre:
+     eso solo coincide con el centro real si el logo y el boton miden lo
+     mismo, y no lo miden. A 1440px quedaban 64px corridos a la derecha.
+
+     Sacandolos del flujo con left:50% el centro es exacto y, de paso,
+     deja de importar cuanto mida el logo: por eso puede desplegarse al
+     pasar el cursor sin mover nada. */
+  .navbar__interior {
+    position: relative;
+  }
+
   .navbar__links {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     flex-direction: row;
     align-items: center;
     gap: var(--esp-6);
-    margin-inline: auto;   /* empuja los links al centro de la barra */
+    margin-inline: 0;
+  }
+
+  /* Con los links fuera del flujo, el boton es lo unico que queda
+     adentro del <nav>: hay que mandarlo al extremo a mano. */
+  .navbar__menu {
+    justify-content: flex-end;
   }
 
   .navbar__link {

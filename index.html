@@ -157,7 +157,7 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610041945">
+  <link rel="stylesheet" href="css/styles.css?v=202610041959">
 </head>
 
 <body>
@@ -179,9 +179,13 @@
            visible va aria-hidden: el texto esta duplicado a proposito. -->
       <a class="navbar__logo" href="#perfil"
          aria-label="Vinicius Cesa, Estudio web — ir al inicio">
-        <span class="navbar__logo-nombre" aria-hidden="true"
-          ><span class="marca-v"></span>inicius Cesa</span>
-        <span class="navbar__logo-rol" aria-hidden="true">Estudio web</span>
+        <span class="marca-v" aria-hidden="true"></span>
+        <!-- Todo esto vive fuera del flujo (position:absolute en el CSS):
+             al aparecer no corre ni un pixel a los links ni al boton. -->
+        <span class="navbar__logo-desplegable" aria-hidden="true">
+          <span class="navbar__logo-nombre">inicius Cesa</span>
+          <span class="navbar__logo-rol">Estudio web</span>
+        </span>
       </a>
 
       <!-- Este mismo <nav> es el menu de desktop Y el panel del celular.
@@ -255,12 +259,14 @@
 
         <!-- El texto base va apagado y solo los tres remates a pleno
              contraste. Asi, quien barre la pagina con la vista lee el
-             mensaje completo sin leer la frase entera. Los tres son, en
-             orden, los tres servicios: diseno, SEO y conversion. -->
+             mensaje completo sin leer la frase entera.
+             La segunda oracion es el "como": la primera promete y esta
+             dice con que se cumple. -->
         <p class="hero__subtitulo aparece">
           Diseño y desarrollo de sitios web hechos a medida para que tu
-          negocio <b>se vea serio</b>, <b>aparezca en Google</b> y
+          negocio <b>se vea serio</b>, <b>se distinga del resto</b> y
           <b>convierta consultas en clientes</b>.
+          Rápido en el celular, claro en el mensaje y fácil de encontrar.
         </p>
 
         <div class="hero__botones aparece">
@@ -271,6 +277,15 @@
             Ver proyectos
           </a>
         </div>
+
+        <!-- Tres puntos cortos: el "como" del trabajo. No son promesas
+             nuevas, son lo que ya dicen Servicios y Proceso mas abajo,
+             resumido para quien no llega a bajar. -->
+        <ul class="hero__ficha aparece">
+          <li>Código propio, sin plantillas</li>
+          <li>Trato directo, sin intermediarios</li>
+          <li>Te acompaño después de publicar</li>
+        </ul>
 
         <!-- Franja de detalle. La hora la completa el JS: si no corre,
              queda el texto de reserva y no un hueco vacio. -->
@@ -959,7 +974,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610041945" defer></script>
+  <script src="js/main.js?v=202610041959" defer></script>
 
 </body>
 </html>

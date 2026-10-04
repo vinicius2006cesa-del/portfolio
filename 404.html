@@ -22,7 +22,7 @@
   <!-- Las rutas arrancan con "/" a proposito. Esta pagina se muestra en
        cualquier direccion inexistente, incluso en una profunda como
        /algo/otra-cosa; con rutas relativas el CSS no cargaria desde ahi. -->
-  <link rel="stylesheet" href="/css/styles.css?v=202610041945">
+  <link rel="stylesheet" href="/css/styles.css?v=202610041959">
 </head>
 
 <body>
@@ -33,9 +33,13 @@
     <div class="contenedor navbar__interior">
       <a class="navbar__logo" href="/"
          aria-label="Vinicius Cesa, Estudio web — ir al inicio">
-        <span class="navbar__logo-nombre" aria-hidden="true"
-          ><span class="marca-v"></span>inicius Cesa</span>
-        <span class="navbar__logo-rol" aria-hidden="true">Estudio web</span>
+        <span class="marca-v" aria-hidden="true"></span>
+        <!-- Todo esto vive fuera del flujo (position:absolute en el CSS):
+             al aparecer no corre ni un pixel a los links ni al boton. -->
+        <span class="navbar__logo-desplegable" aria-hidden="true">
+          <span class="navbar__logo-nombre">inicius Cesa</span>
+          <span class="navbar__logo-rol">Estudio web</span>
+        </span>
       </a>
       <a class="btn btn--secundario" href="/">Volver al sitio</a>
     </div>
