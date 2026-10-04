@@ -818,15 +818,22 @@ p {
   .hero__badge img,
 }
 
-.hero__titulo {
-  max-width: 14ch;
+/* La linea de marca: chica, en mayusculas y con las letras separadas.
+   Ese tratamiento es lo que la hace leer como etiqueta y no como texto,
+   asi no compite con el titular que viene abajo. */
+.hero__marca {
+  margin-top: var(--esp-5);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semi);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
 }
 
-/* La primera linea del titular va en gris: crea jerarquia entre
-   "lo que no alcanza" y "lo que importa". */
-.hero__linea-suave {
-  display: block;
-  color: var(--color-titulo-suave);
+.hero__titulo {
+  /* Mas ancho que antes: el titular nuevo es una sola frase corta y con
+     14ch se partia en tres renglones de dos palabras. */
+  max-width: 18ch;
 }
 
 /* La palabra destacada, dentro de una caja azul apenas rotada */

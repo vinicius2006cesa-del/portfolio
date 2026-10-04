@@ -157,7 +157,7 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610041835">
+  <link rel="stylesheet" href="css/styles.css?v=202610041843">
 </head>
 
 <body>
@@ -239,14 +239,21 @@
         <!-- Un solo <h1> por pagina: es el titulo principal del documento.
              Los <span> nos dejan pintar partes distintas sin cambiar el
              significado del texto. -->
+        <!-- La linea de marca va ANTES del titular y como <p> aparte, no
+             como <span> adentro del <h1>: es una etiqueta que dice quien
+             habla, no parte de la frase. Si estuviera adentro, un lector
+             de pantalla leeria el nombre pegado al titular como si fuera
+             una sola oracion. -->
+        <p class="hero__marca aparece">Vinicius Cesa · Estudio web</p>
+
         <h1 class="hero__titulo aparece">
-          <span class="hero__linea-suave">Tu web no necesita verse bien.</span>
-          Necesita <span class="destacado">vender</span> mejor.
+          Te <span class="destacado">buscan</span> antes de llamarte.
         </h1>
 
         <p class="hero__subtitulo aparece">
-          Diseño y desarrollo landing pages, portfolios y sitios institucionales
-          pensados para convertir visitas en consultas reales.
+          Diseño y desarrollo sitios que convierten esa búsqueda en una
+          consulta: rápidos, claros y pensados para que te tomen en serio
+          desde el primer segundo.
         </p>
 
         <div class="hero__botones aparece">
@@ -949,7 +956,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610041835" defer></script>
+  <script src="js/main.js?v=202610041843" defer></script>
 
 </body>
 </html>
