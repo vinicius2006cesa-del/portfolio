@@ -538,20 +538,21 @@ p {
   height: var(--alto-navbar);
   display: flex;
   align-items: center;
-  /* Fondo semitransparente + desenfoque: efecto "vidrio esmerilado".
-     Es el marino #0D1B2A con transparencia, para que la crema de abajo
-     se insinue al hacer scroll. */
-  background-color: rgba(13, 27, 42, 0.82);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
+  /* Marino solido, siempre el mismo. Antes era semitransparente con
+     desenfoque y arriba del todo se veia grisaceo porque dejaba pasar
+     la crema de abajo. Al ser opaco ya no cambia de tono al scrollear,
+     y de paso el navegador se ahorra el desenfoque, que es de los
+     efectos mas caros de dibujar. */
+  background-color: var(--color-oscuro);
   border-bottom: 1px solid transparent;
-  transition: border-color var(--transicion-rapida),
-              background-color var(--transicion-rapida);
+  transition: border-color var(--transicion-rapida);
 }
 
 /* El JS agrega esta clase cuando bajas: la barra se despega del contenido */
+/* El JS agrega esta clase al bajar. Ya no cambia el fondo (es siempre
+   el mismo marino): solo aparece la linea que despega la barra del
+   contenido. */
 .navbar--scrolleado {
-  background-color: rgba(13, 27, 42, 0.96);
   border-bottom-color: var(--color-oscuro-borde);
 }
 
@@ -828,11 +829,6 @@ p {
   display: flex;
   width: max-content;
   animation: desplazar 32s linear infinite;
-}
-
-/* Si algo te interesa, al pasar el mouse se pausa y podes leerlo */
-.marquee:hover .marquee__pista {
-  animation-play-state: paused;
 }
 
 @keyframes desplazar {
@@ -1476,36 +1472,12 @@ p {
   color: var(--color-oscuro-texto);
 }
 
-/* La linea que cierra cada columna, en blanco para que destaque.
-   margin-top: auto la empuja al fondo de la columna, asi los BORDES
-   INFERIORES quedan alineados. Pero eso sola no alcanza: si una frase
-   ocupa dos renglones y otra uno, la de dos arranca mas arriba y se ve
-   despareja.
-   min-height reserva la altura de dos renglones en TODAS, ocupen uno o
-   dos. Asi arrancan y terminan a la misma altura. */
-.footer__destacado {
-  margin-top: auto;
-  min-height: 2.8em;        /* 2 renglones x 1.4 de interlineado */
-  line-height: 1.4;
-  font-size: var(--texto-sm);
-  font-weight: var(--peso-semi);
-  color: var(--color-oscuro-texto);
-}
-
-.footer__destacado a {
-  transition: opacity var(--transicion-rapida);
-}
-
-.footer__destacado a:hover {
-  opacity: 0.7;
-}
-
 .footer__inferior {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--esp-4);
+  gap: var(--esp-3) var(--esp-5);
   padding-top: var(--esp-5);
   border-top: 1px solid var(--color-oscuro-borde);
   font-size: var(--texto-sm);
@@ -1518,12 +1490,15 @@ p {
   color: var(--color-oscuro-suave);
 }
 
-/* En celular baja a su propia linea; en desktop queda al lado del
-   copyright, separada por una barrita. */
-.footer__privacidad {
-  display: block;
-  font-size: var(--texto-xs);
-  opacity: 0.75;
+/* Los links legales y "Volver arriba", juntos y pegados a la derecha.
+   Antes los tres elementos se repartian a lo ancho con space-between y
+   quedaban desparramados; agrupando dos de ellos quedan dos bloques
+   limpios: copyright a la izquierda, el resto a la derecha. */
+.footer__inferior-der {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--esp-3) var(--esp-5);
 }
 
 /* Links legales. El CSS ya esta listo para cuando se descomenten
@@ -1759,17 +1734,6 @@ p {
 
   .footer__marca-col {
     grid-column: 1 / -1;
-  }
-
-  /* La barrita "|" se dibuja con CSS, no se escribe en el HTML:
-     es decoracion, no contenido. */
-  .footer__privacidad {
-    display: inline;
-  }
-
-  .footer__privacidad::before {
-    content: "·";
-    margin-inline: var(--esp-2);
   }
 }
 

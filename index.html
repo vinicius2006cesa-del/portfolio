@@ -62,7 +62,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/styles.css?v=202610032311">
+  <link rel="stylesheet" href="css/styles.css?v=202610032354">
 </head>
 
 <body>
@@ -306,11 +306,6 @@
                 y carga rápida en celulares.
               </p>
               <div class="proyecto__pie">
-                <ul class="tags">
-                  <li class="tag">HTML</li>
-                  <li class="tag">CSS</li>
-                  <li class="tag">JavaScript</li>
-                </ul>
                 <p class="proyecto__estado">Próximamente</p>
               </div>
             </div>
@@ -330,11 +325,6 @@
                 recibir consultas.
               </p>
               <div class="proyecto__pie">
-                <ul class="tags">
-                  <li class="tag">HTML</li>
-                  <li class="tag">CSS</li>
-                  <li class="tag">JavaScript</li>
-                </ul>
                 <p class="proyecto__estado">Próximamente</p>
               </div>
             </div>
@@ -354,11 +344,6 @@
                 generar confianza.
               </p>
               <div class="proyecto__pie">
-                <ul class="tags">
-                  <li class="tag">HTML</li>
-                  <li class="tag">CSS</li>
-                  <li class="tag">JavaScript</li>
-                </ul>
                 <p class="proyecto__estado">Próximamente</p>
               </div>
             </div>
@@ -703,9 +688,13 @@
               </a>
             </li>
 
-            <!-- CUANDO TENGAS INSTAGRAM: descomentá este bloque y cambiá
-                 "TU_USUARIO" por tu usuario real (en los dos lugares:
-                 aca y en la lista de contacto de mas abajo). -->
+            <!-- ===== INSTAGRAM: cuando tengas la cuenta =====
+                 1. Borrá la linea "<!--" de abajo y la "-->" del final.
+                 2. Reemplazá TU_USUARIO por tu usuario (sin el arroba).
+                 3. Hace lo mismo en el bloque de la columna "Contacto",
+                    unas lineas mas abajo.
+                 El icono y el estilo ya estan hechos: queda al lado del
+                 de WhatsApp y el del mail, igual que esos dos. -->
             <!--
             <li>
               <a href="https://instagram.com/TU_USUARIO" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
@@ -747,7 +736,6 @@
             <li><a href="https://instagram.com/TU_USUARIO" target="_blank" rel="noopener noreferrer">@TU_USUARIO</a></li>
             -->
           </ul>
-          <p class="footer__destacado">Respondo en menos de 24 h</p>
         </div>
 
         <!-- Columna 4: ubicación -->
@@ -757,39 +745,39 @@
             <li>Rosario, Argentina</li>
             <li>Trabajo 100% remoto</li>
           </ul>
-          <p class="footer__destacado">Reuniones por videollamada</p>
         </div>
 
       </div>
 
       <div class="footer__inferior">
-        <p>
-          © 2026 Vince Web Studio — Vinicius Cesa. Todos los derechos reservados.
-          <span class="footer__privacidad">
-            Los datos del formulario se usan únicamente para responder consultas.
-          </span>
-        </p>
+        <p>© 2026 Vince Web Studio — Vinicius Cesa. Todos los derechos reservados.</p>
 
-        <!-- Los cuatro links apuntan a secciones de un mismo archivo.
-             Asi el menu, el pie y tus datos de contacto viven en un solo
-             lugar: si cambia tu mail, lo cambias una vez y no cinco.
+        <!-- Los links legales y "Volver arriba" van juntos en un mismo
+             bloque para que queden alineados a la derecha como una sola
+             columna, en vez de repartirse sueltos a lo ancho. -->
+        <div class="footer__inferior-der">
 
-             No se incluye "Boton de arrepentimiento": es una obligacion
-             legal argentina para quien VENDE online (Resolucion 424/2020).
-             Este sitio solo recibe consultas, no procesa pagos. Si algun
-             dia vendes servicios desde aca, ahi si corresponde sumarlo. -->
-        <nav class="footer__legales" aria-label="Información legal">
-          <a href="legal.html#terminos">Términos y Condiciones</a>
-          <a href="legal.html#privacidad">Privacidad</a>
-          <a href="legal.html#cookies">Cookies</a>
-          <a href="legal.html#aviso-legal">Aviso Legal</a>
-        </nav>
+          <!-- Los cuatro links apuntan a secciones de un mismo archivo.
+               Asi el menu, el pie y tus datos de contacto viven en un solo
+               lugar: si cambia tu mail, lo cambias una vez y no cinco.
 
-        <!-- Es un link a #perfil y no un boton con JS: asi funciona
-             aunque el JavaScript falle, y el scroll suave ya lo da el CSS. -->
-        <a class="footer__arriba" href="#perfil">
-          Volver arriba <span aria-hidden="true">&uarr;</span>
-        </a>
+               No se incluye "Boton de arrepentimiento": es una obligacion
+               legal argentina para quien VENDE online (Resolucion 424/2020).
+               Este sitio solo recibe consultas, no procesa pagos. Si algun
+               dia vendes servicios desde aca, ahi si corresponde sumarlo. -->
+          <nav class="footer__legales" aria-label="Información legal">
+            <a href="legal.html#terminos">Términos y Condiciones</a>
+            <a href="legal.html#privacidad">Privacidad</a>
+            <a href="legal.html#cookies">Cookies</a>
+            <a href="legal.html#aviso-legal">Aviso Legal</a>
+          </nav>
+
+          <!-- Es un link a #perfil y no un boton con JS: asi funciona
+               aunque el JavaScript falle, y el scroll suave ya lo da el CSS. -->
+          <a class="footer__arriba" href="#perfil">
+            Volver arriba <span aria-hidden="true">&uarr;</span>
+          </a>
+        </div>
       </div>
 
     </div>
@@ -818,7 +806,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610032311" defer></script>
+  <script src="js/main.js?v=202610032354" defer></script>
 
 </body>
 </html>
