@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="110 110 292 292" aria-hidden="true">
+  <!-- La V de marca a muy baja opacidad, para usar como filigrana de
+       fondo. La transparencia va horneada en el archivo y no en el CSS
+       porque background-image no acepta opacity: habria que gastar un
+       pseudo-elemento solo para eso. -->
+  <path fill="#2563EB" fill-opacity="0.07" d="M301.94 117.76 L394.67 117.76 L302.79 381.48 L260.25 248.77 Z"/>
+  <path fill="#0D1B2A" fill-opacity="0.05" d="M117.33 117.76 L210.06 117.76 L298.54 394.24 L213.46 394.24 Z"/>
+</svg>
