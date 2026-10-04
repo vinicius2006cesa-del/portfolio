@@ -853,12 +853,14 @@ p {
   padding-bottom: var(--esp-5);
 }
 
-/* Las dos margenes automaticas reparten el espacio sobrante: una arriba
-   del contenido y otra arriba de la franja. Resultado: el bloque central
-   queda centrado y la franja pegada al fondo de la pantalla.
-   Con justify-content:center solo no alcanza, porque las margenes auto
-   se reparten el espacio ANTES de que se aplique el centrado. */
+/* El badge va arriba, con una separacion fija de la barra. El titulo
+   lleva la margen automatica, asi el bloque central se centra en el
+   espacio que queda entre el badge y la franja de abajo. */
 .hero__badge {
+  margin-top: var(--esp-7);
+}
+
+.hero__titulo {
   margin-top: auto;
 }
 
@@ -1008,47 +1010,6 @@ p {
 
   .marquee__pista {
     animation: none !important;
-  }
-}
-
-
-/* --- Marcas de esquina -----------------------------------------------
-   Dos angulos finos en las esquinas opuestas del hero, como las marcas
-   de corte de una imprenta. Ocupan el vacio de los costados sin sumar
-   otra copia del logo (que ya aparece en la barra y de fondo) y dan ese
-   aire de plano tecnico que hace que algo se lea como "disenado".
-   Son pura decoracion: van en pseudo-elementos y no en el HTML. */
-.hero__contenido::before,
-.hero__contenido::after {
-  content: "";
-  position: absolute;
-  width: 26px;
-  height: 26px;
-  border: 1px solid var(--color-borde-fuerte);
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.hero__contenido::before {
-  top: var(--esp-5);
-  left: 0;
-  border-right: 0;
-  border-bottom: 0;
-}
-
-.hero__contenido::after {
-  right: 0;
-  bottom: 86px;      /* por encima de la franja de detalle */
-  border-left: 0;
-  border-top: 0;
-}
-
-/* En celular el hero va justo de alto y las marcas se cruzan con el
-   texto. */
-@media (max-width: 700px) {
-  .hero__contenido::before,
-  .hero__contenido::after {
-    display: none;
   }
 }
 
