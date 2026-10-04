@@ -60,12 +60,25 @@ async function dibujar(){
     icono.src='data:image/svg+xml;base64,'+btoa(svgV);});
   x.save(); x.globalAlpha=0.07; x.drawImage(icono,845,105,430,430); x.restore();
 
-  // logo vectorial (la ruta sube un nivel: este archivo vive en herramientas/)
-  const logo=new Image();
-  await new Promise((ok,err)=>{logo.onload=ok;logo.onerror=err;
-    logo.src='../assets/marca/vince-webstudio-crema.svg';});
-  const lw=290;
-  x.drawImage(logo,80,66,lw,lw*(1133.1/2719.4));
+  // Marca: la V y el nombre al lado, igual que en el navbar del sitio.
+  // La V se dibuja desde el mismo SVG de la marca de agua pero opaca.
+  // OJO: la V del LOGO va a dos tonos (pata trasera azul, delantera
+  // crema). La de la marca de agua de arriba es monocolor a proposito.
+  // Si se reusa aquella, el logo pierde la profundidad que lo distingue.
+  const svgLogo='<svg xmlns="http://www.w3.org/2000/svg" viewBox="110 110 292 292">'
+    +'<path fill="#3B7BFF" d="M301.94 117.76 L394.67 117.76 L302.79 381.48 L260.25 248.77 Z"/>'
+    +'<path fill="#F5EBD7" d="M117.33 117.76 L210.06 117.76 L298.54 394.24 L213.46 394.24 Z"/></svg>';
+  const vLogo=new Image();
+  await new Promise((ok,err)=>{vLogo.onload=ok;vLogo.onerror=err;
+    vLogo.src='data:image/svg+xml;base64,'+btoa(svgLogo);});
+  x.drawImage(vLogo,80,70,66,66);
+
+  x.letterSpacing='-1px';
+  x.font='800 46px Outfit';
+  x.fillStyle=CREMA;
+  x.textBaseline='middle';
+  x.fillText('Vinicius Cesa',162,105);
+  x.textBaseline='alphabetic';
 
   // titular
   x.textBaseline='alphabetic';

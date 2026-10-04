@@ -13,7 +13,7 @@
   <!-- ===================================================================
        SEO — lo que ve Google
        =================================================================== -->
-  <title>Vince Web Studio — Diseño y desarrollo web que convierte</title>
+  <title>Vinicius Cesa — Diseño y desarrollo web que convierte</title>
   <meta name="description" content="Diseño y desarrollo landing pages, portfolios y sitios institucionales que convierten visitas en consultas reales.">
   <meta name="author" content="Vinicius Cesa">
   <meta name="robots" content="index, follow">
@@ -28,8 +28,8 @@
        =================================================================== -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_AR">
-  <meta property="og:site_name" content="Vince Web Studio">
-  <meta property="og:title" content="Vince Web Studio — Diseño y desarrollo web que convierte">
+  <meta property="og:site_name" content="Vinicius Cesa">
+  <meta property="og:title" content="Vinicius Cesa — Diseño y desarrollo web que convierte">
   <meta property="og:description" content="Diseño y desarrollo landing pages, portfolios y sitios institucionales que convierten visitas en consultas reales.">
   <meta property="og:url" content="https://viniciuscesa.com/">
   <!-- La imagen que se ve al compartir el link. Tiene que ser PNG o JPG
@@ -38,17 +38,17 @@
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Vince Web Studio — diseño y desarrollo web">
+  <meta property="og:image:alt" content="Vinicius Cesa — diseño y desarrollo web">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Vince Web Studio — Diseño y desarrollo web que convierte">
+  <meta name="twitter:title" content="Vinicius Cesa — Diseño y desarrollo web que convierte">
   <meta name="twitter:description" content="Diseño y desarrollo landing pages, portfolios y sitios institucionales que convierten visitas en consultas reales.">
   <meta name="twitter:image" content="https://viniciuscesa.com/assets/img/og-image.png">
 
   <!-- ===================================================================
        FAVICON Y COLOR DE MARCA
        =================================================================== -->
-  <link rel="icon" href="assets/marca/vince-icono-marino.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/marca/icono-marino.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/marca/apple-touch-icon.png">
   <meta name="theme-color" content="#0D1B2A">
 
@@ -84,12 +84,11 @@
     {
       "@context": "https://schema.org",
       "@type": "ProfessionalService",
-      "name": "Vince Web Studio",
-      "alternateName": "Vinicius Cesa",
+      "name": "Vinicius Cesa",
       "description": "Diseño y desarrollo de sitios web para emprendedores, profesionales y pymes: landing pages, portfolios y sitios institucionales pensados para convertir visitas en consultas.",
       "url": "https://viniciuscesa.com/",
       "image": "https://viniciuscesa.com/assets/img/og-image.png",
-      "logo": "https://viniciuscesa.com/assets/marca/vince-icono-marino.svg",
+      "logo": "https://viniciuscesa.com/assets/marca/icono-marino.svg",
       "telephone": "+5493772642065",
       "priceRange": "$$",
       "founder": {
@@ -158,7 +157,7 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610041559">
+  <link rel="stylesheet" href="css/styles.css?v=202610041632">
 </head>
 
 <body>
@@ -173,13 +172,13 @@
   <header class="navbar" id="navbar">
     <div class="contenedor navbar__interior">
 
-      <!-- El logo es una imagen, asi que el texto alternativo hace de
-           nombre del enlace: un lector de pantalla lee
-           "Vince Web Studio, enlace". Por eso NO lleva ademas un
-           aria-label, seria decir lo mismo dos veces. -->
+      <!-- El simbolo va como imagen decorativa (alt="") y el nombre en
+           texto de verdad al lado. Asi el enlace ya tiene nombre accesible
+           sin repetirlo, el texto se escala y se puede buscar, y pesa
+           menos que dibujar el nombre entero dentro de un SVG. -->
       <a class="navbar__logo" href="#perfil">
-        <img src="assets/marca/vince-logo-crema.svg" alt="Vince Web Studio"
-             width="85" height="27">
+        <img src="assets/marca/v-crema.svg" alt="" width="26" height="26">
+        <span>Vinicius Cesa</span>
       </a>
 
       <!-- Este mismo <nav> es el menu de desktop Y el panel del celular.
@@ -228,7 +227,7 @@
       <div class="contenedor hero__contenido">
 
         <p class="hero__badge aparece">
-          <img src="assets/marca/vince-icono-marino.svg" alt="" width="20" height="20">
+          <img src="assets/marca/icono-marino.svg" alt="" width="20" height="20">
           <span class="hero__badge-nombre">Vinicius Cesa</span>
           <span class="hero__separador" aria-hidden="true"></span>
           <span class="hero__punto" aria-hidden="true"></span>
@@ -749,7 +748,7 @@
 
           <!-- Asunto y remitente del mail que te va a llegar -->
           <input type="hidden" name="subject" value="Nueva consulta desde el portfolio">
-          <input type="hidden" name="from_name" value="Vince Web Studio">
+          <input type="hidden" name="from_name" value="Vinicius Cesa">
 
           <!-- Campo trampa para bots ("honeypot"). Esta escondido, asi que
                una persona nunca lo ve ni lo completa. Los bots si.
@@ -795,10 +794,10 @@
 
         <!-- Columna 1: marca, que hacés y las redes -->
         <div class="footer__marca-col">
-          <!-- En el pie entra la version completa con la bajada
-               "Web Studio", que en el navbar seria ilegible de chica. -->
-          <img class="footer__marca" src="assets/marca/vince-webstudio-crema.svg"
-               alt="Vince Web Studio" width="190" height="79">
+          <p class="footer__marca">
+            <img src="assets/marca/v-crema.svg" alt="" width="34" height="34">
+            <span>Vinicius Cesa</span>
+          </p>
           <p class="footer__frase">
             Diseño y desarrollo web para quienes quieren vender más.
             Landing pages, portfolios y sitios institucionales para
@@ -891,7 +890,7 @@
       </div>
 
       <div class="footer__inferior">
-        <p>© 2026 Vince Web Studio — Vinicius Cesa. Todos los derechos reservados.</p>
+        <p>© 2026 Vinicius Cesa. Todos los derechos reservados.</p>
 
         <!-- Los links legales y "Volver arriba" van juntos en un mismo
              bloque para que queden alineados a la derecha como una sola
@@ -948,7 +947,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610041559" defer></script>
+  <script src="js/main.js?v=202610041632" defer></script>
 
 </body>
 </html>

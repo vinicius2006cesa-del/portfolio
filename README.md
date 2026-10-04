@@ -52,10 +52,10 @@ Los archivos del logo están en `assets/marca/`:
 
 | Archivo | Dónde se usa |
 |---|---|
-| `vince-logo-crema.svg` | navbar (fondo marino) |
-| `vince-logo-marino.svg` | por si alguna vez va sobre fondo claro |
-| `vince-webstudio-crema.svg` | footer (lleva la bajada "Web Studio") |
-| `vince-icono-marino.svg` | favicon y el badge del hero |
+| `v-crema.svg` | la V sola, para fondos oscuros: navbar y footer |
+| `v-marino.svg` | la misma V para fondos claros (todavía sin usar) |
+| `icono-marino.svg` | la V dentro del cuadrado: favicon y badge del hero |
+| `icono-crema.svg` | el cuadrado invertido, por si hace falta |
 | `apple-touch-icon.png` | ícono al guardar el sitio en un iPhone |
 
 **Hay dos carpetas de marca y conviene no confundirlas:**
@@ -92,7 +92,15 @@ A ojo son el mismo azul. Si escribís texto chico en azul, usá el segundo.
 
 **Tipografía:** una sola familia, **Outfit** (Google Fonts, se carga desde el
 `<head>`). Peso 800 para titulares — el mismo con el que está dibujada la
-palabra "Vince" del logo — y 400/500/600 para el resto.
+nombre del logo — y 400/500/600 para el resto.
+
+**El nombre va en texto, no en imagen.** El navbar y el pie muestran la V como
+SVG y "Vinicius Cesa" como texto normal en Outfit 800. Antes el nombre estaba
+dibujado dentro de un SVG: así pesa menos, se escala perfecto, se puede buscar
+en la página y cambiarlo es editar una línea de HTML.
+
+> El kit en `kit-marca/` todavía tiene los archivos viejos con la marca
+> "Vince Web Studio". Quedaron como registro; el sitio ya no los usa.
 
 ## La imagen que se ve al compartir el link
 

@@ -575,10 +575,10 @@ p {
 }
 
 .navbar__logo img {
-  /* Alto fijo y ancho automatico: el logo nunca se deforma, se
-     adapta solo si algun dia cambia la proporcion del archivo. */
-  height: 27px;
-  width: auto;
+  /* Cuadrado fijo: la V es un simbolo, no un bloque de texto. */
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
 }
 
 /* --- El menu en celular: panel que baja desde la barra --------------- */
@@ -1583,10 +1583,26 @@ p {
   padding-bottom: var(--esp-7);
 }
 
+/* El nombre en el pie: la V mas grande y el texto al lado. */
 .footer__marca {
-  display: block;
-  width: clamp(150px, 42vw, 190px);
-  height: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  font-family: var(--fuente-titulos);
+  font-size: clamp(1.4rem, 4vw, 1.75rem);
+  font-weight: var(--peso-extra);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  /* Hay que pedir el color explicitamente: la regla general
+     "p { color: ... }" es para fondo claro y le ganaria al crema que
+     este parrafo heredaria del footer. */
+  color: var(--color-oscuro-texto);
+}
+
+.footer__marca img {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
 }
 
 .footer__frase {
