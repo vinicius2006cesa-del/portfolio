@@ -1,6 +1,6 @@
 #!/bin/sh
 # =====================================================================
-# Publica los cambios del sitio: add + commit + push, los tres de una.
+# Publica los cambios del sitio: versiona + add + commit + push.
 #
 # No se ejecuta directo, se llama con el atajo de Git:
 #     git publicar "que cambiaste"
@@ -8,10 +8,9 @@
 # Si el atajo no existe (pasa al clonar el repo de nuevo), se crea con:
 #     git config alias.publicar '!sh publicar.sh'
 #
-# Este archivo existe en vez de meter toda la logica dentro del alias
-# porque PowerShell rompe las comillas dobles al pasarle argumentos a
-# programas externos, y el mensaje del commit llegaba partido en
-# palabras sueltas. Adentro de un archivo no hay terminal que las toque.
+# La logica vive aca y no dentro del alias porque PowerShell rompe las
+# comillas dobles al pasarle argumentos a programas externos, y el
+# mensaje del commit llegaba partido en palabras sueltas.
 # =====================================================================
 
 mensaje="$1"
@@ -26,6 +25,25 @@ if [ -z "$(git status --porcelain)" ]; then
   echo "No hay ningun cambio para publicar."
   exit 0
 fi
+
+# --- Versionado del CSS y el JS --------------------------------------
+# Cloudflare le dice al navegador que guarde el CSS y el JS unas horas.
+# Si el nombre del archivo no cambia, el navegador reusa el viejo y el
+# sitio se ve roto: HTML nuevo con estilos viejos (navbar blanco, logo
+# invisible). Cambiando el ?v= en cada publicacion, la direccion es
+# nueva y NINGUN cache puede servir la version vieja: ni el tuyo, ni el
+# de Cloudflare, ni el de un visitante que entro ayer.
+#
+# Va despues del chequeo de cambios a proposito: si no hay nada que
+# publicar, no tiene sentido generar una version nueva.
+version=$(date +%Y%m%d%H%M)
+for f in index.html legal.html 404.html; do
+  [ -f "$f" ] || continue
+  sed -i -E "s|(href=\"/?css/styles\.css)(\?v=[0-9]+)?\"|\1?v=$version\"|g" "$f"
+  sed -i -E "s|(src=\"/?js/main\.js)(\?v=[0-9]+)?\"|\1?v=$version\"|g" "$f"
+done
+echo "Version nueva de CSS y JS: $version"
+echo
 
 echo "Se van a publicar estos archivos:"
 echo

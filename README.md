@@ -246,6 +246,24 @@ de forzar la actualización.
 navegador a descargar todo de nuevo ignorando lo que tenga guardado. Un
 refresco normal con F5 no alcanza.
 
+### El versionado automático
+
+Las reglas de arriba dependen de que Cloudflare las respete, y en la práctica
+distintos nodos tardan distinto en aplicarlas. Para no depender de eso, el
+HTML carga el CSS y el JS con un número de versión:
+
+```html
+<link rel="stylesheet" href="css/styles.css?v=202610032305">
+<script src="js/main.js?v=202610032305" defer></script>
+```
+
+**Ese número lo cambia solo `git publicar`** en cada publicación. Al cambiar
+la dirección, ningún caché del mundo puede servir la versión vieja: ni el
+tuyo, ni el de Cloudflare, ni el de alguien que entró ayer.
+
+No tenés que tocarlo nunca. Solo tenelo en cuenta si alguna vez editás a mano
+esas líneas del HTML: dejá el `?v=` como está, el script lo pisa igual.
+
 ## Formulario (Web3Forms)
 
 Las consultas del formulario llegan a tu mail.
