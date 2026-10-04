@@ -828,33 +828,127 @@ p {
   );
 }
 
-/* CAPA 2: la V de marca, gigante y apenas visible, saliendose por el
-   borde derecho. Es la misma pieza de la imagen de compartir, asi que el
-   sitio y lo que se ve al compartirlo hablan el mismo idioma.
-   El JS la desplaza unos pixeles siguiendo el mouse (ver main.js). */
-.hero__filigrana {
+/* CAPA 2: la aurora. Tres manchas de luz gigantes que derivan muy
+   despacio. Reemplaza a la V de marca que estaba quieta en el fondo.
+
+   Por que radial-gradient y no filter:blur() sobre un circulo solido:
+   un degradado que termina en transparente YA esta difuso, y no cuesta
+   nada. blur() obliga al navegador a desenfocar una superficie enorme
+   en cada cuadro, que es de los efectos mas caros que hay.
+
+   Solo se anima transform. Es la unica propiedad (con opacity) que el
+   navegador puede mover sin recalcular el diseno ni repintar: la manda
+   a la placa de video y se olvida. Animar top/left o el tamano haria
+   trabajar al procesador 60 veces por segundo.
+   -------------------------------------------------------------------- */
+.hero__aurora {
   position: absolute;
-  top: 40px;
-  right: -120px;
-  width: 520px;
-  height: 520px;
-  background: url("../assets/marca/v-filigrana.svg") no-repeat center / contain;
+  inset: 0;
   pointer-events: none;
-  /* will-change le avisa al navegador que esto se va a mover, asi lo
-     pone en su propia capa y el movimiento no obliga a repintar el
-     resto del hero. */
+  /* El JS mueve ESTE contenedor siguiendo el mouse. */
   will-change: transform;
-  /* Transicion larga y suave: el JS actualiza la posicion a cada cuadro,
-     asi que esto no frena el seguimiento del mouse, pero hace que al
-     sacar el cursor la V vuelva flotando en vez de pegar un salto. */
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Si pidieron menos movimiento, el JS ni siquiera engancha el mouse;
-   esto es el cinturon por si algo cambia en el futuro. */
+.hero__mancha {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+/* vmax y no px: las manchas tienen que seguir siendo mas grandes que la
+   pantalla en cualquier tamano. Si fueran fijas, en un monitor ancho se
+   verian como tres pelotas sueltas en vez de como luz de fondo. */
+.hero__mancha--azul {
+  top: -30vmax;
+  right: -20vmax;
+  width: 70vmax;
+  height: 70vmax;
+  background: radial-gradient(
+    circle at center,
+    rgba(37, 99, 235, 0.15) 0%,
+    rgba(37, 99, 235, 0) 65%
+  );
+  animation: deriva-azul 34s ease-in-out infinite;
+}
+
+.hero__mancha--oro {
+  bottom: -35vmax;
+  left: -25vmax;
+  width: 75vmax;
+  height: 75vmax;
+  background: radial-gradient(
+    circle at center,
+    rgba(224, 198, 144, 0.34) 0%,
+    rgba(224, 198, 144, 0) 62%
+  );
+  animation: deriva-oro 43s ease-in-out infinite;
+}
+
+/* El marino no suma luz: la resta. Es la sombra que hace que las otras
+   dos se lean como luz y no como manchas de color sobre una pared. */
+.hero__mancha--marino {
+  top: 2vmax;
+  left: 48vmax;
+  width: 55vmax;
+  height: 55vmax;
+  background: radial-gradient(
+    circle at center,
+    rgba(13, 27, 42, 0.05) 0%,
+    rgba(13, 27, 42, 0) 60%
+  );
+  animation: deriva-marino 52s ease-in-out infinite;
+}
+
+/* Las tres duraciones (34, 43 y 52 segundos) no son multiplos entre si
+   a proposito: asi las manchas no vuelven nunca a la misma posicion
+   relativa y el fondo no se siente como un bucle. El ciclo completo
+   tarda horas en repetirse.
+
+   Cada una pasa por TRES posiciones y no por dos. Con dos el recorrido
+   es un vaiven: se va y vuelve por el mismo camino, y el ojo lo detecta
+   como un pendulo. Con tres el camino de ida es distinto al de vuelta
+   y se lee como deriva.
+
+   El recorrido es grande (hasta 16%, unos 170px) justo porque es lento:
+   repartido en 40 segundos nunca se ve "moverse", pero si mirás el hero
+   un rato la luz esta en otro lado. Con la mitad de recorrido, probado,
+   no se notaba ninguna diferencia entre el principio y el medio. */
+@keyframes deriva-azul {
+  0%,  100% { transform: translate3d(0, 0, 0)        scale(1); }
+  35%       { transform: translate3d(-13%, 9%, 0)    scale(1.22); }
+  70%       { transform: translate3d(-5%, 16%, 0)    scale(1.08); }
+}
+
+@keyframes deriva-oro {
+  0%,  100% { transform: translate3d(0, 0, 0)        scale(1); }
+  35%       { transform: translate3d(14%, -8%, 0)    scale(1.18); }
+  70%       { transform: translate3d(4%, -15%, 0)    scale(1.06); }
+}
+
+@keyframes deriva-marino {
+  0%,  100% { transform: translate3d(0, 0, 0)        scale(1.05); }
+  35%       { transform: translate3d(-11%, -13%, 0)  scale(0.88); }
+  70%       { transform: translate3d(-16%, 4%, 0)    scale(1.00); }
+}
+
+/* Si pidieron menos movimiento, el fondo queda quieto: ni la deriva ni
+   el seguimiento del mouse (el JS tampoco se engancha). Sigue viendose
+   igual, simplemente no se mueve. */
 @media (prefers-reduced-motion: reduce) {
-  .hero__filigrana {
+  .hero__aurora {
     transform: none !important;
+  }
+
+  /* .hero__mancha--azul parece mas especifico que .hero__mancha, pero
+     no lo es: "hero__mancha--azul" es UN solo nombre de clase, no dos.
+     Las dos reglas pesan igual, asi que decide cual va despues en el
+     archivo. Probado en el navegador: sin !important esto igual apaga
+     las tres animaciones, porque este bloque esta mas abajo.
+     El !important queda igual para que no dependa del orden: si manana
+     alguien mueve este bloque mas arriba, sigue funcionando. */
+  .hero__mancha {
+    animation: none !important;
   }
 }
 
@@ -864,20 +958,15 @@ p {
   content: "";
   position: absolute;
   inset: -200px 0 0 0;
-  /* Dos focos en vez de uno: el azul desde arriba y uno calido desde
-     abajo a la izquierda. Dos fuentes de luz es lo que hace que una
-     superficie se lea con volumen; con una sola queda plana. */
-  background:
-    radial-gradient(
-      ellipse 60% 70% at 50% 0%,
-      rgba(37, 99, 235, 0.16) 0%,
-      rgba(37, 99, 235, 0) 70%
-    ),
-    radial-gradient(
-      ellipse 55% 60% at 8% 95%,
-      rgba(224, 198, 144, 0.30) 0%,
-      rgba(224, 198, 144, 0) 70%
-    );
+  /* Un solo foco: el azul que baja desde la barra. El calido que habia
+     abajo a la izquierda se saco porque la mancha de oro de la aurora
+     cae en el mismo lugar y los dos juntos tapaban media pantalla. La
+     luz calida ahora la pone la aurora, que ademas se mueve. */
+  background: radial-gradient(
+    ellipse 60% 70% at 50% 0%,
+    rgba(37, 99, 235, 0.14) 0%,
+    rgba(37, 99, 235, 0) 70%
+  );
   pointer-events: none;   /* que no bloquee los clics de los botones */
 }
 

@@ -270,8 +270,8 @@ function activarHoraLocal() {
 }
 
 
-function activarFiligrana() {
-  const v = document.querySelector(".hero__filigrana");
+function activarAurora() {
+  const v = document.querySelector(".hero__aurora");
   const hero = document.querySelector(".hero");
   if (!v || !hero) return;
 
@@ -297,7 +297,7 @@ function activarFiligrana() {
       const dx = (evento.clientX - caja.left) / caja.width - 0.5;
       const dy = (evento.clientY - caja.top) / caja.height - 0.5;
       // 18px de recorrido maximo. Mas que eso se nota y distrae; menos,
-      // no se percibe. El signo negativo hace que la V se aleje del
+      // no se percibe. El signo negativo hace que el fondo se aleje del
       // cursor, que da mas sensacion de profundidad que seguirlo.
       x = -dx * 18;
       y = -dy * 18;
@@ -581,7 +581,7 @@ function iniciar() {
   activarLinkActivo();
   activarBotonFlotante();
   activarHoraLocal();
-  activarFiligrana();
+  activarAurora();
   activarVitrina();
   activarProceso();
   activarFormulario();
