@@ -9,7 +9,7 @@
    5. Componentes globales (botones, etiquetas, encabezados)
    6. Animaciones de aparicion
    7. Navbar
-   8. Inicio (hero + marquee)
+   8. Inicio (hero)
    9. Servicios
    10. Proyectos
    11. Proceso
@@ -149,7 +149,6 @@
   /* --- Layout ---------------------------------------------------------- */
   --ancho-contenedor: 1180px;
   --alto-navbar: 76px;
-  --alto-cinta: 78px;   /* la cinta de servicios debajo del hero */
 
   /* --- Transiciones ----------------------------------------------------- */
   /* --- Movimiento ----------------------------------------------------
@@ -843,7 +842,7 @@ p {
 
 
 /* =====================================================================
-   8. INICIO (hero + marquee)
+   8. INICIO (hero)
    ===================================================================== */
 .hero {
   position: relative;
@@ -945,62 +944,6 @@ p {
   }
 }
 
-/* CAPA 4: el haz.
-
-   Una banda de luz muy tenue que cruza el hero en diagonal. El angulo
-   (33.2deg) es el MISMO que el del trazo marino de la V y el mismo en el
-   que corren las ondas del canvas: las tres capas se mueven sobre el eje
-   de la marca, por eso el conjunto se lee como una sola superficie.
-
-   El elemento es mas grande que el hero y se desplaza de punta a punta.
-   Se anima solo translate (la placa de video lo resuelve sola) y nunca
-   el gradiente, que obligaria a repintar.
-
-   19 segundos, y de los cuales la mayor parte esta fuera de pantalla:
-   el haz PASA, no se queda. Un destello cada tanto se nota; uno
-   permanente se vuelve un adorno.
-   -------------------------------------------------------------------- */
-.hero__haz {
-  position: absolute;
-  top: -60%;
-  left: -40%;
-  width: 60%;
-  height: 220%;
-  pointer-events: none;
-  rotate: 33.2deg;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 253, 247, 0) 0%,
-    rgba(255, 253, 247, 0.55) 45%,
-    rgba(255, 253, 247, 0.75) 50%,
-    rgba(255, 253, 247, 0.55) 55%,
-    rgba(255, 253, 247, 0) 100%
-  );
-  /* mix-blend-mode: soft-light hace que el haz ACLARE lo que hay debajo
-     en vez de taparlo con un velo blanco. Es la diferencia entre "luz
-     sobre una superficie" y "una tira blanca encima". */
-  mix-blend-mode: soft-light;
-  opacity: 0;
-  animation: pasa-haz 19s linear infinite;
-  will-change: transform, opacity;
-}
-
-@keyframes pasa-haz {
-  /* Entra apagado, se enciende mientras cruza y se apaga antes de
-     salir: asi no se ve aparecer ni desaparecer por los bordes. */
-  0%   { transform: translateX(-60%); opacity: 0; }
-  12%  { opacity: 0.55; }
-  38%  { opacity: 0.55; }
-  50%  { transform: translateX(260%); opacity: 0; }
-  100% { transform: translateX(260%); opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero__haz {
-    display: none;
-  }
-}
-
 /* Resplandor suave detras del titulo. Se hace con ::before, un
    pseudo-elemento: existe solo en el CSS, no ensucia el HTML. */
 .hero::before {
@@ -1060,17 +1003,11 @@ p {
   text-align: center;
 
   /* El hero ocupa la pantalla entera menos la barra de arriba, asi la
-     cinta de servicios queda justo abajo del pliegue y recien aparece
+     seccion siguiente queda justo abajo del pliegue y recien aparece
      cuando la persona baja.
      svh = "small viewport height": en el celular descuenta la barra del
      navegador. Con 100vh el contenido queda tapado detras de ella. */
-  /* Se le descuenta el alto de la cinta ademas del de la barra. Sin
-     esto el hero ocupa EXACTO la pantalla y la cinta queda justo abajo
-     del pliegue: hay que scrollear para descubrir que existe. El 78
-     es el alto completo de la cinta (74px) mas aire: asoma ENTERA. Con
-     56 se veia cortada por abajo y el corte recto contra el borde de la
-     pantalla se leia como una barra de tareas, no como contenido. */
-  min-height: calc(100svh - var(--alto-navbar) - var(--alto-cinta));
+  min-height: calc(100svh - var(--alto-navbar));
   padding-bottom: var(--esp-5);
 }
 
@@ -1209,74 +1146,6 @@ p {
   flex: 1 1 100%;
 }
 
-/* --- Marquee (franja con desplazamiento infinito) --------------------
-   La pista tiene el mismo grupo dos veces y se desplaza -50%, que es
-   justo el ancho de un grupo. Al reiniciar, la copia quedo exactamente
-   donde estaba el original: el salto es invisible. */
-.marquee {
-  border-block: 1px solid var(--color-borde);
-  padding-block: var(--esp-4);
-  overflow: hidden;
-  /* Desvanece los bordes para que los textos no aparezcan de golpe */
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-}
-
-.marquee__pista {
-  display: flex;
-  width: max-content;
-  animation: desplazar 32s linear infinite;
-}
-
-@keyframes desplazar {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-.marquee__grupo {
-  display: flex;
-  align-items: center;
-  gap: var(--esp-6);
-  padding-right: var(--esp-6);
-}
-
-.marquee__grupo li {
-  display: flex;
-  align-items: center;
-  gap: var(--esp-6);
-  font-family: var(--fuente-titulos);
-  font-size: var(--texto-xl);
-  font-weight: var(--peso-extra);
-  text-transform: uppercase;
-  color: var(--color-texto-tenue);
-  white-space: nowrap;
-}
-
-/* Punto separador azul entre items, dibujado por CSS */
-.marquee__grupo li::after {
-  content: "";
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: var(--color-acento);
-}
-
-/* El !important le gana a la regla general de prefers-reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-  .marquee {
-    overflow-x: auto;
-  }
-
-  .marquee__pista {
-    animation: none !important;
-  }
-}
-
-
-/* --- Franja de detalle al pie del hero --------------------------------
-   Datos chicos y espaciados. No informan casi nada, y justamente por eso
-   funcionan: son el tipo de detalle que solo pone alguien que cuida el
-   trabajo, y eso es lo que el visitante termina leyendo entre lineas. */
 /* =====================================================================
    9. SERVICIOS
    ===================================================================== */
@@ -2054,9 +1923,23 @@ p {
 
 .campo input:focus,
 .campo textarea:focus {
-  outline: none;   /* lo reemplaza el borde azul */
+  /* Con el mouse alcanza el borde azul: un anillo de 3px al hacer clic
+     en un campo es ruido, porque ya sabes donde hiciste clic. */
+  outline: none;
   border-color: var(--color-acento);
   background-color: var(--color-fondo);
+}
+
+/* Con TECLADO si va el anillo. La regla de arriba apagaba el
+   :focus-visible global del sitio por especificidad ((0,2,1) contra
+   (0,1,0)), y estos cuatro campos eran los unicos elementos de toda la
+   pagina sin indicador de foco: quien navega sin mouse perdia de vista
+   donde estaba parado justo en el formulario de contacto.
+   Esta regla pesa lo mismo que la de arriba y va despues, asi que gana. */
+.campo input:focus-visible,
+.campo textarea:focus-visible {
+  outline: 3px solid var(--color-acento);
+  outline-offset: 3px;
 }
 
 .campo textarea {

@@ -303,108 +303,93 @@ function activarOleaje() {
   const hero = document.querySelector(".hero");
   if (!lienzo || !hero) return;
 
-  // En celular no se dibuja: un canvas que repinta todo el tiempo gasta
-  // bateria, y en una pantalla de 6 pulgadas el movimiento casi no se
-  // aprecia. Queda el degradado que el CSS le puso de fondo al canvas.
-  const anchoMinimo = 900;
-  if (window.innerWidth < anchoMinimo) return;
+  // En celular no se dibuja: una pantalla chica no luce el efecto y el
+  // dibujo continuo gasta bateria. Queda el degradado del CSS.
+  if (window.innerWidth < 900) return;
   if (prefiereMenosMovimiento()) return;
 
   const pincel = lienzo.getContext("2d");
   if (!pincel) return;
 
-  const ANCHO = lienzo.width;    // 192
-  const ALTO = lienzo.height;    // 108
-  const imagen = pincel.createImageData(ANCHO, ALTO);
-  const datos = imagen.data;
+  /* ---------------------------------------------------------------
+     POR QUE LINEAS Y NO PIXELES
 
-  // Los tres colores del oleaje, en crudo. Son los mismos del sitio:
-  // la crema de fondo, el dorado calido y un azul MUY lavado. El azul
-  // esta a proposito a un pelo de la crema: con uno mas saturado, medio
-  // hero se veia gris y la pagina perdia el color de la marca.
-  const CREMA = [245, 235, 215];
-  const ORO = [228, 203, 152];
-  const AZUL = [230, 233, 240];
+     La version anterior calculaba el color de CADA pixel: cuatro senos
+     por pixel, 20.736 pixeles, 30 veces por segundo. Dos millones y
+     medio de operaciones por segundo, en JavaScript, solo para el
+     fondo. En una maquina comoda no se notaba; en una mas lenta hacia
+     que TODA la pagina fuera a tirones, incluida la cinta.
 
-  // mezcla devuelve el color que corresponde a un valor de -1 a 1:
-  // hacia abajo tira a azul, en el medio crema, hacia arriba a dorado.
-  function mezclar(v, salida) {
-    if (v >= 0) {
-      const k = v;
-      salida[0] = CREMA[0] + (ORO[0] - CREMA[0]) * k;
-      salida[1] = CREMA[1] + (ORO[1] - CREMA[1]) * k;
-      salida[2] = CREMA[2] + (ORO[2] - CREMA[2]) * k;
-    } else {
-      const k = -v;
-      salida[0] = CREMA[0] + (AZUL[0] - CREMA[0]) * k;
-      salida[1] = CREMA[1] + (AZUL[1] - CREMA[1]) * k;
-      salida[2] = CREMA[2] + (AZUL[2] - CREMA[2]) * k;
-    }
+     Esto dibuja 18 lineas de 64 puntos: 1.152 puntos por cuadro contra
+     20.736. Veinte veces menos trabajo, y el resultado tiene algo que
+     el anterior no tenia: estructura. Se ven lineas, no una mancha.
+     --------------------------------------------------------------- */
+  const LINEAS = 15;
+  const PUNTOS = 64;
+
+  // El centro de la V de fondo, en coordenadas de 0 a 1 sobre el hero.
+  // Las lineas se abren a su alrededor como las curvas de nivel de un
+  // mapa alrededor de un cerro: la marca deforma el campo en vez de
+  // estar apoyada encima de el.
+  const V_X = 0.80;
+  const V_Y = 0.46;
+
+  let ancho = 0;
+  let alto = 0;
+
+  function medir() {
+    const caja = hero.getBoundingClientRect();
+    // La mitad de la resolucion real y estirado por CSS: las lineas son
+    // finas y suaves, y se dibuja una cuarta parte de la superficie.
+    ancho = Math.round(caja.width / 2);
+    alto = Math.round(caja.height / 2);
+    lienzo.width = ancho;
+    lienzo.height = alto;
   }
 
-  const color = [0, 0, 0];
-
-  // 33.2 grados: el angulo del trazo marino de la V respecto de la
-  // vertical, sacado del propio SVG del logo (ver el comentario de
-  // adentro del bucle). Se calcula una sola vez, no 20.000 veces por
-  // cuadro.
-  const ANGULO = (33.2 * Math.PI) / 180;
-  const COS = Math.cos(ANGULO);
-  const SEN = Math.sin(ANGULO);
-
   function dibujar(t) {
-    let i = 0;
-    for (let py = 0; py < ALTO; py++) {
-      const y = py / ALTO;
-      for (let px = 0; px < ANCHO; px++) {
-        const x = px / ANCHO;
+    pincel.clearRect(0, 0, ancho, alto);
+    pincel.lineWidth = 1;
 
-        // EL EJE DE LA MARCA.
-        // Todo el movimiento corre en la direccion del trazo marino de
-        // la V. No es una eleccion estetica suelta: ese trazo va de
-        // (117,118) a (299,394) en el SVG del logo, o sea 33.2 grados
-        // respecto de la vertical. Proyectando cada pixel sobre esa
-        // direccion, las bandas de luz quedan PARALELAS al palo de la
-        // V. El fondo se mueve con la forma de la marca.
-        const u = x * COS + y * SEN;   // avance a lo largo del trazo
-        const w = x * -SEN + y * COS;  // distancia perpendicular
+    for (let i = 0; i < LINEAS; i++) {
+      const base = (i + 0.5) / LINEAS;      // 0 a 1 de arriba a abajo
+      const fase = i * 0.55;
 
-        // El frente de la ola se deforma a lo ancho del eje. Dos senos
-        // de periodo distinto en sentidos opuestos: la cresta nunca es
-        // una curva regular, se deforma mientras avanza.
-        const frente =
-          Math.sin(w * 4.2 + t * 0.055) * 0.5 +
-          Math.sin(w * 2.3 - t * 0.031) * 0.32;
+      // Las del medio se ven un poco mas: el borde de arriba y el de
+      // abajo se apagan para que el campo no termine de golpe.
+      const velo = Math.sin(base * Math.PI);
+      pincel.strokeStyle = "rgba(13, 27, 42, " + (0.115 * velo).toFixed(3) + ")";
+      pincel.beginPath();
 
-        // La ola, viajando a lo largo del eje de la V. El 1.6 es cuantas
-        // bandas entran en la pantalla: con mas, se ve rayado.
-        const ola = Math.sin((u + frente * 0.22) * 1.6 - t * 0.042);
+      for (let j = 0; j <= PUNTOS; j++) {
+        const x = j / PUNTOS;
 
-        // Segunda capa, mas grande y mucho mas lenta, cruzada. Es la que
-        // evita que se lea como un patron: sola la ola de arriba se
-        // repite, con esta encima nunca cae dos veces igual.
-        const marea = Math.sin((w * 1.1 + u * 1.6) - t * 0.019) * 0.45;
+        // La corriente: dos ondas lentas de periodo distinto. Es lo que
+        // hace que la linea respire en vez de ondular pareja.
+        const corriente =
+          Math.sin(x * 3.1 + t * 0.12 + fase) * 0.030 +
+          Math.sin(x * 6.7 - t * 0.07 + fase * 1.6) * 0.012;
 
-        // 0.30 de amplitud total. Arranco en 0.55 y era demasiado: en
-        // seis segundos la pantalla pasaba de calida a fria entera. Esto
-        // tiene que leerse como luz que cambia, no como colores que se
-        // mueven. Si lo subis, el texto de arriba empieza a costar.
-        mezclar((ola * 0.62 + marea) * 0.30, color);
+        // El bulto de la V: una campana centrada en la marca. Cuanto
+        // mas cerca pasa la linea, mas se abre. El signo empuja hacia
+        // afuera del centro, como si la V levantara el terreno.
+        const dx = (x - V_X) * 1.9;
+        const dy = (base - V_Y) * 2.6;
+        const d2 = dx * dx + dy * dy;
+        const bulto = Math.exp(-d2 * 2.6) * Math.sign(base - V_Y || 1) * 0.115;
 
-        datos[i++] = color[0];
-        datos[i++] = color[1];
-        datos[i++] = color[2];
-        datos[i++] = 255;
+        const y = (base + corriente + bulto) * alto;
+        if (j === 0) pincel.moveTo(0, y);
+        else pincel.lineTo(x * ancho, y);
       }
+      pincel.stroke();
     }
-    pincel.putImageData(imagen, 0, 0);
   }
 
   // --- El reloj -------------------------------------------------------
-  // Se dibuja a 30 cuadros por segundo, no a 60: el movimiento es tan
-  // lento que la mitad de los cuadros serian identicos al anterior.
-  // Baja a la mitad el trabajo sin que se note ninguna diferencia.
-  const MS_POR_CUADRO = 1000 / 30;
+  // 24 cuadros por segundo. El movimiento es tan lento que a 60 la
+  // mitad de los cuadros serian identicos al anterior.
+  const MS_POR_CUADRO = 1000 / 24;
   let ultimo = 0;
   let corriendo = true;
   let pedido = null;
@@ -434,6 +419,13 @@ function activarOleaje() {
   );
   vigia.observe(hero);
 
+  let reloj = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(reloj);
+    reloj = setTimeout(() => { medir(); dibujar(performance.now() / 1000); }, 200);
+  }, { passive: true });
+
+  medir();
   dibujar(0);
   pedido = requestAnimationFrame(cuadro);
 
@@ -643,11 +635,23 @@ function activarProgresoDeScroll() {
   const activos = new Set();
   let corriendo = false;
 
+  // Si la pagina no se movio desde el cuadro anterior, no hay nada que
+  // recalcular. Sin esto el bucle llamaba a getBoundingClientRect 60
+  // veces por segundo aunque la pagina estuviera quieta, y cada llamada
+  // obliga al navegador a recalcular el diseno antes de responder.
+  let ultimoScroll = -1;
+
   function cuadro() {
     if (activos.size === 0) {
       corriendo = false;
       return;
     }
+    requestAnimationFrame(cuadro);
+
+    const scroll = window.scrollY;
+    if (scroll === ultimoScroll) return;
+    ultimoScroll = scroll;
+
     const alto = window.innerHeight;
     activos.forEach((el) => {
       const caja = el.getBoundingClientRect();
@@ -656,7 +660,6 @@ function activarProgresoDeScroll() {
       const p = (alto - caja.top) / (alto + caja.height);
       el.style.setProperty("--p", Math.min(1, Math.max(0, p)).toFixed(4));
     });
-    requestAnimationFrame(cuadro);
   }
 
   function arrancar() {
