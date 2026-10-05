@@ -80,6 +80,7 @@
   /* --- Estados -------------------------------------------------------------
      Oscurecidos respecto de los originales: los verdes y rojos "vivos"
      no llegaban a 4.5:1 sobre crema. */
+  --color-error:          #B3261E;  /*  7.0:1 sobre crema */
   --color-exito:          #136B33;  /*  5.6:1 */
   --color-error:          #B91C1C;  /*  5.5:1 */
   --color-whatsapp:       #25D366;  /* el verde oficial de WhatsApp */
@@ -148,6 +149,7 @@
   /* --- Layout ---------------------------------------------------------- */
   --ancho-contenedor: 1180px;
   --alto-navbar: 76px;
+  --alto-cinta: 56px;   /* la cinta de servicios debajo del hero */
 
   /* --- Transiciones ----------------------------------------------------- */
   /* --- Movimiento ----------------------------------------------------
@@ -457,12 +459,15 @@ p {
   display: inline-flex;
   align-items: center;
   gap: var(--esp-2);
-  padding: var(--esp-2) var(--esp-4);
+  /* Apenas mas chicas que antes (eran esp-2/esp-4 y 0.75rem): la
+     pastilla es una aclaracion, no un titulo, y a tamano completo
+     competia con el h2 que tiene abajo. */
+  padding: var(--esp-1) var(--esp-3);
   border: 1px solid var(--color-borde);
   border-radius: var(--radio-full);
   background-color: var(--color-fondo);
   color: var(--color-acento-legible);
-  font-size: var(--texto-xs);
+  font-size: 0.7rem;
   font-weight: var(--peso-semi);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -998,7 +1003,11 @@ p {
      cuando la persona baja.
      svh = "small viewport height": en el celular descuenta la barra del
      navegador. Con 100vh el contenido queda tapado detras de ella. */
-  min-height: calc(100svh - var(--alto-navbar));
+  /* Se le descuenta el alto de la cinta ademas del de la barra. Sin
+     esto el hero ocupa EXACTO la pantalla y la cinta queda justo abajo
+     del pliegue: hay que scrollear para descubrir que existe. Asomando
+     unos pixeles se lee como "esto sigue" y te invita a bajar. */
+  min-height: calc(100svh - var(--alto-navbar) - var(--alto-cinta));
   padding-bottom: var(--esp-5);
 }
 
@@ -1955,6 +1964,29 @@ p {
 .campo input::placeholder,
 .campo textarea::placeholder {
   color: var(--color-texto-tenue);
+}
+
+/* El cartel de error. Vive siempre en el HTML y arranca vacio: un <p>
+   sin texto no ocupa alto, asi que no hay salto cuando aparece el
+   mensaje... salvo por el margen, que por eso tambien se activa recien
+   cuando hay algo escrito (:not(:empty)). */
+.campo__error {
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  color: var(--color-error, #B3261E);
+  line-height: 1.4;
+}
+
+.campo__error:not(:empty) {
+  margin-top: var(--esp-1);
+}
+
+/* El borde rojo acompana al texto. aria-invalid no es solo para
+   lectores de pantalla: sirve igual de bien como gancho de CSS, y asi
+   no hay que mantener una clase aparte en sincronia con el atributo. */
+.campo input[aria-invalid="true"],
+.campo textarea[aria-invalid="true"] {
+  border-color: var(--color-error, #B3261E);
 }
 
 .campo input:focus,

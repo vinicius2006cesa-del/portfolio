@@ -673,6 +673,113 @@ function activarProgresoDeScroll() {
    mensaje ahi mismo. Si el JavaScript fallara, el formulario igual
    funciona: el navegador lo enviaria de la forma tradicional.
    ===================================================================== */
+/* --- Validacion de los campos ----------------------------------------
+   El navegador YA valida con required, pattern y minlength: si el JS no
+   carga, el formulario igual no se envia incompleto. Esto es la capa de
+   arriba, y sirve para dos cosas que el navegador hace mal:
+
+   1. Sus mensajes son genericos y a veces estan en ingles ("Please match
+      the requested format"). Aca escribimos que esta mal y como
+      arreglarlo, en castellano.
+   2. Sus globos aparecen de a uno y desaparecen solos. Estos quedan
+      escritos debajo del campo hasta que lo corregis.
+   -------------------------------------------------------------------- */
+const MENSAJES = {
+  nombre: {
+    valueMissing: "Escribí tu nombre, así sé cómo llamarte.",
+    tooShort: "El nombre es muy corto.",
+  },
+  whatsapp: {
+    patternMismatch: "Solo números. Pueden ir con +, espacios o guiones.",
+  },
+  email: {
+    valueMissing: "Necesito tu mail para poder responderte.",
+    typeMismatch: "Revisá el mail: le falta el @ o el dominio.",
+    patternMismatch: "Revisá el mail: le falta el @ o el dominio.",
+  },
+  mensaje: {
+    valueMissing: "Contame aunque sea en una línea qué necesitás.",
+    tooShort: "Un poquito más de detalle me ayuda a entenderte.",
+  },
+};
+
+/**
+ * Revisa un campo y escribe (o borra) su mensaje de error.
+ * @param {HTMLInputElement|HTMLTextAreaElement} campo
+ * @returns {boolean} true si el campo esta bien
+ */
+function revisarCampo(campo) {
+  const cartel = document.getElementById("error-" + campo.name);
+  const v = campo.validity;
+
+  // Un campo opcional y vacio esta bien: no se le marca nada.
+  if (v.valid) {
+    if (cartel) cartel.textContent = "";
+    campo.removeAttribute("aria-invalid");
+    return true;
+  }
+
+  const propios = MENSAJES[campo.name] || {};
+  let texto = "";
+  for (const clave of [
+    "valueMissing",
+    "typeMismatch",
+    "patternMismatch",
+    "tooShort",
+  ]) {
+    if (v[clave] && propios[clave]) {
+      texto = propios[clave];
+      break;
+    }
+  }
+  // Red de seguridad: si aparece un tipo de error que no previmos,
+  // mostramos el del navegador antes que no mostrar nada.
+  if (!texto) texto = campo.validationMessage;
+
+  if (cartel) cartel.textContent = texto;
+  campo.setAttribute("aria-invalid", "true");
+  return false;
+}
+
+function activarValidacion(formulario) {
+  const campos = formulario.querySelectorAll("input[name], textarea[name]");
+
+  campos.forEach((campo) => {
+    if (campo.type === "hidden" || campo.name === "botcheck") return;
+
+    // Al salir del campo se revisa por primera vez.
+    campo.addEventListener("blur", () => revisarCampo(campo));
+
+    // Mientras escribis solo se LIMPIA el error, nunca se agrega uno
+    // nuevo. Marcarle un error a alguien que todavia esta tipeando el
+    // mail es molesto y no ayuda: todavia no termino.
+    campo.addEventListener("input", () => {
+      if (campo.hasAttribute("aria-invalid") && campo.validity.valid) {
+        revisarCampo(campo);
+      }
+    });
+  });
+
+  /**
+   * Revisa todo el formulario. Devuelve true si se puede enviar.
+   */
+  return function revisarTodo() {
+    let primerFallo = null;
+    campos.forEach((campo) => {
+      if (campo.type === "hidden" || campo.name === "botcheck") return;
+      if (!revisarCampo(campo) && !primerFallo) primerFallo = campo;
+    });
+    if (primerFallo) {
+      // Lleva el foco al primer campo con problema: quien usa teclado o
+      // lector de pantalla queda parado justo donde tiene que corregir.
+      primerFallo.focus();
+      return false;
+    }
+    return true;
+  };
+}
+
+
 function activarFormulario() {
   const formulario = document.getElementById("formulario-contacto");
   const estado = document.getElementById("formulario-estado");
@@ -689,7 +796,19 @@ function activarFormulario() {
     if (tipo) estado.classList.add("formulario__estado--" + tipo);
   }
 
+  const revisarTodo = activarValidacion(formulario);
+
+  // novalidate apaga los globos del navegador. Se hace desde JS y no en
+  // el HTML a proposito: si el JS no carga, el atributo no se pone y el
+  // navegador sigue validando por su cuenta.
+  formulario.setAttribute("novalidate", "");
+
   formulario.addEventListener("submit", async (evento) => {
+    if (!revisarTodo()) {
+      evento.preventDefault();
+      return;
+    }
+
     // Si todavia no pegaste la clave de Web3Forms, avisamos en vez de
     // mandar la consulta a un lugar que no existe. Asi no se pierde
     // ningun contacto mientras tanto.
