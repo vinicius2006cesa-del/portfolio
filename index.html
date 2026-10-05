@@ -52,6 +52,15 @@
   <link rel="apple-touch-icon" href="assets/marca/apple-touch-icon.png">
   <meta name="theme-color" content="#0D1B2A">
 
+  <!-- Le declara al navegador que el sitio esta disenado SOLO en claro.
+       Sirve para dos cosas: que los controles del sistema (barras de
+       scroll, campos de formulario) se dibujen en claro aunque el
+       sistema este en modo oscuro, y que las extensiones que invierten
+       colores sepan que aca no hay un tema oscuro que respetar.
+       No garantiza nada frente a Dark Reader, que igual va a invertir
+       lo que quiera: es la declaracion correcta, no un blindaje. -->
+  <meta name="color-scheme" content="light">
+
   <!-- ===================================================================
        FUENTES
        preconnect abre la conexion con Google Fonts antes de necesitarla.
@@ -157,12 +166,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610050321">
+  <link rel="stylesheet" href="css/styles.css?v=202610050332">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610050321"></script>
+  <script src="js/activar-animaciones.js?v=202610050332"></script>
 </head>
 
 <body>
@@ -994,7 +1003,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610050321" defer></script>
+  <script src="js/main.js?v=202610050332" defer></script>
 
 </body>
 </html>

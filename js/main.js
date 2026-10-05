@@ -311,55 +311,38 @@ function activarOleaje() {
   const pincel = lienzo.getContext("2d");
   if (!pincel) return;
 
-  /* ---------------------------------------------------------------
-     POR QUE LINEAS Y NO PIXELES
+  /* TIRAS DE LA V FLOTANDO.
 
-     La version anterior calculaba el color de CADA pixel: cuatro senos
-     por pixel, 20.736 pixeles, 30 veces por segundo. Dos millones y
-     medio de operaciones por segundo, en JavaScript, solo para el
-     fondo. En una maquina comoda no se notaba; en una mas lenta hacia
-     que TODA la pagina fuera a tirones, incluida la cinta.
+     La marca son dos trazos que se cruzan: pintas uno y el otro asoma
+     por detras. El fondo hace lo mismo en grande y en capas — varias V
+     anchas, a distintas escalas y profundidades, cruzandose muy
+     despacio. No es el logo apoyado encima del fondo: es el logo
+     repetido como materia.
 
-     Esto dibuja 18 lineas de 64 puntos: 1.152 puntos por cuadro contra
-     20.736. Veinte veces menos trabajo, y el resultado tiene algo que
-     el anterior no tenia: estructura. Se ven lineas, no una mancha.
-     --------------------------------------------------------------- */
-  const LINEAS = 15;
-  const PUNTOS = 64;
+     LA PROPORCION SALE DEL ARCHIVO, NO DE MI OJO. En el SVG el trazo
+     marino va de x=117 a x=300 y el azul de 300 a 394, sobre un lienzo
+     de 292 que arranca en 110: el vertice cae a 0.65 del ancho y el
+     brazo izquierdo es el DOBLE de ancho que el derecho. Esa asimetria
+     es lo que la hace tu V y no una flecha cualquiera.
 
-  /* LA V NO ES UNA IMAGEN ENCIMA: LA DIBUJAN LAS LINEAS.
+     Y es barato: cinco trazos de tres puntos por cuadro. La version de
+     lineas finas dibujaba 960 puntos; la de pixeles, 20.736. */
+  const V_IZQ = 0.34;   // alcance del brazo izquierdo, de 0 a 1
+  const V_DER = 0.17;   // el derecho: la mitad
 
-     Antes habia un SVG gigante de la V apoyado sobre el fondo, y las
-     olas pasaban por detras sin tener nada que ver con el. Ahora cada
-     linea se quiebra en el mismo lugar, y de las quince repeticiones
-     aparece la marca. El fondo no acompana al logo: lo dibuja.
+  const MARINO = "13, 27, 42";
+  const AZUL = "37, 99, 235";
 
-     La V se describe con tres numeros en coordenadas de 0 a 1 sobre el
-     hero: donde esta su vertice, cuanto se abre y cuanto baja. */
-  /* LA PROPORCION SALE DEL LOGO, NO DE MI OJO.
-
-     En el SVG de la marca el trazo marino va de x=117 a x=300 y el azul
-     de x=300 a x=394, sobre un lienzo que arranca en 110 y mide 292. O
-     sea: el vertice cae a 0.65 del ancho, el brazo izquierdo abarca
-     0.63 y el derecho 0.32. El izquierdo es el DOBLE de ancho.
-
-     Por eso la V no es un chevron simetrico. Esa asimetria es lo que la
-     hace tu V y no una flecha cualquiera. */
-  const V_X = 0.58;     // el vertice, corrido a la derecha
-  const V_IZQ = 0.34;   // alcance del brazo izquierdo
-  const V_DER = 0.17;   // alcance del derecho: la mitad
-  const V_HONDO = 0.20; // cuanto se hunde la linea en el vertice
-
-  /**
-   * Cuanto baja la linea en una posicion horizontal dada.
-   * Vale 1 en el vertice y cae hasta 0 en cada punta, pero a distinto
-   * ritmo de cada lado. Ese perfil ES la V.
-   */
-  function quiebre(x) {
-    const alcance = x < V_X ? V_IZQ : V_DER;
-    const d = Math.abs(x - V_X) / alcance;
-    return d >= 1 ? 0 : 1 - d;
-  }
+  /* Cada tira: donde esta, cuanto mide, de que color y a que ritmo
+     flota. Las velocidades no son multiplos entre si a proposito, asi
+     el conjunto no vuelve nunca a la misma posicion. */
+  const TIRAS = [
+    { x: 0.28, y: 0.34, escala: 1.30, grosor: 0.20, color: MARINO, alfa: 0.055, vel: 0.055, fase: 0.0 },
+    { x: 0.45, y: 0.56, escala: 0.95, grosor: 0.15, color: AZUL,   alfa: 0.060, vel: 0.041, fase: 1.7 },
+    { x: 0.70, y: 0.30, escala: 1.60, grosor: 0.24, color: MARINO, alfa: 0.045, vel: 0.033, fase: 3.1 },
+    { x: 0.86, y: 0.62, escala: 1.05, grosor: 0.17, color: AZUL,   alfa: 0.050, vel: 0.047, fase: 4.4 },
+    { x: 0.12, y: 0.74, escala: 0.80, grosor: 0.13, color: MARINO, alfa: 0.040, vel: 0.062, fase: 5.6 },
+  ];
 
   let ancho = 0;
   let alto = 0;
@@ -387,37 +370,31 @@ function activarOleaje() {
 
   function dibujar(t) {
     pincel.clearRect(0, 0, ancho, alto);
-    pincel.lineWidth = 1;
+    // Vertice en punta, como el de la marca: la union en angulo vivo es
+    // lo que distingue una V de una U.
+    pincel.lineJoin = "miter";
+    pincel.miterLimit = 12;
+    pincel.lineCap = "butt";
 
-    for (let i = 0; i < LINEAS; i++) {
-      const base = (i + 0.5) / LINEAS;      // 0 a 1 de arriba a abajo
-      const fase = i * 0.55;
+    for (const tira of TIRAS) {
+      // Flota: sube y baja, y se corre de costado a otro ritmo. Dos
+      // movimientos de periodo distinto hacen que el recorrido sea una
+      // curva abierta y no un vaiven.
+      const dy = Math.sin(t * tira.vel + tira.fase) * 0.055;
+      const dx = Math.cos(t * tira.vel * 0.63 + tira.fase) * 0.030;
 
-      // Las del medio se ven un poco mas: el borde de arriba y el de
-      // abajo se apagan para que el campo no termine de golpe.
-      const velo = Math.sin(base * Math.PI);
-      pincel.strokeStyle = "rgba(13, 27, 42, " + (0.115 * velo).toFixed(3) + ")";
+      const cx = (tira.x + dx) * ancho;   // el vertice
+      const cy = (tira.y + dy) * alto;
+      const brazo = tira.escala * alto * 0.52;
+      const abre = tira.escala * ancho * 0.62;
+
+      pincel.lineWidth = tira.grosor * alto;
+      pincel.strokeStyle = "rgba(" + tira.color + ", " + tira.alfa + ")";
+
       pincel.beginPath();
-
-      for (let j = 0; j <= PUNTOS; j++) {
-        const x = j / PUNTOS;
-
-        // La corriente: dos ondas lentas de periodo distinto. Es lo que
-        // hace que la linea respire en vez de ondular pareja.
-        const corriente =
-          Math.sin(x * 3.1 + t * 0.12 + fase) * 0.030 +
-          Math.sin(x * 6.7 - t * 0.07 + fase * 1.6) * 0.012;
-
-        // El quiebre: TODAS las lineas bajan lo mismo en el mismo
-        // lugar. Que sea igual para todas es justo lo que hace que la
-        // forma se lea; si cada una se quebrara distinto, la V se
-        // desdibujaria y volveriamos a tener una mancha.
-        const hunde = quiebre(x) * V_HONDO;
-
-        const y = (base + corriente + hunde) * alto;
-        if (j === 0) pincel.moveTo(0, y);
-        else pincel.lineTo(x * ancho, y);
-      }
+      pincel.moveTo(cx - V_IZQ * abre, cy - brazo);
+      pincel.lineTo(cx, cy);
+      pincel.lineTo(cx + V_DER * abre, cy - brazo);
       pincel.stroke();
     }
   }

@@ -187,6 +187,9 @@
 }
 
 html {
+  /* Acompana al <meta name="color-scheme"> del HTML. */
+  color-scheme: light;
+
   /* EL FONDO VA ACA, no solo en el <body>.
 
      Normalmente alcanza con ponerlo en el body: el navegador lo copia a
