@@ -157,7 +157,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610042124">
+  <link rel="stylesheet" href="css/styles.css?v=202610042230">
+
+  <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
+       antes del primer pintado. Si este archivo no carga, el sitio se ve
+       completo y sin animaciones, que es lo que queremos. -->
+  <script src="js/activar-animaciones.js?v=202610042230"></script>
 </head>
 
 <body>
@@ -178,13 +183,12 @@
            lector de pantalla anunciaria "inicius Cesa". Por eso todo lo
            visible va aria-hidden: el texto esta duplicado a proposito. -->
       <a class="navbar__logo" href="#perfil"
-         aria-label="Vinicius Cesa, Estudio web — ir al inicio">
+         aria-label="Vinicius Cesa — ir al inicio">
         <span class="marca-v" aria-hidden="true"></span>
         <!-- Todo esto vive fuera del flujo (position:absolute en el CSS):
              al aparecer no corre ni un pixel a los links ni al boton. -->
         <span class="navbar__logo-desplegable" aria-hidden="true">
           <span class="navbar__logo-nombre">inicius Cesa</span>
-          <span class="navbar__logo-rol">Estudio web</span>
         </span>
       </a>
 
@@ -295,14 +299,6 @@
           </a>
         </div>
 
-        <!-- Franja de detalle. La hora la completa el JS: si no corre,
-             queda el texto de reserva y no un hueco vacio. -->
-        <p class="hero__detalle">
-          <span>Rosario, Argentina</span>
-          <span class="hero__coordenadas">32.9442&deg; S, 60.6505&deg; O</span>
-          <span id="hora-local">hora local</span>
-        </p>
-
       </div>
 
       <!-- MARQUEE
@@ -373,7 +369,8 @@
               <span class="servicio__numero">01</span>
             </div>
             <h3>Diseño web</h3>
-            <p>Cómo se ve y cómo se usa tu sitio.</p>
+            <p>Pensado desde cero para tu negocio: claro de leer, fácil de
+              recorrer y distinto al de tu competencia.</p>
           </article>
 
           <article class="servicio aparece">
@@ -387,7 +384,8 @@
               <span class="servicio__numero">02</span>
             </div>
             <h3>Desarrollo web</h3>
-            <p>Código propio, rápido y a medida.</p>
+            <p>Código propio, sin plantillas. Liviano, rápido en el celular y
+              preparado para crecer con vos.</p>
           </article>
 
           <article class="servicio aparece">
@@ -401,7 +399,8 @@
               <span class="servicio__numero">03</span>
             </div>
             <h3>SEO</h3>
-            <p>Que Google te encuentre.</p>
+            <p>Para que te encuentren cuando buscan lo que hacés, con la
+              estructura técnica que los buscadores necesitan leer.</p>
           </article>
 
           <article class="servicio aparece">
@@ -415,7 +414,8 @@
               <span class="servicio__numero">04</span>
             </div>
             <h3>Mantenimiento</h3>
-            <p>Tu sitio al día, sin que lo toques.</p>
+            <p>Cambios, textos nuevos y seguridad al día, sin que vos tengas
+              que tocar nada.</p>
           </article>
 
         </div>
@@ -432,7 +432,7 @@
 
         <div class="seccion__encabezado aparece">
           <p class="etiqueta">Proyectos</p>
-          <h2>Mi trabajo</h2>
+          <h2>Proyectos destacados</h2>
           <p>Landing pages, portfolios y sitios institucionales que diseñé y desarrollé.</p>
         </div>
 
@@ -710,7 +710,7 @@
     <section class="contacto seccion" id="contacto">
       <div class="contenedor contacto__interior">
 
-        <div>
+        <div class="contacto__columna">
           <!-- aparece--izq entra desde la izquierda; el formulario, desde
                la derecha. Refuerza visualmente que son dos caminos distintos
                para el mismo objetivo. -->
@@ -975,7 +975,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610042124" defer></script>
+  <script src="js/main.js?v=202610042230" defer></script>
 
 </body>
 </html>

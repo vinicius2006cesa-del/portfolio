@@ -17,6 +17,13 @@
 // normalmente se traga en silencio (por ejemplo, usar una variable sin declarar).
 "use strict";
 
+// Le avisa a js/activar-animaciones.js que este archivo si llego. Si la
+// marca falta cuando termina de cargar la pagina, aquel saca la clase
+// que esconde el contenido y el sitio se ve igual, sin animaciones.
+// Va aca arriba de todo a proposito: aunque mas abajo explote algo, la
+// marca ya quedo puesta y el contenido no se pierde.
+document.documentElement.setAttribute("data-animaciones-listas", "");
+
 
 /* =====================================================================
    1. UTILIDADES
@@ -242,32 +249,6 @@ function activarBotonFlotante() {
 }
 
 
-/* =====================================================================
-   4b. DETALLES DEL HERO
-   ---------------------------------------------------------------------
-   La hora local de Rosario y el leve movimiento de la V del fondo.
-   Los dos son adorno: si este archivo no corre, la pagina se ve igual
-   salvo por la hora, que deja el texto de reserva del HTML.
-   ===================================================================== */
-function activarHoraLocal() {
-  const salida = document.getElementById("hora-local");
-  if (!salida) return;
-
-  function pintar() {
-    // timeZone fijo a proposito: queremos MI hora, no la de quien mira.
-    // Ese es el punto del dato: que se note que hay alguien en un lugar.
-    const hora = new Intl.DateTimeFormat("es-AR", {
-      timeZone: "America/Argentina/Cordoba",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }).format(new Date());
-    salida.textContent = hora + " hora local";
-  }
-
-  pintar();
-  setInterval(pintar, 30000);
-}
 
 
 function activarAurora() {
@@ -592,7 +573,6 @@ function iniciar() {
   activarNavbarScroll();
   activarLinkActivo();
   activarBotonFlotante();
-  activarHoraLocal();
   activarAurora();
   activarVitrina();
   activarProceso();

@@ -481,7 +481,14 @@ p {
    ---------------------------------------------------------------------
    El JS agrega .visible cuando el elemento entra en pantalla.
    ===================================================================== */
-.aparece {
+/* TODO lo de abajo cuelga de .con-animaciones, que la pone el archivo
+   js/activar-animaciones.js en el <html> antes del primer pintado.
+
+   Es a proposito y es importante: si ese archivo no carga, la clase no
+   existe, estas reglas no aplican y el contenido se ve. Antes .aparece
+   escondia por si solo, y si el JS fallaba la pagina quedaba en blanco
+   para siempre. */
+.con-animaciones .aparece {
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -492,12 +499,12 @@ p {
 
 /* Variantes de direccion. Se combinan con .aparece:
    class="aparece aparece--izq" */
-.aparece--izq { transform: translateX(-28px); }
-.aparece--der { transform: translateX(28px); }
+.con-animaciones .aparece--izq { transform: translateX(-28px); }
+.con-animaciones .aparece--der { transform: translateX(28px); }
 
 /* transform: none anula cualquiera de las variantes de arriba
    sin tener que escribir una regla .visible para cada una. */
-.aparece.visible {
+.con-animaciones .aparece.visible {
   opacity: 1;
   transform: none;
 }
@@ -519,7 +526,11 @@ p {
     scroll-behavior: auto !important;
   }
 
-  .aparece {
+  /* Lleva .con-animaciones adelante igual que las reglas de arriba: con
+     una sola clase perdia por especificidad y el contenido seguia
+     escondido hasta que el observador lo revelara. Es el mismo error
+     que ya cometimos una vez con las manchas del hero. */
+  .con-animaciones .aparece {
     opacity: 1;
     transform: none;
     transition-delay: 0ms !important;   /* nada de esperas escalonadas */
@@ -655,10 +666,6 @@ p {
      33.6 del cuerpo de la V son estos 0.069em. */
   top: auto;
   bottom: -0.069em;
-  display: flex;
-  align-items: baseline;
-  gap: var(--esp-3);
-  padding-left: 0;
   white-space: nowrap;
   /* Entra deslizandose unos pocos pixeles, no de la nada: el movimiento
      corto hace que se lea como "sale de la V" y no como un cartel que
@@ -681,31 +688,6 @@ p {
 .navbar__logo-nombre {
   font-size: 1.5rem;
   padding-left: 0;
-}
-
-/* "Estudio web" NO es parte del nombre: es el rubro. Por eso va chico,
-   en mayusculas, en un tono mas bajo y detras de una linea divisoria.
-   La linea es un borde izquierdo, no un caracter: asi se alinea sola con
-   la altura del texto y no hay que ajustarla a mano. */
-.navbar__logo-rol {
-  padding-left: var(--esp-3);
-  border-left: 1px solid var(--color-oscuro-borde);
-  font-size: var(--texto-xs);
-  font-weight: var(--peso-medio);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-oscuro-suave);
-}
-
-/* El rubro se cae abajo de 1100px. Medido: a 960px el bloque desplegado
-   termina 21px DESPUES de donde arranca "Inicio" (los links van
-   centrados contra la pantalla, asi que no se corren para hacerle
-   lugar). Sin el rubro el bloque mide 163px en vez de 258 y a 900px
-   todavia sobran 51px. Es lo menos importante de los tres. */
-@media (max-width: 1099px) {
-  .navbar__logo-rol {
-    display: none;
-  }
 }
 
 /* --- El menu en celular: panel que baja desde la barra --------------- */
@@ -1048,13 +1030,17 @@ p {
 /* El badge va arriba, con una separacion fija de la barra. El titulo
    lleva la margen automatica, asi el bloque central se centra en el
    espacio que queda entre el badge y la franja de abajo. */
-/* Dos margenes automaticas en la misma columna (esta y la de la franja
-   de abajo) se reparten la holgura en partes iguales. Con una sola, todo
-   el aire sobrante se juntaba en un solo lugar: primero arriba del
-   nombre, despues abajo de la ficha. Asi el bloque queda centrado y el
-   aire se divide (medido a 1440x900: 95px arriba y 95 abajo). */
+/* Hacen falta DOS margenes automaticas en la columna para que la
+   holgura se reparta: una arriba del badge y otra debajo de los
+   botones. Con una sola, todo el aire sobrante se junta de un lado.
+   Lo acabamos de ver: al sacar la franja de abajo (que tenia la segunda
+   margen) el bloque se fue al piso, con 302px arriba y 130 abajo. */
 .hero__badge {
   margin-top: auto;
+}
+
+.hero__botones {
+  margin-bottom: auto;
 }
 
 /* El titulo NO lleva margin-top:auto. Lo llevaba, y eso hacia que toda
@@ -1244,34 +1230,6 @@ p {
    Datos chicos y espaciados. No informan casi nada, y justamente por eso
    funcionan: son el tipo de detalle que solo pone alguien que cuida el
    trabajo, y eso es lo que el visitante termina leyendo entre lineas. */
-.hero__detalle {
-  /* El contenedor del hero es flex en columna con align-items:center, o
-     sea que sus hijos se encogen a su contenido. Sin esto la franja
-     quedaria angosta y centrada en vez de ir de borde a borde. */
-  align-self: stretch;
-  margin-top: auto;   /* la empuja al borde inferior de la pantalla */
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--esp-2) var(--esp-5);
-  padding-top: var(--esp-4);
-  border-top: 1px solid var(--color-borde);
-  font-size: var(--texto-xs);
-  font-weight: var(--peso-medio);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-texto-tenue);
-}
-
-/* En celular las coordenadas son lo primero que sobra. */
-@media (max-width: 560px) {
-  .hero__coordenadas {
-    display: none;
-  }
-}
-
-
 /* =====================================================================
    9. SERVICIOS
    ===================================================================== */
@@ -1310,9 +1268,16 @@ p {
 /* Dos renglones reservados siempre. "Desarrollo web" ocupa dos y los
    otros tres titulos uno solo: sin esto, las descripciones de cada
    tarjeta arrancan a distinta altura y la fila se ve despareja. */
+/* Sin min-height. Lo tenia (2.6em = dos renglones) para que las
+   descripciones de las cuatro tarjetas arrancaran a la misma altura,
+   pero el precio era peor: los titulos de un solo renglon quedaban con
+   un hueco enorme debajo y el texto se leia desprendido del titulo.
+   Que arranquen desparejas es menos grave que eso. */
 .servicio h3 {
-  min-height: 2.6em;
-  line-height: 1.3;
+  line-height: 1.25;
+  /* Reparte los renglones en lugar de dejar una palabra huerfana
+     abajo. Donde no esta soportado, simplemente no hace nada. */
+  text-wrap: balance;
 }
 
 .servicio {
@@ -1351,8 +1316,11 @@ p {
   height: 26px;
 }
 
+/* En cuatro columnas cada tarjeta mide unos 265px y por dentro quedan
+   217. A --texto-2xl (hasta 33.6px) "Desarrollo web" mide unos 230 y se
+   partia al medio, dejando "web" solo abajo. Con --texto-xl entra. */
 .servicio h3 {
-  font-size: var(--texto-2xl);
+  font-size: var(--texto-xl);
 }
 
 .servicio p {
@@ -2394,12 +2362,11 @@ p {
     width: auto;
   }
 
-  /* La franja de abajo se apoya en este relleno. Al sacar la ficha de
-     tres puntos el hero quedo con 294px de holgura y la franja muy
-     pegada al borde: con 8rem sube 32px y el aire se reparte parejo
-     arriba del badge y entre los botones y la franja. */
+  /* El 8rem de antes existia para levantar la franja de detalle del
+     borde inferior. Ya no hay franja, asi que vuelve a un relleno
+     normal: el centrado ahora lo hacen las dos margenes automaticas. */
   .hero__contenido {
-    padding-bottom: 8rem;
+    padding-bottom: var(--esp-7);
   }
 
   /* En celular el titulo se limita a 14ch para que no quede una linea
@@ -2447,6 +2414,21 @@ p {
     grid-template-columns: 5fr 6fr;
     gap: var(--esp-8);
     align-items: start;
+  }
+
+  /* La columna de texto acompana el scroll, igual que la lista de
+     Proyectos. El formulario es largo y la columna izquierda corta: sin
+     esto el titulo y el boton de WhatsApp se iban de pantalla apenas
+     empezabas a completar el formulario.
+
+     align-self:start es obligatorio: por defecto el grid estira el hijo
+     a toda la altura de la fila y un elemento tan alto como su
+     contenedor no se puede pegar a ningun lado. Se pega al borde de
+     abajo de la navbar, no al borde de la ventana. */
+  .contacto__columna {
+    position: sticky;
+    top: calc(var(--alto-navbar) + var(--esp-6));
+    align-self: start;
   }
 
   .contacto .seccion__encabezado {

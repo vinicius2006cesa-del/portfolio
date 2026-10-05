@@ -39,8 +39,12 @@ fi
 version=$(date +%Y%m%d%H%M)
 for f in index.html legal.html 404.html; do
   [ -f "$f" ] || continue
-  sed -i -E "s|(href=\"/?css/styles\.css)(\?v=[0-9]+)?\"|\1?v=$version\"|g" "$f"
-  sed -i -E "s|(src=\"/?js/main\.js)(\?v=[0-9]+)?\"|\1?v=$version\"|g" "$f"
+  # Generico a proposito: agarra CUALQUIER archivo de css/ o js/, no solo
+  # styles.css y main.js. Antes estaban nombrados uno por uno, y al sumar
+  # js/activar-animaciones.js se habria quedado sin versionar: justo el
+  # bug de cache que este bloque existe para evitar.
+  sed -i -E "s|(href=\"/?css/[A-Za-z0-9._-]+\.css)(\?v=[0-9]+)?\"|\1?v=$version\"|g" "$f"
+  sed -i -E "s|(src=\"/?js/[A-Za-z0-9._-]+\.js)(\?v=[0-9]+)?\"|\1?v=$version\"|g" "$f"
 done
 echo "Version nueva de CSS y JS: $version"
 echo
