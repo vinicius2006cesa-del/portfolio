@@ -38,6 +38,92 @@ function prefiereMenosMovimiento() {
 
 
 /* =====================================================================
+   1b. COORDINADOR DE SCROLL
+   ---------------------------------------------------------------------
+   Un solo lugar que escucha el scroll, lo mide UNA vez por cuadro y le
+   pasa el resultado a todos los efectos que lo necesitan.
+
+   POR QUE EXISTE. Antes habia tres oyentes de scroll sueltos (la
+   navbar, el boton de WhatsApp, la barra de progreso) mas un bucle
+   aparte para el parallax. Cada uno pedia su propio cuadro y cada uno
+   le preguntaba al navegador cuanto mide la pagina. Preguntar eso
+   obliga al navegador a frenar y recalcular el diseno antes de poder
+   contestar. Medido: unos 110 recalculos forzados en un scroll de
+   cuatro segundos, la mayoria pidiendo dos veces el mismo numero en el
+   mismo cuadro.
+
+   Ahora se mide una vez y se reparte. Los efectos no leen nada del
+   navegador: reciben los numeros ya calculados.
+
+   Y lo mas importante: scrollHeight queda guardado. Ese numero (cuanto
+   mide la pagina a lo largo) NO cambia cuando scrolleas, solo cuando
+   cambia el tamano de la ventana o el contenido. Pedirlo en cada cuadro
+   era trabajo puro al pedo.
+   ===================================================================== */
+var Scroll = (function () {
+  var oyentes = [];
+  var pendiente = false;
+  var altoVentana = 0;
+  var recorrido = 0;   // cuanto se puede scrollear en total
+
+  function medirPagina() {
+    altoVentana = window.innerHeight;
+    recorrido = document.documentElement.scrollHeight - altoVentana;
+  }
+
+  function cuadro() {
+    pendiente = false;
+    var y = window.scrollY;
+    // Parte del recorrido ya hecha, de 0 a 1.
+    var avance = recorrido > 0 ? Math.min(1, Math.max(0, y / recorrido)) : 0;
+    for (var i = 0; i < oyentes.length; i++) {
+      oyentes[i](y, avance, altoVentana, recorrido);
+    }
+  }
+
+  function pedir() {
+    // El scroll dispara muchas mas veces por segundo que las que la
+    // pantalla se dibuja. Sin esto calculariamos cuadros que nadie ve.
+    if (!pendiente) {
+      pendiente = true;
+      requestAnimationFrame(cuadro);
+    }
+  }
+
+  var reloj = null;
+  function remedir() {
+    clearTimeout(reloj);
+    reloj = setTimeout(function () {
+      medirPagina();
+      cuadro();
+    }, 150);
+  }
+
+  medirPagina();
+  window.addEventListener("scroll", pedir, { passive: true });
+  window.addEventListener("resize", remedir, { passive: true });
+
+  /* El alto de la pagina tambien cambia sin que nadie toque la ventana:
+     al abrir el menu, al revelar texto que reacomoda renglones, al
+     aparecer un mensaje de error en el formulario. ResizeObserver avisa
+     de eso; "resize" solo, no. */
+  if (window.ResizeObserver) {
+    new ResizeObserver(remedir).observe(document.body);
+  }
+
+  return {
+    /** Suma un efecto. Recibe (y, avance, altoVentana, recorrido). */
+    sumar: function (fn) {
+      oyentes.push(fn);
+      fn(window.scrollY, recorrido > 0 ? window.scrollY / recorrido : 0, altoVentana, recorrido);
+    },
+    /** Fuerza un recalculo de las medidas de la pagina. */
+    remedir: remedir,
+  };
+})();
+
+
+/* =====================================================================
    2. ANIMACIONES DE APARICION AL HACER SCROLL
    ---------------------------------------------------------------------
    Todo elemento con class="aparece" empieza invisible (lo define el CSS).
@@ -160,17 +246,16 @@ function activarNavbarScroll() {
   const navbar = document.getElementById("navbar");
   if (!navbar) return;
 
-  function revisar() {
-    navbar.classList.toggle("navbar--scrolleado", window.scrollY > 8);
-  }
+  /* Antes esto escuchaba el scroll directo, sin limitarlo por cuadro:
+     era la funcion que mas CPU consumia de todo el archivo. Ahora corre
+     una sola vez por cuadro, igual que el resto.
 
-  // passive: true le avisa al navegador que no vamos a frenar el scroll.
-  // Le permite desplazar la pagina sin esperar a que termine nuestro codigo.
-  window.addEventListener("scroll", revisar, { passive: true });
-
-  // Lo corremos una vez al cargar, por si la pagina abre ya scrolleada
-  // (pasa al recargar con F5 estando en el medio del sitio).
-  revisar();
+     Scroll.sumar ya la llama una vez al conectarla, asi que la pagina
+     que abre scrolleada a la mitad (pasa al recargar con F5) arranca
+     con la navbar en el estado correcto. */
+  Scroll.sumar(function (y) {
+    navbar.classList.toggle("navbar--scrolleado", y > 8);
+  });
 }
 
 
@@ -242,17 +327,14 @@ function activarBotonFlotante() {
   const ARRANQUE = 200; // arriba de todo no se esconde: recien aparecio
 
   let ultimoY = window.scrollY;
-  let pendiente = false;
 
-  function revisar() {
-    pendiente = false;
-    const y = window.scrollY;
-
-    // Cuanto falta para el fondo de la pagina:
-    //   alto de la ventana + lo que scrolleaste = donde termina lo que ves
-    //   scrollHeight = alto total del documento
-    const llegoAlFinal =
-      window.innerHeight + y >= document.documentElement.scrollHeight - 160;
+  function revisar(y, avance, altoVentana, recorrido) {
+    /* Cuanto falta para el fondo de la pagina. Antes esto preguntaba
+       document.documentElement.scrollHeight en cada cuadro, y esa
+       pregunta obliga al navegador a recalcular el diseno antes de
+       contestar. Ahora el recorrido total llega ya medido desde el
+       coordinador, que solo lo recalcula cuando cambia de verdad. */
+    const llegoAlFinal = y >= recorrido - 160;
 
     const movimiento = y - ultimoY;
 
@@ -279,20 +361,7 @@ function activarBotonFlotante() {
     if (Math.abs(movimiento) >= MINIMO) ultimoY = y;
   }
 
-  // El scroll dispara decenas de veces por segundo y la pantalla se
-  // dibuja 60: sin esto calculariamos posiciones que nadie ve.
-  window.addEventListener(
-    "scroll",
-    () => {
-      if (!pendiente) {
-        pendiente = true;
-        requestAnimationFrame(revisar);
-      }
-    },
-    { passive: true }
-  );
-
-  revisar();
+  Scroll.sumar(revisar);
 }
 
 
@@ -302,10 +371,39 @@ function activarPlano() {
   const lienzo = document.querySelector(".hero__oleaje");
   const hero = document.querySelector(".hero");
   if (!lienzo || !hero) return;
-
-  if (window.innerWidth < 900) return;
   if (prefiereMenosMovimiento()) return;
 
+  /* EL FONDO SOLO CORRE EN PANTALLAS ANCHAS, PERO LA DECISION NO ES
+     PARA SIEMPRE.
+
+     Antes esto era un "if (window.innerWidth < 900) return;" suelto, y
+     eso se evalua UNA sola vez: en el momento de cargar. Si abrias la
+     tablet en vertical (820px de ancho) y despues la girabas a
+     horizontal (1180px), el fondo no aparecia nunca. La pagina ya habia
+     decidido que no, y no habia quien le avisara que cambio.
+
+     matchMedia si avisa. Se arranca cuando la pantalla se hace ancha,
+     sin importar si fue al cargar o al girar el aparato.
+
+     Arranca una sola vez y despues no se apaga al volver a angosto: el
+     trabajo pesado (crear el lienzo, medir) ya esta hecho, y apagarlo
+     no devolveria nada. De no dibujar cuando el hero no se ve ya se
+     encarga el IntersectionObserver de mas abajo. */
+  const pantallaAncha = window.matchMedia("(min-width: 900px)");
+  let arrancado = false;
+
+  function quizaArrancar() {
+    if (arrancado || !pantallaAncha.matches) return;
+    arrancado = true;
+    dibujarPlano(lienzo, hero);
+  }
+
+  pantallaAncha.addEventListener("change", quizaArrancar);
+  quizaArrancar();
+}
+
+/** El fondo propiamente dicho. Lo llama activarPlano cuando corresponde. */
+function dibujarPlano(lienzo, hero) {
   const pincel = lienzo.getContext("2d");
   if (!pincel) return;
 
@@ -522,10 +620,26 @@ function activarPlano() {
     { passive: true }
   );
 
+  /* La capa de video se pide al entrar y se devuelve al salir. Antes
+     estaba pedida siempre desde el CSS con will-change, aunque el
+     mouse estuviera en la otra punta de la pagina. */
+  let relojCapa = null;
+
+  hero.addEventListener("mouseenter", () => {
+    clearTimeout(relojCapa);
+    lienzo.classList.add("en-movimiento");
+  }, { passive: true });
+
   hero.addEventListener("mouseleave", () => {
     dx = 0;
     dy = 0;
     pedirCuadro();
+    /* No se devuelve la capa en el acto: el CSS tiene una transicion de
+       600ms para volver al lugar, y sacarla a mitad de camino obliga al
+       navegador a rehacerla justo mientras se esta moviendo. Se espera
+       un poco mas que la transicion. */
+    clearTimeout(relojCapa);
+    relojCapa = setTimeout(() => lienzo.classList.remove("en-movimiento"), 700);
   });
 }
 
@@ -672,59 +786,96 @@ function activarProgresoDeScroll() {
   if (objetivos.length === 0) return;
   if (prefiereMenosMovimiento()) return;
 
-  // Solo se calculan los que estan en pantalla. Sin esto estariamos
-  // midiendo elementos que nadie ve, en cada cuadro, para siempre.
-  const activos = new Set();
-  let corriendo = false;
+  /* DONDE SE ESCRIBE --p, Y POR QUE IMPORTA TANTO.
 
-  // Si la pagina no se movio desde el cuadro anterior, no hay nada que
-  // recalcular. Sin esto el bucle llamaba a getBoundingClientRect 60
-  // veces por segundo aunque la pagina estuviera quieta, y cada llamada
-  // obliga al navegador a recalcular el diseno antes de responder.
-  let ultimoScroll = -1;
+     Las variables CSS se heredan. Eso significa que escribir --p en el
+     <section> del hero obliga al navegador a recalcular el estilo de
+     TODO lo que hay adentro del hero (titulo, palabras sueltas del
+     revelado, botones, fotos), porque cualquiera de esos hijos podria
+     estar usandola. Y eso pasaba en cada cuadro del scroll.
 
-  function cuadro() {
-    if (activos.size === 0) {
-      corriendo = false;
-      return;
-    }
-    requestAnimationFrame(cuadro);
+     Medido: el recalculo de estilos era 317ms por scroll contra 19ms
+     de calculo de diseno. Un tercio de esos 317 era esto.
 
-    const scroll = window.scrollY;
-    if (scroll === ultimoScroll) return;
-    ultimoScroll = scroll;
+     La solucion es escribir la variable en el elemento que de verdad
+     la consume, no en el padre. El atributo dice cual es:
+         data-progreso=".hero__contenido"
+     El padre se sigue usando para MEDIR (es el que define el recorrido),
+     pero la escritura va al hijo. Sumado al @property del CSS, que la
+     marca como no heredable, cada escritura ensucia un solo elemento. */
+  const fichas = [];
 
-    const alto = window.innerHeight;
-    activos.forEach((el) => {
-      const caja = el.getBoundingClientRect();
-      // Recorrido total: el elemento entra por abajo y sale por arriba,
-      // o sea que atraviesa el alto de la ventana MAS su propio alto.
-      const p = (alto - caja.top) / (alto + caja.height);
-      el.style.setProperty("--p", Math.min(1, Math.max(0, p)).toFixed(4));
-    });
+  objetivos.forEach((medido) => {
+    const sel = medido.getAttribute("data-progreso");
+    const destinos = sel ? medido.querySelectorAll(sel) : [medido];
+    if (destinos.length === 0) return;
+    fichas.push({ medido, destinos, top: 0, alto: 0, activo: false });
+  });
+
+  /* GEOMETRIA GUARDADA.
+
+     getBoundingClientRect obliga al navegador a terminar de calcular el
+     diseno antes de contestar. Llamarlo por elemento y por cuadro era
+     el otro gran costo.
+
+     Pero la posicion de un elemento respecto al DOCUMENTO no cambia al
+     scrollear: lo unico que cambia es cuanto scrolleaste. Asi que se
+     mide una sola vez (top absoluto = top en pantalla + scroll actual)
+     y despues la posicion en pantalla sale de una resta, sin preguntar
+     nada. */
+  function medirFicha(f) {
+    const caja = f.medido.getBoundingClientRect();
+    f.top = caja.top + window.scrollY;
+    f.alto = caja.height;
   }
 
-  function arrancar() {
-    if (!corriendo) {
-      corriendo = true;
-      requestAnimationFrame(cuadro);
+  function remedirTodo() {
+    fichas.forEach(medirFicha);
+  }
+
+  function escribir(y, avance, altoVentana) {
+    for (let i = 0; i < fichas.length; i++) {
+      const f = fichas[i];
+      if (!f.activo) continue;
+      const top = f.top - y;
+      /* Recorrido total: el elemento entra por abajo y sale por arriba,
+         o sea que atraviesa el alto de la ventana MAS su propio alto. */
+      const p = (altoVentana - top) / (altoVentana + f.alto);
+      const v = Math.min(1, Math.max(0, p)).toFixed(4);
+      for (let j = 0; j < f.destinos.length; j++) {
+        f.destinos[j].style.setProperty("--p", v);
+      }
     }
   }
 
   const vigia = new IntersectionObserver(
     (entradas) => {
       entradas.forEach((e) => {
-        if (e.isIntersecting) activos.add(e.target);
-        else activos.delete(e.target);
+        const f = fichas.find((x) => x.medido === e.target);
+        if (!f) return;
+        f.activo = e.isIntersecting;
+        if (f.activo) {
+          /* Se remide al entrar, no solo al arrancar: para cuando este
+             elemento asoma, las imagenes de arriba ya cargaron y las
+             fuentes ya reacomodaron el texto, asi que recien ahora la
+             medida es la definitiva. */
+          medirFicha(f);
+        }
+        /* La capa de video se pide solo mientras el elemento esta en
+           pantalla, y se devuelve cuando sale. Ver .en-movimiento. */
+        f.destinos.forEach((d) => d.classList.toggle("en-movimiento", f.activo));
       });
-      arrancar();
     },
     // Un margen generoso: empieza a calcular un poco antes de que el
     // elemento asome, asi nunca se ve el primer salto.
     { rootMargin: "25% 0px" }
   );
 
-  objetivos.forEach((o) => vigia.observe(o));
+  fichas.forEach((f) => vigia.observe(f.medido));
+
+  remedirTodo();
+  Scroll.sumar(escribir);
+  window.addEventListener("resize", () => setTimeout(remedirTodo, 200), { passive: true });
 }
 
 
@@ -848,6 +999,32 @@ function activarRevelado() {
     clearTimeout(reloj);
     reloj = setTimeout(() => objetivos.forEach(numerarRenglones), 250);
   }, { passive: true });
+
+  /* Y TAMBIEN HAY QUE VOLVER A NUMERAR CUANDO LLEGA LA TIPOGRAFIA.
+
+     Este es el bug mas escondido que encontramos. El subtitulo del hero
+     tiene max-width: 56ch, y "ch" es el ancho del cero DE LA FUENTE QUE
+     SE ESTE USANDO. Con Outfit cargada el parrafo mide 632px; con la
+     tipografia de respaldo del sistema, 769px. Son renglones
+     completamente distintos.
+
+     Si esta funcion numera los renglones antes de que llegue Outfit,
+     los numera sobre el corte equivocado, y despues nadie los vuelve a
+     calcular: el escalonado queda mal para siempre. Le pasa justamente
+     a quien entra por primera vez, que es el que todavia no tiene la
+     fuente guardada.
+
+     Medido: corriendo la misma pagina dos veces seguidas, el ancho del
+     subtitulo daba 769 una vez y 632 la otra, al azar, segun quien
+     ganara la carrera.
+
+     document.fonts.ready avisa cuando terminaron de cargar. Si el
+     navegador no lo tiene, no pasa nada: queda como estaba. */
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      objetivos.forEach(numerarRenglones);
+    });
+  }
 }
 
 
@@ -899,12 +1076,23 @@ function activarInclinacion() {
       if (!pedido) pedido = requestAnimationFrame(pintar);
     }, { passive: true });
 
+    // Misma idea que en el hero: la capa de video se pide al entrar y
+    // se devuelve cuando el marco termino de enderezarse.
+    let relojCapa = null;
+
+    marco.addEventListener("mouseenter", () => {
+      clearTimeout(relojCapa);
+      marco.classList.add("en-movimiento");
+    }, { passive: true });
+
     marco.addEventListener("mouseleave", () => {
       gx = 0;
       gy = 0;
       lx = 50;
       ly = 50;
       if (!pedido) pedido = requestAnimationFrame(pintar);
+      clearTimeout(relojCapa);
+      relojCapa = setTimeout(() => marco.classList.remove("en-movimiento"), 700);
     });
   });
 }
@@ -917,27 +1105,14 @@ function activarProgresoDeLectura() {
   const barra = document.querySelector(".progreso__barra");
   if (!barra) return;
 
-  let pendiente = false;
+  /* El avance ya viene calculado por el coordinador: esta funcion no le
+     pregunta nada al navegador, solo escribe.
 
-  function pintar() {
-    pendiente = false;
-    const total = document.documentElement.scrollHeight - window.innerHeight;
-    // Una pagina que no scrollea no tiene progreso que mostrar.
-    const p = total > 0 ? Math.min(1, Math.max(0, window.scrollY / total)) : 0;
-    // scaleX y no width: escalar lo resuelve la placa de video, cambiar
-    // el ancho obliga a recalcular el diseno en cada cuadro.
-    barra.style.transform = "scaleX(" + p.toFixed(4) + ")";
-  }
-
-  window.addEventListener("scroll", () => {
-    if (!pendiente) {
-      pendiente = true;
-      requestAnimationFrame(pintar);
-    }
-  }, { passive: true });
-
-  window.addEventListener("resize", pintar, { passive: true });
-  pintar();
+     scaleX y no width: escalar lo resuelve la placa de video, cambiar
+     el ancho obliga a recalcular el diseno en cada cuadro. */
+  Scroll.sumar(function (y, avance) {
+    barra.style.transform = "scaleX(" + avance.toFixed(4) + ")";
+  });
 }
 
 

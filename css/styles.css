@@ -564,6 +564,69 @@ p {
   transform: none;
 }
 
+/* =====================================================================
+   RESERVA DE CAPA DE VIDEO, SOLO MIENTRAS HACE FALTA
+   ---------------------------------------------------------------------
+   will-change le avisa al navegador "esto se va a mover, prepara una
+   capa aparte en la placa de video". El problema es que la reserva no
+   se devuelve nunca: un will-change escrito en el CSS se queda ocupando
+   memoria de video toda la vida de la pagina, este el elemento
+   moviendose, quieto o fuera de pantalla.
+
+   Medido en este sitio: con los cinco will-change que habia escritos
+   fijos, la pagina arrancaba con 45 capas y 72 MB de memoria de video
+   en escritorio. Una pagina asi deberia andar en 8 o 10 capas.
+
+   Por eso ahora la reserva es una clase que el JS pone y saca en el
+   momento justo:
+     - el fondo del hero, mientras el mouse esta adentro del hero
+     - el contenido del hero y las fotos, mientras estan en pantalla
+     - la foto del proyecto, mientras le pasas el cursor por arriba
+   Cuando el elemento se queda quieto, la clase se saca y la memoria
+   vuelve.
+
+   La unica excepcion es .progreso__barra, que tiene el will-change
+   escrito fijo a proposito: esa barra se mueve literalmente en cada
+   scroll, asi que la capa le sirve siempre. */
+.en-movimiento {
+  will-change: transform;
+}
+
+
+/* =====================================================================
+   --p REGISTRADA COMO NO HEREDABLE
+   ---------------------------------------------------------------------
+   --p es el numero de 0 a 1 que el JS escribe mientras scrolleas, y que
+   el CSS usa para mover cosas (ver .hero__contenido y .vitrina__imagen).
+
+   Por defecto TODA variable CSS se hereda. Eso suena inofensivo pero es
+   caro: cuando el JS escribe --p en un elemento, el navegador tiene que
+   dar por sucio el estilo de ese elemento Y de todos sus hijos, porque
+   cualquiera de ellos podria estar leyendola. Con el hero eso eran
+   decenas de elementos ensuciados 60 veces por segundo.
+
+   @property con inherits: false le avisa al navegador que los hijos NO
+   pueden verla. Entonces, al escribirla, ensucia un solo elemento.
+
+   syntax: "<number>" ademas la tipa: el navegador la guarda como numero
+   en vez de como texto, y no tiene que volver a interpretarla en cada
+   cuadro.
+
+   Si un navegador viejo no entiende @property, ignora la regla entera y
+   todo sigue funcionando: --p vuelve a heredarse y el efecto se ve
+   igual, solo que sin el ahorro. */
+@property --p {
+  syntax: "<number>";
+  inherits: false;
+  /* 0.46 y no 0.5: este es el valor en el que el hero esta en su
+     posicion de reposo (ver .hero__contenido, que resta justamente
+     0.46). Un @property OBLIGA a declarar un valor inicial, y ese valor
+     es el que rige hasta que el JS escribe el primero de verdad. Con
+     0.5 el hero arrancaba 2.8px mas abajo de donde va. Medido: se veia
+     en la captura. */
+  initial-value: 0.46;
+}
+
 /* ACCESIBILIDAD: hay gente a la que el movimiento le provoca mareo.
    Windows, iOS y Android tienen una opcion para pedir menos animaciones;
    esta media query la escucha y apaga todo. */
@@ -613,6 +676,20 @@ p {
     opacity: 1;
     visibility: visible;
     transform: none;
+  }
+
+  /* Los dos elementos que mueve el parallax. Con menos movimiento
+     pedido, el JS ni arranca y nunca les escribe --p, asi que quedarian
+     clavados en el valor inicial de @property en vez de en su posicion
+     de reposo. Se los deja quietos a mano.
+
+     Lleva !important porque este bloque esta ANTES en el archivo que
+     las reglas de .hero__contenido y .vitrina__imagen img, y con la
+     misma especificidad gana la que viene despues. Sin el !important
+     esta regla no hacia nada: medido, el hero quedaba 2.8px corrido. */
+  .hero__contenido,
+  .vitrina__imagen img {
+    transform: none !important;
   }
 }
 
@@ -985,8 +1062,9 @@ p {
       rgba(37, 99, 235, 0.10) 0%,
       rgba(37, 99, 235, 0) 70%
     );
-  /* El JS lo mueve unos pixeles siguiendo el mouse. */
-  will-change: transform;
+  /* El JS lo mueve unos pixeles siguiendo el mouse. La reserva de capa
+     de video la pone el JS con .en-movimiento solo mientras el mouse
+     esta adentro del hero. Ver el comentario de .en-movimiento. */
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -1040,7 +1118,6 @@ p {
      Queda solo el desplazamiento, que da profundidad sin tocar la
      legibilidad: 70px repartidos en toda la altura del hero. */
   transform: translateY(calc((var(--p, 0.46) - 0.46) * 70px));
-  will-change: transform;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1709,7 +1786,6 @@ p {
      JS escribe el transform directo, mientras lo mueve la transicion
      practicamente no actua. */
   transition: transform 600ms var(--curva-salida);
-  will-change: transform;
 }
 
 /* El reflejo. Un punto de luz que sigue al cursor por encima de la
@@ -1742,7 +1818,6 @@ p {
   height: 124%;
   object-fit: cover;
   transform: translateY(calc((var(--p, 0.5) - 0.5) * -14%));
-  will-change: transform;
 }
 
 /* --- La ficha del proyecto -------------------------------------------
@@ -2699,5 +2774,87 @@ p {
   .footer__marca-col {
     grid-column: auto;   /* deja de ocupar toda la fila */
     padding-right: var(--esp-5);
+  }
+}
+
+
+/* =====================================================================
+   BLANCOS DE TOQUE EN PANTALLAS TACTILES
+   ---------------------------------------------------------------------
+   Un dedo no es un mouse. El puntero del mouse es un pixel; la yema de
+   un dedo tapa unos 9 milimetros de pantalla y uno no ve lo que hay
+   abajo. Por eso la norma de accesibilidad (WCAG 2.5.8) pide 24x24
+   pixeles como minimo, y Apple y Google recomiendan 44.
+
+   Medido en un telefono de 390px, estos links quedaban en 18 a 28
+   pixeles de alto: el logo de la navbar en 27x28, los links del pie y
+   los de contacto en 18, los legales en 20, "Volver arriba" en 23.
+
+   La correccion NO toca el cuerpo de letra ni el color ni el diseno:
+   agranda la zona que responde al toque y nada mas. En pantallas con
+   mouse esto ni se aplica, porque (pointer: coarse) solo da verdadero
+   en tactiles.
+   ===================================================================== */
+@media (pointer: coarse) {
+
+  /* Links del pie, de contacto y legales. El relleno los lleva a 44px
+     de alto. Se achica el hueco de la lista en la misma proporcion, asi
+     el pie no se estira: el espacio que antes era separacion vacia
+     ahora es zona apretable. */
+  .footer__links a,
+  .footer__datos a,
+  .footer__legales a,
+  .footer__arriba {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .footer__links,
+  .footer__datos {
+    gap: 0;
+  }
+
+  .footer__legales {
+    row-gap: 0;
+  }
+
+  /* Los links de la navbar de escritorio. Parece raro tocarlos aca,
+     pero hay un caso muy concreto: una tablet acostada mide mas de
+     900px, asi que le toca la navbar horizontal de escritorio... y
+     sigue siendo una pantalla que se toca con el dedo. Medido en una
+     iPad acostada: 26px de alto. */
+  .navbar__link {
+    /* flex y NO inline-flex. En el menu del celular estos links son de
+       ancho completo (eran display: block), y inline-flex los encogia
+       al ancho del texto: de 772px pasaban a 44. Medido comparando la
+       geometria de cada elemento contra la version anterior.
+
+       Con flex a secas se mantienen los dos casos: en el menu del
+       celular el contenedor es un bloque y el link ocupa toda la fila;
+       en la navbar de escritorio el contenedor ya es flex, asi que el
+       link es un item y lo mide el contenido, como antes. */
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* El logo de la navbar es el caso distinto: agrandarlo de verdad
+     correria toda la barra. Asi que se deja igual de grande a la vista
+     y se extiende solo la zona apretable, con un pseudo-elemento
+     invisible centrado encima. El logo se ve igual; lo que cambia es
+     donde hay que tocar.
+
+     .navbar__logo ya es position: relative (es el ancla del bloque que
+     se despliega), asi que el absolute de aca adentro se cuelga de el
+     sin necesidad de tocar nada mas. */
+  .navbar__logo::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: max(100%, 44px);
+    height: 44px;
   }
 }
