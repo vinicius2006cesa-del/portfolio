@@ -1496,11 +1496,18 @@ p {
 
 .vitrina__panel {
   grid-area: 1 / 1;
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--esp-4);
   opacity: 0;
   transition: opacity var(--transicion-normal);
+  /* Los paneles escondidos no se pueden tocar ni tabular aunque estén
+     dibujados encima: el atributo hidden no alcanza cuando el elemento
+     igual ocupa la celda. */
+  pointer-events: none;
+}
+
+.vitrina__panel--activo {
+  pointer-events: auto;
 }
 
 .vitrina__panel--activo {
@@ -1523,21 +1530,28 @@ p {
   object-fit: cover;
 }
 
-.vitrina__detalle {
+/* --- La ficha del proyecto -------------------------------------------
+   Tarjeta clara con borde, igual que las de Servicios y el formulario:
+   es el lenguaje del sitio. Se eligio a proposito NO hacerla oscura
+   aunque contrastaria mas, porque la tarjeta de "tu proyecto puede ser
+   el proximo" que va justo abajo ya es oscura y quedaban dos bloques
+   pesados pegados.
+   -------------------------------------------------------------------- */
+.ficha {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--esp-3);
+  flex-direction: column;
+  gap: var(--esp-4);
+  padding: var(--esp-5);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-superficie-alta);
 }
 
-.vitrina__detalle p {
-  max-width: 48ch;
-  margin: 0;
-}
-
-.vitrina__estado {
-  flex-shrink: 0;
+.ficha__estado {
+  align-self: flex-start;
+  padding: var(--esp-1) var(--esp-3);
+  border-radius: var(--radio-full);
+  background-color: var(--color-fondo-suave);
   font-size: var(--texto-xs);
   font-weight: var(--peso-semi);
   letter-spacing: 0.06em;
@@ -1545,6 +1559,74 @@ p {
   color: var(--color-texto-tenue);
 }
 
+.ficha__nombre {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-extra);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.ficha__texto {
+  font-size: var(--texto-sm);
+  color: var(--color-texto-suave);
+}
+
+.ficha__etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+  list-style: none;
+}
+
+.ficha__etiquetas li {
+  padding: var(--esp-1) var(--esp-3);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-full);
+  background-color: var(--color-fondo);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  color: var(--color-texto-suave);
+}
+
+/* Los pares dato/valor: Año 2026, Entrega 2 semanas.
+   margin-top:auto los empuja al fondo de la ficha, asi quedan a la
+   misma altura aunque las descripciones midan distinto. */
+.ficha__datos {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+  padding-top: var(--esp-4);
+  border-top: 1px solid var(--color-borde);
+}
+
+.ficha__datos > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--esp-3);
+}
+
+.ficha__datos dt {
+  font-size: var(--texto-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+}
+
+.ficha__datos dd {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semi);
+  color: var(--color-texto);
+}
+
+.ficha__enlace {
+  justify-content: center;
+  width: 100%;
+}
 
 /* =====================================================================
    11. PROCESO
@@ -2296,18 +2378,43 @@ p {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  /* Vitrina: la lista ocupa poco mas de un tercio y el visor el resto.
-     Se pega arriba al scrollear para que los nombres sigan a la vista
-     mientras mirás la imagen. */
+  /* Vitrina: lista a la izquierda y visor a la derecha. Adentro del
+     visor, cada panel se parte en imagen + ficha, asi que en pantalla
+     se leen TRES columnas aunque la grilla de afuera tenga dos.
+
+     Se hace asi y no con una grilla de tres a proposito: la ficha tiene
+     que vivir DENTRO del panel para que cambie sola al elegir otro
+     proyecto. Si estuviera afuera habria que sincronizarla con JS. */
   .vitrina {
-    grid-template-columns: minmax(240px, 0.8fr) 1.6fr;
+    grid-template-columns: minmax(190px, 0.72fr) 2.6fr;
     gap: var(--esp-6);
     align-items: start;
   }
 
-  .vitrina__lista {
+  .vitrina__columna {
     position: sticky;
     top: calc(var(--alto-navbar) + var(--esp-5));
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+  }
+
+  .vitrina__panel {
+    /* La imagen manda y la ficha acompaña. El minmax evita que la ficha
+       se angoste tanto que las etiquetas se partan letra por letra. */
+    grid-template-columns: 1.75fr minmax(230px, 1fr);
+    gap: var(--esp-5);
+    /* stretch y no start: las dos columnas cierran parejas arriba y
+       abajo. Con start, la ficha (que siempre es mas alta que la
+       imagen) sobresalia por abajo y el bloque quedaba desprolijo. */
+    align-items: stretch;
+  }
+
+  /* El alto lo manda la ficha; la imagen lo iguala y recorta. El
+     aspect-ratio de la regla base queda anulado por este height, que es
+     justo lo que se busca aca. */
+  .vitrina__imagen {
+    height: 100%;
   }
 
   /* La tarjeta final ocupa el ancho de las tres columnas.

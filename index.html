@@ -157,12 +157,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610042237">
+  <link rel="stylesheet" href="css/styles.css?v=202610042253">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610042237"></script>
+  <script src="js/activar-animaciones.js?v=202610042253"></script>
 </head>
 
 <body>
@@ -451,11 +451,16 @@
              El que este activo lleva aria-selected="true" y tabindex="0";
              los demas aria-selected="false", tabindex="-1" y el atributo
              hidden. El JS se encarga del resto.
+
+             Los nombres de ahora son GENERICOS a proposito (tipos de
+             trabajo, no clientes). No hay nombres de clientes inventados:
+             esto esta publicado y se leeria como trabajo real.
              ============================================================ -->
         <div class="vitrina aparece" id="vitrina">
 
-          <div class="vitrina__lista" role="tablist"
-               aria-label="Proyectos" aria-orientation="vertical">
+          <div class="vitrina__columna">
+            <div class="vitrina__lista" role="tablist"
+                 aria-label="Proyectos" aria-orientation="vertical">
 
             <button class="vitrina__nombre" type="button"
                     role="tab" id="vt-01" aria-controls="vp-01"
@@ -487,44 +492,145 @@
               </span>
             </button>
 
+            </div>
           </div>
 
           <div class="vitrina__visor">
 
-            <div class="vitrina__panel vitrina__panel--activo"
+            <div class="vitrina__panel  vitrina__panel--activo"
                  role="tabpanel" id="vp-01" aria-labelledby="vt-01">
+
               <div class="vitrina__imagen">
                 <img src="assets/img/proyecto-landing.svg" alt="Vista de una landing page para campañas con un botón de contacto destacado"
                      width="1200" height="750" loading="lazy">
               </div>
-              <div class="vitrina__detalle">
-                <p>Una sola página con una oferta clara, un botón directo a WhatsApp y carga rápida en celulares.</p>
-                <p class="vitrina__estado">Próximamente</p>
-              </div>
+
+              <!-- La ficha. Lleva los datos del proyecto en el mismo
+                   panel que la imagen: asi cambian juntos al elegir otro
+                   nombre y el JS no tiene que tocar nada aparte. -->
+              <aside class="ficha">
+                <p class="ficha__estado">Próximamente</p>
+                <h3 class="ficha__nombre">Landing page para campañas</h3>
+                <p class="ficha__texto">Una sola página con una oferta clara, un botón directo a WhatsApp y carga rápida en celulares.</p>
+
+                <ul class="ficha__etiquetas">
+                  <li>Diseño web</li>
+                  <li>Conversión</li>
+                </ul>
+
+                <!-- <dl> es la etiqueta correcta para pares dato/valor:
+                     un lector de pantalla los anuncia emparejados. -->
+                <dl class="ficha__datos">
+                  <div>
+                    <dt>Año</dt>
+                    <dd>2026</dd>
+                  </div>
+                  <div>
+                    <dt>Entrega</dt>
+                    <dd>2 semanas</dd>
+                  </div>
+                </dl>
+
+                <!-- CUANDO EL PROYECTO ESTÉ ONLINE: borra el <p> de
+                     arriba que dice "Próximamente" y descomenta esto.
+                <a class="btn btn--secundario btn--flecha ficha__enlace"
+                   href="https://EL-SITIO.com" target="_blank" rel="noopener noreferrer">
+                  Ver proyecto
+                </a>
+                -->
+              </aside>
+
             </div>
 
             <div class="vitrina__panel"
                  role="tabpanel" id="vp-02" aria-labelledby="vt-02" hidden>
+
               <div class="vitrina__imagen">
                 <img src="assets/img/proyecto-portfolio.svg" alt="Vista de un portfolio profesional con una galería de trabajos"
                      width="1200" height="750" loading="lazy">
               </div>
-              <div class="vitrina__detalle">
-                <p>Un sitio personal para mostrar tu trabajo, contar quién sos y recibir consultas.</p>
-                <p class="vitrina__estado">Próximamente</p>
-              </div>
+
+              <!-- La ficha. Lleva los datos del proyecto en el mismo
+                   panel que la imagen: asi cambian juntos al elegir otro
+                   nombre y el JS no tiene que tocar nada aparte. -->
+              <aside class="ficha">
+                <p class="ficha__estado">Próximamente</p>
+                <h3 class="ficha__nombre">Portfolio profesional</h3>
+                <p class="ficha__texto">Un sitio personal para mostrar tu trabajo, contar quién sos y recibir consultas.</p>
+
+                <ul class="ficha__etiquetas">
+                  <li>Diseño web</li>
+                  <li>Desarrollo</li>
+                </ul>
+
+                <!-- <dl> es la etiqueta correcta para pares dato/valor:
+                     un lector de pantalla los anuncia emparejados. -->
+                <dl class="ficha__datos">
+                  <div>
+                    <dt>Año</dt>
+                    <dd>2026</dd>
+                  </div>
+                  <div>
+                    <dt>Entrega</dt>
+                    <dd>3 semanas</dd>
+                  </div>
+                </dl>
+
+                <!-- CUANDO EL PROYECTO ESTÉ ONLINE: borra el <p> de
+                     arriba que dice "Próximamente" y descomenta esto.
+                <a class="btn btn--secundario btn--flecha ficha__enlace"
+                   href="https://EL-SITIO.com" target="_blank" rel="noopener noreferrer">
+                  Ver proyecto
+                </a>
+                -->
+              </aside>
+
             </div>
 
             <div class="vitrina__panel"
                  role="tabpanel" id="vp-03" aria-labelledby="vt-03" hidden>
+
               <div class="vitrina__imagen">
                 <img src="assets/img/proyecto-institucional.svg" alt="Vista de un sitio institucional con secciones de empresa, servicios y contacto"
                      width="1200" height="750" loading="lazy">
               </div>
-              <div class="vitrina__detalle">
-                <p>Empresa, servicios y contacto en un sitio ordenado, pensado para generar confianza.</p>
-                <p class="vitrina__estado">Próximamente</p>
-              </div>
+
+              <!-- La ficha. Lleva los datos del proyecto en el mismo
+                   panel que la imagen: asi cambian juntos al elegir otro
+                   nombre y el JS no tiene que tocar nada aparte. -->
+              <aside class="ficha">
+                <p class="ficha__estado">Próximamente</p>
+                <h3 class="ficha__nombre">Sitio institucional para pymes</h3>
+                <p class="ficha__texto">Empresa, servicios y contacto en un sitio ordenado, pensado para generar confianza.</p>
+
+                <ul class="ficha__etiquetas">
+                  <li>Diseño web</li>
+                  <li>SEO</li>
+                  <li>Institucional</li>
+                </ul>
+
+                <!-- <dl> es la etiqueta correcta para pares dato/valor:
+                     un lector de pantalla los anuncia emparejados. -->
+                <dl class="ficha__datos">
+                  <div>
+                    <dt>Año</dt>
+                    <dd>2026</dd>
+                  </div>
+                  <div>
+                    <dt>Entrega</dt>
+                    <dd>4 semanas</dd>
+                  </div>
+                </dl>
+
+                <!-- CUANDO EL PROYECTO ESTÉ ONLINE: borra el <p> de
+                     arriba que dice "Próximamente" y descomenta esto.
+                <a class="btn btn--secundario btn--flecha ficha__enlace"
+                   href="https://EL-SITIO.com" target="_blank" rel="noopener noreferrer">
+                  Ver proyecto
+                </a>
+                -->
+              </aside>
+
             </div>
 
           </div>
@@ -970,7 +1076,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610042237" defer></script>
+  <script src="js/main.js?v=202610042253" defer></script>
 
 </body>
 </html>
