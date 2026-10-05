@@ -251,26 +251,141 @@ function activarBotonFlotante() {
 
 
 
-function activarAurora() {
+function activarOleaje() {
+  const lienzo = document.querySelector(".hero__oleaje");
   const hero = document.querySelector(".hero");
-  if (!hero) return;
+  if (!lienzo || !hero) return;
 
+  // En celular no se dibuja: un canvas que repinta todo el tiempo gasta
+  // bateria, y en una pantalla de 6 pulgadas el movimiento casi no se
+  // aprecia. Queda el degradado que el CSS le puso de fondo al canvas.
+  const anchoMinimo = 900;
+  if (window.innerWidth < anchoMinimo) return;
+  if (prefiereMenosMovimiento()) return;
+
+  const pincel = lienzo.getContext("2d");
+  if (!pincel) return;
+
+  const ANCHO = lienzo.width;    // 192
+  const ALTO = lienzo.height;    // 108
+  const imagen = pincel.createImageData(ANCHO, ALTO);
+  const datos = imagen.data;
+
+  // Los tres colores del oleaje, en crudo. Son los mismos del sitio:
+  // la crema de fondo, el dorado calido y un azul MUY lavado. El azul
+  // esta a proposito a un pelo de la crema: con uno mas saturado, medio
+  // hero se veia gris y la pagina perdia el color de la marca.
+  const CREMA = [245, 235, 215];
+  const ORO = [228, 203, 152];
+  const AZUL = [230, 233, 240];
+
+  // mezcla devuelve el color que corresponde a un valor de -1 a 1:
+  // hacia abajo tira a azul, en el medio crema, hacia arriba a dorado.
+  function mezclar(v, salida) {
+    if (v >= 0) {
+      const k = v;
+      salida[0] = CREMA[0] + (ORO[0] - CREMA[0]) * k;
+      salida[1] = CREMA[1] + (ORO[1] - CREMA[1]) * k;
+      salida[2] = CREMA[2] + (ORO[2] - CREMA[2]) * k;
+    } else {
+      const k = -v;
+      salida[0] = CREMA[0] + (AZUL[0] - CREMA[0]) * k;
+      salida[1] = CREMA[1] + (AZUL[1] - CREMA[1]) * k;
+      salida[2] = CREMA[2] + (AZUL[2] - CREMA[2]) * k;
+    }
+  }
+
+  const color = [0, 0, 0];
+
+  function dibujar(t) {
+    let i = 0;
+    for (let py = 0; py < ALTO; py++) {
+      const y = py / ALTO;
+      for (let px = 0; px < ANCHO; px++) {
+        const x = px / ANCHO;
+
+        // El frente de la ola: cuanto se corre hacia arriba o hacia
+        // abajo segun donde estes en el eje horizontal. Dos senos de
+        // periodo distinto que van en sentidos opuestos: asi la cresta
+        // nunca es una curva regular, se deforma mientras avanza.
+        const frente =
+          Math.sin(x * 4.2 + t * 0.055) * 0.5 +
+          Math.sin(x * 2.3 - t * 0.031) * 0.32;
+
+        // La ola propiamente dicha. El 1.6 es cuantas bandas entran en
+        // la altura de la pantalla: con mas, se ve rayado.
+        const ola = Math.sin((y + frente * 0.22) * 1.6 - t * 0.042);
+
+        // Segunda capa, mas grande y mucho mas lenta, en diagonal. Es la
+        // que evita que se lea como un patron: sola la ola de arriba se
+        // repite, con esta encima nunca cae dos veces igual.
+        const marea = Math.sin((x * 1.1 + y * 1.6) - t * 0.019) * 0.45;
+
+        // 0.30 de amplitud total. Arranco en 0.55 y era demasiado: en
+        // seis segundos la pantalla pasaba de calida a fria entera. Esto
+        // tiene que leerse como luz que cambia, no como colores que se
+        // mueven. Si lo subis, el texto de arriba empieza a costar.
+        mezclar((ola * 0.62 + marea) * 0.30, color);
+
+        datos[i++] = color[0];
+        datos[i++] = color[1];
+        datos[i++] = color[2];
+        datos[i++] = 255;
+      }
+    }
+    pincel.putImageData(imagen, 0, 0);
+  }
+
+  // --- El reloj -------------------------------------------------------
+  // Se dibuja a 30 cuadros por segundo, no a 60: el movimiento es tan
+  // lento que la mitad de los cuadros serian identicos al anterior.
+  // Baja a la mitad el trabajo sin que se note ninguna diferencia.
+  const MS_POR_CUADRO = 1000 / 30;
+  let ultimo = 0;
+  let corriendo = true;
+  let pedido = null;
+
+  function cuadro(ahora) {
+    if (!corriendo) return;
+    pedido = requestAnimationFrame(cuadro);
+    if (ahora - ultimo < MS_POR_CUADRO) return;
+    ultimo = ahora;
+    dibujar(ahora / 1000);
+  }
+
+  // Cuando el hero sale de pantalla se para del todo. No tiene sentido
+  // dibujar un fondo que nadie esta mirando.
+  const vigia = new IntersectionObserver(
+    (entradas) => {
+      const visible = entradas[0].isIntersecting;
+      if (visible && !corriendo) {
+        corriendo = true;
+        pedido = requestAnimationFrame(cuadro);
+      } else if (!visible && corriendo) {
+        corriendo = false;
+        if (pedido) cancelAnimationFrame(pedido);
+      }
+    },
+    { threshold: 0 }
+  );
+  vigia.observe(hero);
+
+  dibujar(0);
+  pedido = requestAnimationFrame(cuadro);
+
+  // --- Seguimiento del mouse -----------------------------------------
   // Las dos capas del fondo, cada una con su factor de recorrido.
   // Que se muevan DISTINTO es lo que genera la profundidad: si las dos
   // se corrieran igual, el ojo las lee como una sola lamina plana.
-  // La V es la capa "cercana" y la aurora la "lejana", por eso la V se
+  // La V es la capa "cercana" y el oleaje la "lejana", por eso la V se
   // mueve mas del doble.
   const capas = [
     { nodo: document.querySelector(".hero__filigrana"), factor: 18 },
-    { nodo: document.querySelector(".hero__aurora"), factor: 7 },
+    { nodo: lienzo, factor: 7 },
   ].filter((capa) => capa.nodo);
 
-  if (capas.length === 0) return;
-
-  // Solo con mouse de verdad. En tactil no hay cursor que seguir, y
-  // ademas moverlas gastaria bateria para nada.
+  // Solo con mouse de verdad. En tactil no hay cursor que seguir.
   if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-  if (prefiereMenosMovimiento()) return;
 
   let pendiente = false;
   let dx = 0;
@@ -573,7 +688,7 @@ function iniciar() {
   activarNavbarScroll();
   activarLinkActivo();
   activarBotonFlotante();
-  activarAurora();
+  activarOleaje();
   activarVitrina();
   activarProceso();
   activarFormulario();

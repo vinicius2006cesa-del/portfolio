@@ -810,111 +810,41 @@ p {
   );
 }
 
-/* CAPA 2: la aurora. Tres manchas de luz gigantes que derivan muy
-   despacio. Reemplaza a la V de marca que estaba quieta en el fondo.
+/* CAPA 2: el oleaje. Un canvas chiquito estirado a toda la pantalla.
 
-   Por que radial-gradient y no filter:blur() sobre un circulo solido:
-   un degradado que termina en transparente YA esta difuso, y no cuesta
-   nada. blur() obliga al navegador a desenfocar una superficie enorme
-   en cada cuadro, que es de los efectos mas caros que hay.
+   El elemento mide 192x108 pixeles REALES (lo dice el width/height del
+   HTML) y aca se estira al 100%. El navegador interpola al agrandarlo, y
+   esa interpolacion ES el desenfoque: degradados suaves sin pagar un
+   solo filtro. Dibujar 20.000 pixeles por cuadro no se siente; dibujar
+   la pantalla entera, si.
 
-   Solo se anima transform. Es la unica propiedad (con opacity) que el
-   navegador puede mover sin recalcular el diseno ni repintar: la manda
-   a la placa de video y se olvida. Animar top/left o el tamano haria
-   trabajar al procesador 60 veces por segundo.
+   El background de abajo es el respaldo: si el JS no corre (celular,
+   menos movimiento, o un error) el canvas queda transparente y lo que
+   se ve es esto. Quieto, pero igual de lindo.
    -------------------------------------------------------------------- */
-.hero__aurora {
+.hero__oleaje {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  /* El JS mueve ESTE contenedor siguiendo el mouse. */
+  background-image:
+    radial-gradient(
+      ellipse 70% 55% at 15% 95%,
+      rgba(224, 198, 144, 0.38) 0%,
+      rgba(224, 198, 144, 0) 70%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 85% 10%,
+      rgba(37, 99, 235, 0.10) 0%,
+      rgba(37, 99, 235, 0) 70%
+    );
+  /* El JS lo mueve unos pixeles siguiendo el mouse. */
   will-change: transform;
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.hero__mancha {
-  position: absolute;
-  border-radius: 50%;
-  will-change: transform;
-}
-
-/* vmax y no px: las manchas tienen que seguir siendo mas grandes que la
-   pantalla en cualquier tamano. Si fueran fijas, en un monitor ancho se
-   verian como tres pelotas sueltas en vez de como luz de fondo. */
-.hero__mancha--azul {
-  top: -30vmax;
-  right: -20vmax;
-  width: 70vmax;
-  height: 70vmax;
-  background: radial-gradient(
-    circle at center,
-    rgba(37, 99, 235, 0.15) 0%,
-    rgba(37, 99, 235, 0) 65%
-  );
-  animation: deriva-azul 34s ease-in-out infinite;
-}
-
-.hero__mancha--oro {
-  bottom: -35vmax;
-  left: -25vmax;
-  width: 75vmax;
-  height: 75vmax;
-  background: radial-gradient(
-    circle at center,
-    rgba(224, 198, 144, 0.34) 0%,
-    rgba(224, 198, 144, 0) 62%
-  );
-  animation: deriva-oro 43s ease-in-out infinite;
-}
-
-/* El marino no suma luz: la resta. Es la sombra que hace que las otras
-   dos se lean como luz y no como manchas de color sobre una pared. */
-.hero__mancha--marino {
-  top: 2vmax;
-  left: 48vmax;
-  width: 55vmax;
-  height: 55vmax;
-  background: radial-gradient(
-    circle at center,
-    rgba(13, 27, 42, 0.05) 0%,
-    rgba(13, 27, 42, 0) 60%
-  );
-  animation: deriva-marino 52s ease-in-out infinite;
-}
-
-/* Las tres duraciones (34, 43 y 52 segundos) no son multiplos entre si
-   a proposito: asi las manchas no vuelven nunca a la misma posicion
-   relativa y el fondo no se siente como un bucle. El ciclo completo
-   tarda horas en repetirse.
-
-   Cada una pasa por TRES posiciones y no por dos. Con dos el recorrido
-   es un vaiven: se va y vuelve por el mismo camino, y el ojo lo detecta
-   como un pendulo. Con tres el camino de ida es distinto al de vuelta
-   y se lee como deriva.
-
-   El recorrido es grande (hasta 16%, unos 170px) justo porque es lento:
-   repartido en 40 segundos nunca se ve "moverse", pero si mirás el hero
-   un rato la luz esta en otro lado. Con la mitad de recorrido, probado,
-   no se notaba ninguna diferencia entre el principio y el medio. */
-@keyframes deriva-azul {
-  0%,  100% { transform: translate3d(0, 0, 0)        scale(1); }
-  35%       { transform: translate3d(-13%, 9%, 0)    scale(1.22); }
-  70%       { transform: translate3d(-5%, 16%, 0)    scale(1.08); }
-}
-
-@keyframes deriva-oro {
-  0%,  100% { transform: translate3d(0, 0, 0)        scale(1); }
-  35%       { transform: translate3d(14%, -8%, 0)    scale(1.18); }
-  70%       { transform: translate3d(4%, -15%, 0)    scale(1.06); }
-}
-
-@keyframes deriva-marino {
-  0%,  100% { transform: translate3d(0, 0, 0)        scale(1.05); }
-  35%       { transform: translate3d(-11%, -13%, 0)  scale(0.88); }
-  70%       { transform: translate3d(-16%, 4%, 0)    scale(1.00); }
-}
-
-/* CAPA 3: la V de marca encima de la aurora.
+/* CAPA 3: la V de marca encima del oleaje.
 
    Tiene DOS movimientos a la vez y no se pisan, porque usan propiedades
    distintas:
@@ -924,7 +854,7 @@ p {
    usaran transform, el style inline que escribe el JS mataria la
    animacion apenas movieras el mouse.
 
-   64 segundos, mas lento que las tres manchas: la V es una forma que se
+   64 segundos, bien lento: la V es una forma que se
    reconoce, y una forma reconocible moviendose rapido se lee como que
    "se desliza". A este ritmo se lee como que flota. */
 .hero__filigrana {
@@ -956,24 +886,10 @@ p {
    el seguimiento del mouse (el JS tampoco se engancha). Sigue viendose
    igual, simplemente no se mueve. */
 @media (prefers-reduced-motion: reduce) {
-  .hero__aurora {
-    transform: none !important;
-  }
-
-  /* .hero__mancha--azul parece mas especifico que .hero__mancha, pero
-     no lo es: "hero__mancha--azul" es UN solo nombre de clase, no dos.
-     Las dos reglas pesan igual, asi que decide cual va despues en el
-     archivo. Probado en el navegador: sin !important esto igual apaga
-     las tres animaciones, porque este bloque esta mas abajo.
-     El !important queda igual para que no dependa del orden: si manana
-     alguien mueve este bloque mas arriba, sigue funcionando. */
-  .hero__mancha,
+  .hero__oleaje,
   .hero__filigrana {
+    transform: none !important;
     animation: none !important;
-  }
-
-  .hero__filigrana {
-    transform: none !important;
   }
 }
 
