@@ -895,55 +895,6 @@ p {
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* CAPA 3: la V de marca encima del oleaje.
-
-   Tiene DOS movimientos a la vez y no se pisan, porque usan propiedades
-   distintas:
-     - la deriva lenta de abajo usa "translate"
-     - el seguimiento del mouse (main.js) usa "transform"
-   Son dos propiedades separadas que el navegador suma. Si las dos
-   usaran transform, el style inline que escribe el JS mataria la
-   animacion apenas movieras el mouse.
-
-   64 segundos, bien lento: la V es una forma que se
-   reconoce, y una forma reconocible moviendose rapido se lee como que
-   "se desliza". A este ritmo se lee como que flota. */
-.hero__filigrana {
-  position: absolute;
-  top: 40px;
-  right: -120px;
-  width: 520px;
-  height: 520px;
-  background: url("../assets/marca/v-filigrana.svg") no-repeat center / contain;
-  pointer-events: none;
-  animation: flota-v 64s ease-in-out infinite;
-  /* will-change le avisa al navegador que esto se va a mover, asi lo
-     pone en su propia capa y el movimiento no obliga a repintar el
-     resto del hero. */
-  will-change: transform, translate;
-  /* Transicion larga y suave: el JS actualiza la posicion a cada cuadro,
-     asi que esto no frena el seguimiento del mouse, pero hace que al
-     sacar el cursor la V vuelva flotando en vez de pegar un salto. */
-  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes flota-v {
-  0%,  100% { translate: 0 0; }
-  33%       { translate: -1.6% 2.2%; }
-  66%       { translate: 1.1% -1.4%; }
-}
-
-/* Si pidieron menos movimiento, el fondo queda quieto: ni la deriva ni
-   el seguimiento del mouse (el JS tampoco se engancha). Sigue viendose
-   igual, simplemente no se mueve. */
-@media (prefers-reduced-motion: reduce) {
-  .hero__oleaje,
-  .hero__filigrana {
-    transform: none !important;
-    animation: none !important;
-  }
-}
-
 /* Resplandor suave detras del titulo. Se hace con ::before, un
    pseudo-elemento: existe solo en el CSS, no ensucia el HTML. */
 .hero::before {

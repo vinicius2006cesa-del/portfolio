@@ -157,12 +157,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610050312">
+  <link rel="stylesheet" href="css/styles.css?v=202610050321">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610050312"></script>
+  <script src="js/activar-animaciones.js?v=202610050321"></script>
 </head>
 
 <body>
@@ -235,7 +235,7 @@
          ================================================================= -->
     <section class="hero" id="perfil" data-progreso>
 
-      <!-- Fondo vivo: un oleaje lento de luz.
+      <!-- Fondo vivo: un campo de lineas que se quiebran formando la V.
 
            El canvas mide 192x108 pixeles DE VERDAD y el CSS lo estira a
            toda la pantalla. El navegador lo agranda suavizandolo solo,
@@ -248,13 +248,6 @@
            siquiera arranca (ver main.js). -->
       <canvas class="hero__oleaje" width="192" height="108" aria-hidden="true"></canvas>
 
-      <!-- La V de marca, gigante y apenas visible, saliendose por el
-           borde derecho. Va ENCIMA de la aurora: las manchas son luz y
-           la V es la sombra que esa luz proyecta, asi que tiene que
-           taparlas, no al reves.
-           Es la misma pieza de la imagen que se ve al compartir el
-           link, asi que el sitio y el link hablan el mismo idioma. -->
-      <span class="hero__filigrana" aria-hidden="true"></span>
 
 
       <div class="contenedor hero__contenido">
@@ -1001,7 +994,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610050312" defer></script>
+  <script src="js/main.js?v=202610050321" defer></script>
 
 </body>
 </html>

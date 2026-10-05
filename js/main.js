@@ -327,24 +327,62 @@ function activarOleaje() {
   const LINEAS = 15;
   const PUNTOS = 64;
 
-  // El centro de la V de fondo, en coordenadas de 0 a 1 sobre el hero.
-  // Las lineas se abren a su alrededor como las curvas de nivel de un
-  // mapa alrededor de un cerro: la marca deforma el campo en vez de
-  // estar apoyada encima de el.
-  const V_X = 0.80;
-  const V_Y = 0.46;
+  /* LA V NO ES UNA IMAGEN ENCIMA: LA DIBUJAN LAS LINEAS.
+
+     Antes habia un SVG gigante de la V apoyado sobre el fondo, y las
+     olas pasaban por detras sin tener nada que ver con el. Ahora cada
+     linea se quiebra en el mismo lugar, y de las quince repeticiones
+     aparece la marca. El fondo no acompana al logo: lo dibuja.
+
+     La V se describe con tres numeros en coordenadas de 0 a 1 sobre el
+     hero: donde esta su vertice, cuanto se abre y cuanto baja. */
+  /* LA PROPORCION SALE DEL LOGO, NO DE MI OJO.
+
+     En el SVG de la marca el trazo marino va de x=117 a x=300 y el azul
+     de x=300 a x=394, sobre un lienzo que arranca en 110 y mide 292. O
+     sea: el vertice cae a 0.65 del ancho, el brazo izquierdo abarca
+     0.63 y el derecho 0.32. El izquierdo es el DOBLE de ancho.
+
+     Por eso la V no es un chevron simetrico. Esa asimetria es lo que la
+     hace tu V y no una flecha cualquiera. */
+  const V_X = 0.58;     // el vertice, corrido a la derecha
+  const V_IZQ = 0.34;   // alcance del brazo izquierdo
+  const V_DER = 0.17;   // alcance del derecho: la mitad
+  const V_HONDO = 0.20; // cuanto se hunde la linea en el vertice
+
+  /**
+   * Cuanto baja la linea en una posicion horizontal dada.
+   * Vale 1 en el vertice y cae hasta 0 en cada punta, pero a distinto
+   * ritmo de cada lado. Ese perfil ES la V.
+   */
+  function quiebre(x) {
+    const alcance = x < V_X ? V_IZQ : V_DER;
+    const d = Math.abs(x - V_X) / alcance;
+    return d >= 1 ? 0 : 1 - d;
+  }
 
   let ancho = 0;
   let alto = 0;
 
   function medir() {
     const caja = hero.getBoundingClientRect();
-    // La mitad de la resolucion real y estirado por CSS: las lineas son
-    // finas y suaves, y se dibuja una cuarta parte de la superficie.
-    ancho = Math.round(caja.width / 2);
-    alto = Math.round(caja.height / 2);
+    // A resolucion REAL de pantalla, no a la mitad. Antes se dibujaba
+    // chico y el CSS lo estiraba al doble: para manchas difusas daba
+    // igual, pero una linea de 1px estirada al doble sale dentada y se
+    // ve de mala calidad. Dibujar mas pixeles no cuesta nada aca: lo
+    // caro era calcular en JavaScript, y ahora solo trazamos 15 lineas;
+    // rellenarlas lo hace el navegador por su cuenta.
+    // El tope de 2 es para que una pantalla 3x no multiplique la
+    // superficie por nueve sin que se note la diferencia.
+    const escala = Math.min(window.devicePixelRatio || 1, 2);
+    ancho = Math.round(caja.width * escala);
+    alto = Math.round(caja.height * escala);
     lienzo.width = ancho;
     lienzo.height = alto;
+    pincel.setTransform(escala, 0, 0, escala, 0, 0);
+    // A partir de aca dibujamos en pixeles CSS y el navegador escala.
+    ancho = caja.width;
+    alto = caja.height;
   }
 
   function dibujar(t) {
@@ -370,15 +408,13 @@ function activarOleaje() {
           Math.sin(x * 3.1 + t * 0.12 + fase) * 0.030 +
           Math.sin(x * 6.7 - t * 0.07 + fase * 1.6) * 0.012;
 
-        // El bulto de la V: una campana centrada en la marca. Cuanto
-        // mas cerca pasa la linea, mas se abre. El signo empuja hacia
-        // afuera del centro, como si la V levantara el terreno.
-        const dx = (x - V_X) * 1.9;
-        const dy = (base - V_Y) * 2.6;
-        const d2 = dx * dx + dy * dy;
-        const bulto = Math.exp(-d2 * 2.6) * Math.sign(base - V_Y || 1) * 0.115;
+        // El quiebre: TODAS las lineas bajan lo mismo en el mismo
+        // lugar. Que sea igual para todas es justo lo que hace que la
+        // forma se lea; si cada una se quebrara distinto, la V se
+        // desdibujaria y volveriamos a tener una mancha.
+        const hunde = quiebre(x) * V_HONDO;
 
-        const y = (base + corriente + bulto) * alto;
+        const y = (base + corriente + hunde) * alto;
         if (j === 0) pincel.moveTo(0, y);
         else pincel.lineTo(x * ancho, y);
       }
@@ -430,15 +466,9 @@ function activarOleaje() {
   pedido = requestAnimationFrame(cuadro);
 
   // --- Seguimiento del mouse -----------------------------------------
-  // Las dos capas del fondo, cada una con su factor de recorrido.
-  // Que se muevan DISTINTO es lo que genera la profundidad: si las dos
-  // se corrieran igual, el ojo las lee como una sola lamina plana.
-  // La V es la capa "cercana" y el oleaje la "lejana", por eso la V se
-  // mueve mas del doble.
-  const capas = [
-    { nodo: document.querySelector(".hero__filigrana"), factor: 18 },
-    { nodo: lienzo, factor: 7 },
-  ].filter((capa) => capa.nodo);
+  // El campo entero se corre siguiendo el mouse. Es lo que mas le
+  // gusta del fondo: el movimiento responde a donde estas mirando.
+  const capas = [{ nodo: lienzo, factor: 14 }];
 
   // Solo con mouse de verdad. En tactil no hay cursor que seguir.
   if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
