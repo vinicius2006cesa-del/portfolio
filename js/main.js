@@ -694,6 +694,164 @@ function activarProgresoDeScroll() {
 
 
 /* =====================================================================
+   5d. CURSOR PROPIO
+   ---------------------------------------------------------------------
+   Dos piezas: un punto pegado al mouse y un anillo que lo persigue con
+   retraso. Ese retraso es el efecto entero. Un anillo que sigue exacto
+   al puntero no se percibe; uno que llega un instante despues se lee
+   como que tiene peso.
+   ===================================================================== */
+function activarCursor() {
+  const raiz = document.querySelector("[data-cursor]");
+  if (!raiz) return;
+  // Sin mouse de verdad no hay nada que reemplazar.
+  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+  const punto = raiz.querySelector(".cursor__punto");
+  const anillo = raiz.querySelector(".cursor__anillo");
+  if (!punto || !anillo) return;
+
+  // Recien aca se esconde el puntero del sistema. Si este archivo no
+  // hubiera llegado, la clase no se pone y el mouse sigue siendo el de
+  // siempre: nunca se queda sin puntero.
+  document.documentElement.classList.add("con-cursor");
+
+  let x = 0, y = 0;      // donde esta el mouse
+  let ax = 0, ay = 0;    // donde va el anillo
+  let arranco = false;
+
+  window.addEventListener("mousemove", (e) => {
+    x = e.clientX;
+    y = e.clientY;
+    punto.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    if (!arranco) {
+      // El primer movimiento coloca el anillo de una, sin perseguir, y
+      // recien ahi se muestra todo. Sin esto aparece un punto en la
+      // esquina superior izquierda mientras carga la pagina.
+      arranco = true;
+      ax = x;
+      ay = y;
+      anillo.style.transform = `translate3d(${ax}px, ${ay}px, 0)`;
+      raiz.classList.add("cursor--listo");
+    }
+  }, { passive: true });
+
+  function seguir() {
+    // 0.18 por cuadro: el anillo recorre el 18% de lo que le falta cada
+    // vez. Mas alto y se pega al puntero (no se nota); mas bajo y se
+    // siente elastico, como un globo atado.
+    ax += (x - ax) * 0.18;
+    ay += (y - ay) * 0.18;
+    anillo.style.transform = `translate3d(${ax}px, ${ay}px, 0)`;
+    requestAnimationFrame(seguir);
+  }
+  requestAnimationFrame(seguir);
+
+  // Sobre cualquier cosa que se pueda tocar, el anillo se abre.
+  const TOCABLES = "a[href], button, [role='tab'], input, textarea, label";
+  document.addEventListener("mouseover", (e) => {
+    if (e.target.closest(TOCABLES)) raiz.classList.add("cursor--activo");
+  });
+  document.addEventListener("mouseout", (e) => {
+    if (e.target.closest(TOCABLES) && !(e.relatedTarget && e.relatedTarget.closest &&
+        e.relatedTarget.closest(TOCABLES))) {
+      raiz.classList.remove("cursor--activo");
+    }
+  });
+
+  // Si el mouse se va de la ventana, el cursor se apaga.
+  document.addEventListener("mouseleave", () => raiz.classList.remove("cursor--listo"));
+  document.addEventListener("mouseenter", () => { if (arranco) raiz.classList.add("cursor--listo"); });
+}
+
+
+/* =====================================================================
+   5e. BOTONES MAGNETICOS
+   ---------------------------------------------------------------------
+   El boton se corre unos pixeles hacia el cursor cuando te acercas. Es
+   de los detalles que mas "caro" se leen y casi nadie sabe nombrar: da
+   la sensacion de que la interfaz te esta esperando.
+
+   Va SOLO en los tres botones de llamada a la accion, nunca en el de
+   enviar el formulario: un boton que se mueve justo cuando vas a hacer
+   clic para mandar tus datos es una pesadilla de usabilidad.
+   ===================================================================== */
+function activarBotonesMagneticos() {
+  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  if (prefiereMenosMovimiento()) return;
+
+  document.querySelectorAll("[data-magnetico]").forEach((boton) => {
+    // El contenido se envuelve para poder moverlo SIN mover la caja del
+    // boton. Si moviera el boton entero, el mouse saldria de su area y
+    // el efecto se cortaria solo: el boton escaparia del cursor.
+    const interior = document.createElement("span");
+    interior.className = "boton-magnetico__interior";
+    while (boton.firstChild) interior.appendChild(boton.firstChild);
+    boton.appendChild(interior);
+
+    let dx = 0, dy = 0, cx = 0, cy = 0, pedido = null;
+
+    function mover() {
+      cx += (dx - cx) * 0.2;
+      cy += (dy - cy) * 0.2;
+      interior.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+      // Se detiene solo cuando llego: no deja un bucle corriendo para
+      // siempre por cada boton de la pagina.
+      pedido = (Math.abs(dx - cx) > 0.1 || Math.abs(dy - cy) > 0.1)
+        ? requestAnimationFrame(mover)
+        : null;
+    }
+
+    boton.addEventListener("mousemove", (e) => {
+      const caja = boton.getBoundingClientRect();
+      // 0.28 del desvio respecto del centro. Mas que eso y el texto se
+      // despega visiblemente del borde del boton.
+      dx = (e.clientX - caja.left - caja.width / 2) * 0.28;
+      dy = (e.clientY - caja.top - caja.height / 2) * 0.28;
+      if (!pedido) pedido = requestAnimationFrame(mover);
+    }, { passive: true });
+
+    boton.addEventListener("mouseleave", () => {
+      dx = 0;
+      dy = 0;
+      if (!pedido) pedido = requestAnimationFrame(mover);
+    });
+  });
+}
+
+
+/* =====================================================================
+   5f. BARRA DE PROGRESO DE LECTURA
+   ===================================================================== */
+function activarProgresoDeLectura() {
+  const barra = document.querySelector(".progreso__barra");
+  if (!barra) return;
+
+  let pendiente = false;
+
+  function pintar() {
+    pendiente = false;
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    // Una pagina que no scrollea no tiene progreso que mostrar.
+    const p = total > 0 ? Math.min(1, Math.max(0, window.scrollY / total)) : 0;
+    // scaleX y no width: escalar lo resuelve la placa de video, cambiar
+    // el ancho obliga a recalcular el diseno en cada cuadro.
+    barra.style.transform = "scaleX(" + p.toFixed(4) + ")";
+  }
+
+  window.addEventListener("scroll", () => {
+    if (!pendiente) {
+      pendiente = true;
+      requestAnimationFrame(pintar);
+    }
+  }, { passive: true });
+
+  window.addEventListener("resize", pintar, { passive: true });
+  pintar();
+}
+
+
+/* =====================================================================
    6. FORMULARIO DE CONTACTO
    ---------------------------------------------------------------------
    Lo enviamos con fetch para no recargar la pagina y poder mostrar un
@@ -910,6 +1068,9 @@ function iniciar() {
   activarLinkActivo();
   activarBotonFlotante();
   activarOleaje();
+  activarCursor();
+  activarBotonesMagneticos();
+  activarProgresoDeLectura();
   activarProgresoDeScroll();
   activarVitrina();
   activarFormulario();

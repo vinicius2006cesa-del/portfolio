@@ -167,6 +167,7 @@
   --transicion-normal: 320ms var(--curva-salida);
 
   /* --- Capas (z-index) --------------------------------------------------- */
+  --capa-cursor: 9999;
   --capa-navbar: 100;
   --capa-menu:   200;
 }
@@ -571,13 +572,31 @@ p {
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+  /* ESTO ERA UN * QUE APAGABA TODO, y es un error mas comun de lo que
+     parece. Windows trae "mostrar animaciones" APAGADO en muchisimas
+     instalaciones de fabrica, y el navegador traduce eso a
+     prefers-reduced-motion: reduce. Esa persona no pidio accesibilidad:
+     le vino asi de fabrica. Con la regla vieja abria el sitio y no
+     respondia NADA — ni el hover de un boton, ni el cambio de color de
+     un link. Un sitio muerto.
+
+     La distincion correcta no es "con o sin movimiento": es movimiento
+     INTRUSIVO contra respuesta de la interfaz. Lo intrusivo (el fondo
+     que se dibuja solo, el punto que late, los desplazamientos largos)
+     se apaga mas abajo, uno por uno. El hover de un boton se queda:
+     no es decoracion, es la interfaz contestando. */
+  .con-animaciones .aparece,
+  .hero__oleaje,
+  .servicio__numero,
+  .servicio__corto,
+  .servicio__detalle {
+    animation: none !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  }
+
+  /* El punto que late en el badge: eso si es intrusivo. */
+  .hero__punto {
+    animation: none !important;
   }
 
   /* Lleva .con-animaciones adelante igual que las reglas de arriba: con
@@ -637,6 +656,134 @@ p {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+
+/* =====================================================================
+   6b. CURSOR PROPIO Y BARRA DE PROGRESO
+   ---------------------------------------------------------------------
+   Los dos son decorativos y los dos existen SOLO si el JavaScript los
+   enciende: la clase .con-cursor la pone main.js. Si el JS no corre,
+   el cursor del sistema sigue ahi y la barra se queda en cero. Nunca
+   se pierde la posibilidad de usar el sitio.
+   ===================================================================== */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--capa-cursor);
+  display: none;
+  pointer-events: none;
+  /* difference invierte lo que tiene debajo: el mismo cursor se ve
+     oscuro sobre la crema y claro sobre el marino de la barra. Un solo
+     color que funciona en todo el sitio. */
+  mix-blend-mode: difference;
+  opacity: 0;
+  transition: opacity 250ms var(--curva-suave);
+}
+
+/* Solo con mouse de verdad. En una pantalla tactil no hay puntero que
+   reemplazar y esconder el del sistema seria un desastre. */
+@media (hover: hover) and (pointer: fine) {
+  .cursor {
+    display: block;
+  }
+}
+
+.cursor--listo {
+  opacity: 1;
+}
+
+.cursor__punto,
+.cursor__anillo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* El punto va pegado al mouse, sin retraso. */
+.cursor__punto {
+  width: 6px;
+  height: 6px;
+  margin: -3px;
+  background-color: var(--color-fondo);
+}
+
+/* El anillo lo persigue con un retraso de un 18% por cuadro. Ese
+   retraso es TODO el efecto: un anillo que sigue exacto al puntero no
+   se percibe; uno que llega un instante despues se lee como peso. */
+.cursor__anillo {
+  width: 34px;
+  height: 34px;
+  margin: -17px;
+  border: 1px solid var(--color-fondo);
+  transition: width 320ms var(--curva-salida),
+              height 320ms var(--curva-salida),
+              margin 320ms var(--curva-salida);
+}
+
+/* Sobre algo que se puede tocar, el anillo se abre. */
+.cursor--activo .cursor__anillo {
+  width: 54px;
+  height: 54px;
+  margin: -27px;
+}
+
+/* Se esconde el cursor del sistema solo cuando el nuestro esta andando.
+   La clase la pone el JS: si falla, el puntero normal sigue ahi. */
+.con-cursor,
+.con-cursor a,
+.con-cursor button,
+.con-cursor [role="tab"] {
+  cursor: none;
+}
+
+/* --- Botones magneticos ----------------------------------------------
+   El JS envuelve el contenido del boton en este span y mueve el SPAN,
+   no el boton. Si moviera el boton entero, el mouse saldria de su area
+   y el efecto se cortaria solo: el boton escaparia del cursor.
+   -------------------------------------------------------------------- */
+.boton-magnetico__interior {
+  display: inline-flex;
+  align-items: center;
+  gap: inherit;
+  will-change: transform;
+  /* SIN transition, y es importante. El JS mueve esto cuadro a cuadro
+     con su propio suavizado. Si ademas hubiera una transicion de CSS,
+     cada actualizacion del JS arrancaria una transicion nueva y el
+     movimiento quedaria suavizado dos veces: llega tarde y se siente
+     pastoso. Lo medimos: el valor computado se quedaba en cero mientras
+     el JS ya habia escrito 26px.
+     La vuelta al centro tambien la hace el JS, con el mismo suavizado,
+     asi que no se pierde nada. */
+}
+
+/* --- Barra de progreso ----------------------------------------------- */
+.progreso {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--capa-cursor);
+  height: 2px;
+  pointer-events: none;
+  background: none;
+}
+
+.progreso__barra {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background-color: var(--color-acento);
+  /* Se escala en X en vez de cambiar el ancho: escalar lo resuelve la
+     placa de video, cambiar el ancho obliga a recalcular el diseno en
+     cada cuadro. */
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
 }
 
 
