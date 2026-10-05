@@ -271,55 +271,67 @@ function activarHoraLocal() {
 
 
 function activarAurora() {
-  const v = document.querySelector(".hero__aurora");
   const hero = document.querySelector(".hero");
-  if (!v || !hero) return;
+  if (!hero) return;
+
+  // Las dos capas del fondo, cada una con su factor de recorrido.
+  // Que se muevan DISTINTO es lo que genera la profundidad: si las dos
+  // se corrieran igual, el ojo las lee como una sola lamina plana.
+  // La V es la capa "cercana" y la aurora la "lejana", por eso la V se
+  // mueve mas del doble.
+  const capas = [
+    { nodo: document.querySelector(".hero__filigrana"), factor: 18 },
+    { nodo: document.querySelector(".hero__aurora"), factor: 7 },
+  ].filter((capa) => capa.nodo);
+
+  if (capas.length === 0) return;
 
   // Solo con mouse de verdad. En tactil no hay cursor que seguir, y
-  // ademas moverla gastaria bateria para nada.
+  // ademas moverlas gastaria bateria para nada.
   if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
   if (prefiereMenosMovimiento()) return;
 
   let pendiente = false;
-  let x = 0;
-  let y = 0;
+  let dx = 0;
+  let dy = 0;
 
   function mover() {
     pendiente = false;
-    v.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    for (const capa of capas) {
+      // El signo negativo hace que el fondo se aleje del cursor, que da
+      // mas sensacion de profundidad que seguirlo.
+      const x = -dx * capa.factor;
+      const y = -dy * capa.factor;
+      capa.nodo.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    }
+  }
+
+  function pedirCuadro() {
+    // requestAnimationFrame: el mousemove dispara decenas de veces por
+    // segundo, pero la pantalla solo se dibuja 60. Sin esto estariamos
+    // calculando posiciones que nadie llega a ver.
+    if (!pendiente) {
+      pendiente = true;
+      requestAnimationFrame(mover);
+    }
   }
 
   hero.addEventListener(
     "mousemove",
     (evento) => {
       const caja = hero.getBoundingClientRect();
-      // -1 a 1 segun donde este el cursor dentro del hero
-      const dx = (evento.clientX - caja.left) / caja.width - 0.5;
-      const dy = (evento.clientY - caja.top) / caja.height - 0.5;
-      // 18px de recorrido maximo. Mas que eso se nota y distrae; menos,
-      // no se percibe. El signo negativo hace que el fondo se aleje del
-      // cursor, que da mas sensacion de profundidad que seguirlo.
-      x = -dx * 18;
-      y = -dy * 18;
-
-      // requestAnimationFrame: el mousemove dispara decenas de veces por
-      // segundo, pero la pantalla solo se dibuja 60. Sin esto estariamos
-      // calculando posiciones que nadie llega a ver.
-      if (!pendiente) {
-        pendiente = true;
-        requestAnimationFrame(mover);
-      }
+      // -0.5 a 0.5 segun donde este el cursor dentro del hero
+      dx = (evento.clientX - caja.left) / caja.width - 0.5;
+      dy = (evento.clientY - caja.top) / caja.height - 0.5;
+      pedirCuadro();
     },
     { passive: true }
   );
 
   hero.addEventListener("mouseleave", () => {
-    x = 0;
-    y = 0;
-    if (!pendiente) {
-      pendiente = true;
-      requestAnimationFrame(mover);
-    }
+    dx = 0;
+    dy = 0;
+    pedirCuadro();
   });
 }
 

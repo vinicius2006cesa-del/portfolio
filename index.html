@@ -157,7 +157,7 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610042050">
+  <link rel="stylesheet" href="css/styles.css?v=202610042124">
 </head>
 
 <body>
@@ -249,6 +249,14 @@
         <span class="hero__mancha hero__mancha--oro"></span>
         <span class="hero__mancha hero__mancha--marino"></span>
       </div>
+
+      <!-- La V de marca, gigante y apenas visible, saliendose por el
+           borde derecho. Va ENCIMA de la aurora: las manchas son luz y
+           la V es la sombra que esa luz proyecta, asi que tiene que
+           taparlas, no al reves.
+           Es la misma pieza de la imagen que se ve al compartir el
+           link, asi que el sitio y el link hablan el mismo idioma. -->
+      <span class="hero__filigrana" aria-hidden="true"></span>
 
       <div class="contenedor hero__contenido">
 
@@ -854,18 +862,9 @@
             </li>
 
             <li>
-              <!-- Todavia sin href: el icono se ve y mantiene el estilo
-                   de los otros dos, pero al tocarlo no pasa nada. Un
-                   enlace sin href tampoco se puede enfocar con el
-                   teclado, que es lo correcto mientras no lleve a ningun
-                   lado. Cuando tengas la cuenta, agregale al enlace de
-                   abajo estos tres atributos:
-                     href="https://instagram.com/TU_USUARIO"
-                     target="_blank"
-                     rel="noopener noreferrer"
-                   y descomenta la linea del usuario en la columna
-                   "Contacto", unas lineas mas abajo. -->
-              <a aria-label="Instagram">
+              <a href="https://instagram.com/vinii.cesa"
+                 target="_blank" rel="noopener noreferrer"
+                 aria-label="Instagram (se abre en una pestaña nueva)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <rect x="2" y="2" width="20" height="20" rx="5"></rect>
@@ -899,9 +898,11 @@
               </a>
             </li>
             <li><a href="mailto:vinicius2006cesa@gmail.com">vinicius2006cesa@gmail.com</a></li>
-            <!-- CUANDO TENGAS INSTAGRAM, descomentá esta linea:
-            <li><a href="https://instagram.com/TU_USUARIO" target="_blank" rel="noopener noreferrer">@TU_USUARIO</a></li>
-            -->
+            <li>
+              <a href="https://instagram.com/vinii.cesa" target="_blank" rel="noopener noreferrer">
+                @vinii.cesa
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -974,7 +975,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610042050" defer></script>
+  <script src="js/main.js?v=202610042124" defer></script>
 
 </body>
 </html>

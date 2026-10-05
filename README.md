@@ -396,8 +396,6 @@ al costo.
 - [ ] **Capturas reales de los tres proyectos.** Es lo de mayor impacto:
       hoy las tarjetas dicen "Próximamente" y Google indexa eso.
 - [ ] Revisar los textos del proceso marcados `<!-- BORRADOR -->` (etapas 02 a 05)
-- [ ] Usuario de Instagram. El ícono ya está en el footer sin enlace; se
-      activa agregándole `href`, `target` y `rel` (ver el comentario al lado).
 - [ ] Confirmar la renovación automática del dominio en Hostinger.
       Es el único riesgo real de que el sitio se caiga.
 
