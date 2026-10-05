@@ -309,33 +309,30 @@ function activarPlano() {
   const pincel = lienzo.getContext("2d");
   if (!pincel) return;
 
-  /* PLANO DE CONSTRUCCION.
+  /* PLANO DE CONSTRUCCION CON LA V COMO ZONA RAYADA.
 
-     No es un efecto de fondo: es el dibujo tecnico de la marca. Grilla
-     milimetrada, los dos ejes de la V trazados en punteado, el nodo del
-     vertice y las cotas de los angulos.
+     En dibujo tecnico, una region rayada en diagonal marca un corte:
+     la parte de la pieza que estas mirando por dentro. Eso es lo que se
+     hace aca con la V — no se dibuja el logo encima de la grilla, se
+     RAYA la zona que ocupa. La marca aparece como una region del plano,
+     no como una calcomania.
 
-     Los angulos NO son decorativos, son los reales del logo: en el SVG
-     el trazo marino va de (117,118) a (299,394) — 33.2 grados respecto
-     de la vertical — y el azul de (395,118) a (303,381), 19.2 grados.
-     Son los mismos numeros con los que calculamos la V del titulo.
+     Por eso no se lee como "otra vez el logo": lo primero que ves es
+     una trama, y recien despues reconoces la forma.
 
-     La idea: el sitio muestra como esta hecho. Es lo mas honesto que
-     puede tener de fondo el portfolio de alguien que construye cosas
-     midiendo. */
-  /* Los angulos van NEGATIVO el izquierdo y POSITIVO el derecho. Con
-     los signos al reves los brazos quedan espejados: el ancho (el del
-     trazo marino) se va a la derecha y deja de ser tu V. */
-  const EJE_IZQ = -33.2;
-  const EJE_DER = 19.2;
-  /* El vertice vive abajo a la derecha, fuera del bloque de texto. El
-     plano acompana, no compite: si las cotas caen encima del titulo,
-     dejan de leerse como anotaciones y pasan a ser ruido. */
-  const VERTICE_X = 0.86;
-  const VERTICE_Y = 0.90;
+     EL CONTORNO ES EL DEL ARCHIVO, no uno parecido. Los dos trazos del
+     SVG, normalizados al cuadrado de 0 a 1 dividiendo por el viewBox
+     (110 de origen, 292 de lado). */
+  const V_MARINO = [[0.0251, 0.0266], [0.3427, 0.0266], [0.6457, 0.9734], [0.3543, 0.9734]];
+  const V_AZUL   = [[0.6573, 0.0266], [0.9749, 0.0266], [0.6602, 0.9297], [0.5146, 0.4752]];
+
+  // Donde y de que tamano va la V dentro del hero.
+  const V_ALTO = 0.86;   // parte del alto del hero que ocupa
+  const V_CX = 0.84;     // centro horizontal, de 0 a 1
+  const V_CY = 0.52;
 
   const TINTA = "13, 27, 42";
-  const PASO = 46;          // lado de la celda de la grilla, en px
+  const PASO = 46;       // lado de la celda de la grilla, en px
 
   let ancho = 0;
   let alto = 0;
@@ -350,33 +347,29 @@ function activarPlano() {
     alto = caja.height;
   }
 
-  /** Dibuja una recta infinita que pasa por (x,y) con cierto angulo. */
-  function eje(x, y, grados, alfa, guion) {
-    const r = ((grados - 90) * Math.PI) / 180;
-    const largo = ancho + alto;
-    pincel.save();
-    pincel.strokeStyle = "rgba(" + TINTA + ", " + alfa + ")";
-    pincel.lineWidth = 1;
-    pincel.setLineDash(guion);
-    pincel.beginPath();
-    pincel.moveTo(x - Math.cos(r) * largo, y - Math.sin(r) * largo);
-    pincel.lineTo(x + Math.cos(r) * largo, y + Math.sin(r) * largo);
-    pincel.stroke();
-    pincel.restore();
+  /** Arma el contorno de la V a la escala y posicion de ahora. */
+  function contornoV() {
+    const lado = V_ALTO * alto;
+    const x0 = V_CX * ancho - lado / 2;
+    const y0 = V_CY * alto - lado / 2;
+    const ruta = new Path2D();
+    for (const trazo of [V_MARINO, V_AZUL]) {
+      trazo.forEach(([px, py], i) => {
+        const x = x0 + px * lado;
+        const y = y0 + py * lado;
+        if (i === 0) ruta.moveTo(x, y);
+        else ruta.lineTo(x, y);
+      });
+      ruta.closePath();
+    }
+    return ruta;
   }
 
-  function dibujar(t) {
-    pincel.clearRect(0, 0, ancho, alto);
-
-    // --- La grilla. Se desplaza muy despacio en diagonal: el plano
-    //     "respira" sin que se vea nada moverse. El modulo hace que el
-    //     desplazamiento sea continuo y nunca salte.
-    const corre = (t * 3) % PASO;
+  function grilla(corre, alfaFina, alfaFuerte) {
     pincel.lineWidth = 1;
     for (let x = -PASO + corre; x < ancho + PASO; x += PASO) {
-      // Cada quinta linea un poco mas marcada, como el papel milimetrado.
       const fuerte = Math.round((x - corre) / PASO) % 5 === 0;
-      pincel.strokeStyle = "rgba(" + TINTA + ", " + (fuerte ? 0.055 : 0.025) + ")";
+      pincel.strokeStyle = "rgba(" + TINTA + ", " + (fuerte ? alfaFuerte : alfaFina) + ")";
       pincel.beginPath();
       pincel.moveTo(Math.round(x) + 0.5, 0);
       pincel.lineTo(Math.round(x) + 0.5, alto);
@@ -384,58 +377,61 @@ function activarPlano() {
     }
     for (let y = -PASO + corre; y < alto + PASO; y += PASO) {
       const fuerte = Math.round((y - corre) / PASO) % 5 === 0;
-      pincel.strokeStyle = "rgba(" + TINTA + ", " + (fuerte ? 0.055 : 0.025) + ")";
+      pincel.strokeStyle = "rgba(" + TINTA + ", " + (fuerte ? alfaFuerte : alfaFina) + ")";
       pincel.beginPath();
       pincel.moveTo(0, Math.round(y) + 0.5);
       pincel.lineTo(ancho, Math.round(y) + 0.5);
       pincel.stroke();
     }
+  }
 
-    const vx = VERTICE_X * ancho;
-    const vy = VERTICE_Y * alto;
+  function dibujar(t) {
+    pincel.clearRect(0, 0, ancho, alto);
 
-    // --- Los dos ejes de la V, en punteado de plano.
-    //     El punteado se corre con el tiempo: es la unica senal de que
-    //     el dibujo esta vivo, y se lee como un trazo en curso.
-    const avance = (t * 14) % 22;
-    pincel.lineDashOffset = -avance;
-    eje(vx, vy, EJE_IZQ, 0.16, [7, 15]);
-    eje(vx, vy, EJE_DER, 0.16, [7, 15]);
-    pincel.lineDashOffset = 0;
+    // La grilla se desplaza muy despacio en diagonal: el plano respira
+    // sin que se vea nada moverse. El modulo hace que el desplazamiento
+    // sea continuo y nunca salte.
+    const corre = (t * 3) % PASO;
+    grilla(corre, 0.025, 0.055);
 
-    // --- La vertical de referencia desde la que se miden los angulos.
-    eje(vx, vy, 0, 0.07, [2, 9]);
+    const ruta = contornoV();
 
-    // --- El nodo del vertice: el circulito de los planos.
-    pincel.strokeStyle = "rgba(" + TINTA + ", 0.26)";
+    // --- La zona rayada --------------------------------------------
+    pincel.save();
+    pincel.clip(ruta);
+
+    // Adentro, la misma grilla pero mas marcada: la zona se lee como
+    // mejor definida, igual que en un plano donde la pieza cortada
+    // tiene mas detalle que el entorno.
+    grilla(corre, 0.05, 0.09);
+
+    // Y encima el rayado de corte. La inclinacion NO es 45 grados como
+    // en un plano cualquiera: son los 33.2 del trazo de la marca, asi
+    // que la trama corre paralela al propio palo de la V.
+    const ANG = (33.2 * Math.PI) / 180;
+    const sep = 11;
+    const dx = Math.sin(ANG);
+    const dy = Math.cos(ANG);
+    const largo = ancho + alto;
+    // El rayado avanza mucho mas lento que la grilla: dos ritmos
+    // distintos es lo que da sensacion de capas.
+    const avance = (t * 1.6) % sep;
+    pincel.strokeStyle = "rgba(" + TINTA + ", 0.075)";
     pincel.lineWidth = 1;
     pincel.beginPath();
-    pincel.arc(vx, vy, 6, 0, Math.PI * 2);
+    for (let d = -largo; d < largo; d += sep) {
+      const b = d + avance;
+      pincel.moveTo(b * dy - dx * largo, -b * dx - dy * largo);
+      pincel.lineTo(b * dy + dx * largo, -b * dx + dy * largo);
+    }
     pincel.stroke();
+    pincel.restore();
 
-    // --- El arco entre los dos ejes, como en un plano de verdad.
-    //     Los angulos se calculan del MISMO numero que dibuja los ejes,
-    //     no a mano: si algun dia se cambia la inclinacion, el arco la
-    //     sigue solo en vez de quedar apuntando a cualquier lado.
-    const aIzq = ((EJE_IZQ - 90) * Math.PI) / 180;
-    const aDer = ((EJE_DER - 90) * Math.PI) / 180;
-    pincel.strokeStyle = "rgba(" + TINTA + ", 0.20)";
+    // --- El contorno, finisimo. Es lo que cierra la zona y la hace
+    //     leerse como una pieza y no como una mancha rayada.
+    pincel.strokeStyle = "rgba(" + TINTA + ", 0.10)";
     pincel.lineWidth = 1;
-    pincel.beginPath();
-    pincel.arc(vx, vy, 78, aIzq, aDer);
-    pincel.stroke();
-
-    // --- Las cotas. Dicen los angulos de verdad del logo, y se colocan
-    //     SOBRE cada eje: asi se lee cual angulo describe cada una.
-    pincel.fillStyle = "rgba(" + TINTA + ", 0.34)";
-    pincel.font = "500 11px " + getComputedStyle(document.body).fontFamily;
-    const rotulo = (ang, texto, dist) => {
-      const r = ((ang - 90) * Math.PI) / 180;
-      pincel.fillText(texto, vx + Math.cos(r) * dist - 14,
-                             vy + Math.sin(r) * dist);
-    };
-    rotulo(EJE_IZQ, "33.2°", 112);
-    rotulo(EJE_DER, "19.2°", 112);
+    pincel.stroke(ruta);
   }
 
   // --- El reloj -------------------------------------------------------
