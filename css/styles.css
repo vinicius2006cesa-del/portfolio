@@ -660,107 +660,52 @@ p {
 
 
 /* =====================================================================
-   6b. CURSOR PROPIO Y BARRA DE PROGRESO
+   6a. REVELADO DE TEXTO POR RENGLONES
    ---------------------------------------------------------------------
-   Los dos son decorativos y los dos existen SOLO si el JavaScript los
-   enciende: la clase .con-cursor la pone main.js. Si el JS no corre,
-   el cursor del sistema sigue ahi y la barra se queda en cero. Nunca
-   se pierde la posibilidad de usar el sitio.
+   El JS envuelve cada palabra en un <span class="revelar__palabra"> y le
+   anota en que renglon cayo, en la variable --renglon. Aca cada palabra
+   entra desde abajo y desenfocada, y el retraso sale de ese numero: las
+   de un mismo renglon entran juntas y los renglones se encadenan.
+
+   Por que por palabra y no por renglon entero con una mascara: la
+   version con mascara se veia mejor, pero obligaba a rearmar el texto y
+   eso destruia el HTML de adentro. Las tres negritas de la bajada
+   desaparecian. Un efecto no vale romper el contenido.
+
+   Todo esto cuelga de .revelar--listo, que la pone el propio JS cuando
+   termino. Si falla a mitad de camino, queda texto normal y legible.
    ===================================================================== */
-.cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: var(--capa-cursor);
-  display: none;
-  pointer-events: none;
-  /* difference invierte lo que tiene debajo: el mismo cursor se ve
-     oscuro sobre la crema y claro sobre el marino de la barra. Un solo
-     color que funciona en todo el sitio. */
-  mix-blend-mode: difference;
+.revelar--listo .revelar__palabra {
+  /* inline-block es obligatorio: a un span en linea no se le puede
+     aplicar transform. Y el JS lo aplica ANTES de medir, porque cambia
+     donde corta el renglon. */
+  display: inline-block;
   opacity: 0;
-  transition: opacity 250ms var(--curva-suave);
+  transform: translateY(0.42em);
+  /* El desenfoque es lo que lo separa de un fundido cualquiera: la
+     palabra parece venir desde atras y enfocarse, no solo aparecer. */
+  filter: blur(5px);
+  transition: opacity 620ms var(--curva-suave),
+              transform 820ms var(--curva-salida),
+              filter 620ms var(--curva-suave);
+  /* 70ms entre renglones. Mas rapido y entran casi juntos; mas lento y
+     se siente que la pagina tarda en armarse. */
+  transition-delay: calc(var(--renglon, 0) * 70ms);
 }
 
-/* Solo con mouse de verdad. En una pantalla tactil no hay puntero que
-   reemplazar y esconder el del sistema seria un desastre. */
-@media (hover: hover) and (pointer: fine) {
-  .cursor {
-    display: block;
-  }
-}
-
-.cursor--listo {
+.revelar--visible .revelar__palabra {
   opacity: 1;
+  transform: none;
+  filter: none;
 }
 
-.cursor__punto,
-.cursor__anillo {
-  position: fixed;
-  top: 0;
-  left: 0;
-  border-radius: 50%;
-  pointer-events: none;
-  will-change: transform;
-}
 
-/* El punto va pegado al mouse, sin retraso. */
-.cursor__punto {
-  width: 6px;
-  height: 6px;
-  margin: -3px;
-  background-color: var(--color-fondo);
-}
-
-/* El anillo lo persigue con un retraso de un 18% por cuadro. Ese
-   retraso es TODO el efecto: un anillo que sigue exacto al puntero no
-   se percibe; uno que llega un instante despues se lee como peso. */
-.cursor__anillo {
-  width: 34px;
-  height: 34px;
-  margin: -17px;
-  border: 1px solid var(--color-fondo);
-  transition: width 320ms var(--curva-salida),
-              height 320ms var(--curva-salida),
-              margin 320ms var(--curva-salida);
-}
-
-/* Sobre algo que se puede tocar, el anillo se abre. */
-.cursor--activo .cursor__anillo {
-  width: 54px;
-  height: 54px;
-  margin: -27px;
-}
-
-/* Se esconde el cursor del sistema solo cuando el nuestro esta andando.
-   La clase la pone el JS: si falla, el puntero normal sigue ahi. */
-.con-cursor,
-.con-cursor a,
-.con-cursor button,
-.con-cursor [role="tab"] {
-  cursor: none;
-}
-
-/* --- Botones magneticos ----------------------------------------------
-   El JS envuelve el contenido del boton en este span y mueve el SPAN,
-   no el boton. Si moviera el boton entero, el mouse saldria de su area
-   y el efecto se cortaria solo: el boton escaparia del cursor.
-   -------------------------------------------------------------------- */
-.boton-magnetico__interior {
-  display: inline-flex;
-  align-items: center;
-  gap: inherit;
-  will-change: transform;
-  /* SIN transition, y es importante. El JS mueve esto cuadro a cuadro
-     con su propio suavizado. Si ademas hubiera una transicion de CSS,
-     cada actualizacion del JS arrancaria una transicion nueva y el
-     movimiento quedaria suavizado dos veces: llega tarde y se siente
-     pastoso. Lo medimos: el valor computado se quedaba en cero mientras
-     el JS ya habia escrito 26px.
-     La vuelta al centro tambien la hace el JS, con el mismo suavizado,
-     asi que no se pierde nada. */
-}
-
+/* =====================================================================
+   6b. BARRA DE PROGRESO DE LECTURA
+   ---------------------------------------------------------------------
+   Decorativa: si el JavaScript no corre, se queda en cero y no pasa
+   nada. No tapa ni bloquea contenido.
+   ===================================================================== */
 /* --- Barra de progreso ----------------------------------------------- */
 .progreso {
   position: fixed;
@@ -1759,6 +1704,35 @@ p {
    alcanza para las tres imagenes. */
 .vitrina__imagen {
   position: relative;
+  /* La vuelta al reposo. El acercamiento lo maneja el JS cuadro a
+     cuadro; esta transicion es solo para cuando sacas el mouse. Como el
+     JS escribe el transform directo, mientras lo mueve la transicion
+     practicamente no actua. */
+  transition: transform 600ms var(--curva-salida);
+  will-change: transform;
+}
+
+/* El reflejo. Un punto de luz que sigue al cursor por encima de la
+   imagen: es lo que hace que se lea como una superficie inclinada y no
+   como una caja girada. Va en ::after para no sumar HTML. */
+.vitrina__imagen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--brillo-x, 50%) var(--brillo-y, 50%),
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+  opacity: 0;
+  transition: opacity 400ms var(--curva-suave);
+}
+
+.vitrina__imagen:hover::after {
+  opacity: 1;
 }
 
 .vitrina__imagen img {

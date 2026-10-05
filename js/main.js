@@ -694,134 +694,189 @@ function activarProgresoDeScroll() {
 
 
 /* =====================================================================
-   5d. CURSOR PROPIO
+   5c2. REVELADO DE TEXTO POR RENGLONES
    ---------------------------------------------------------------------
-   Dos piezas: un punto pegado al mouse y un anillo que lo persigue con
-   retraso. Ese retraso es el efecto entero. Un anillo que sigue exacto
-   al puntero no se percibe; uno que llega un instante despues se lee
-   como que tiene peso.
+   Cada renglon sube desde abajo detras de una mascara, uno atras de
+   otro. Es el efecto que mas "editorial" se lee y el que mas trabajo
+   da, porque NO se puede hacer solo con CSS: el navegador no expone
+   donde corta cada renglon. Hay que medirlo.
+
+   El metodo: se recorren las palabras una por una con un Range y se
+   mira a que altura cae cada una. Cuando la altura cambia, empezo un
+   renglon nuevo. Con eso se reagrupa el texto en un <span> por renglon,
+   cada uno dentro de otro con overflow:hidden que hace de mascara.
+
+   Como el corte depende del ancho, se rehace al cambiar el tamano de
+   la ventana. Y se guarda el texto original para poder rehacerlo:
+   medir sobre el texto ya partido daria cualquier cosa.
    ===================================================================== */
-function activarCursor() {
-  const raiz = document.querySelector("[data-cursor]");
-  if (!raiz) return;
-  // Sin mouse de verdad no hay nada que reemplazar.
-  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+function activarRevelado() {
+  const objetivos = document.querySelectorAll("[data-revelar]");
+  if (objetivos.length === 0) return;
 
-  const punto = raiz.querySelector(".cursor__punto");
-  const anillo = raiz.querySelector(".cursor__anillo");
-  if (!punto || !anillo) return;
+  // Sin animaciones el texto se queda exactamente como esta. No se toca
+  // nada: partirlo sin motivo solo rompe la seleccion con el mouse.
+  if (!document.documentElement.classList.contains("con-animaciones")) return;
+  if (prefiereMenosMovimiento()) return;
 
-  // Recien aca se esconde el puntero del sistema. Si este archivo no
-  // hubiera llegado, la clase no se pone y el mouse sigue siendo el de
-  // siempre: nunca se queda sin puntero.
-  document.documentElement.classList.add("con-cursor");
+  /**
+   * Envuelve cada palabra en un <span> SIN tocar el resto del marcado,
+   * y le anota en que renglon cayo.
+   *
+   * El primer intento rearmaba el texto renglon por renglon, con una
+   * mascara por renglon. Se veia mejor, pero destruia el HTML de
+   * adentro: las tres negritas de la bajada del hero desaparecian y
+   * quedaba un espacio colgado antes de cada coma. Un efecto no vale
+   * romper el contenido.
+   *
+   * Asi, cada palabra se queda donde estaba — las que viven adentro de
+   * un <b> siguen adentro de ese <b> — y lo unico que se agrega es el
+   * envoltorio que permite moverla.
+   */
+  function preparar(el) {
+    if (el.dataset.preparado === "1") return;
 
-  let x = 0, y = 0;      // donde esta el mouse
-  let ax = 0, ay = 0;    // donde va el anillo
-  let arranco = false;
+    const nodos = [];
+    const paseador = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = paseador.nextNode())) nodos.push(n);
 
-  window.addEventListener("mousemove", (e) => {
-    x = e.clientX;
-    y = e.clientY;
-    punto.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    if (!arranco) {
-      // El primer movimiento coloca el anillo de una, sin perseguir, y
-      // recien ahi se muestra todo. Sin esto aparece un punto en la
-      // esquina superior izquierda mientras carga la pagina.
-      arranco = true;
-      ax = x;
-      ay = y;
-      anillo.style.transform = `translate3d(${ax}px, ${ay}px, 0)`;
-      raiz.classList.add("cursor--listo");
+    const palabras = [];
+    for (const nodo of nodos) {
+      if (!nodo.textContent.trim()) continue;
+      const partes = nodo.textContent.split(/(\s+)/);
+      const frag = document.createDocumentFragment();
+      for (const parte of partes) {
+        if (parte === "") continue;
+        if (!parte.trim()) {
+          // Los espacios se conservan tal cual: son los que separan las
+          // palabras y los que permiten que el renglon corte donde debe.
+          frag.appendChild(document.createTextNode(parte));
+        } else {
+          const sp = document.createElement("span");
+          sp.className = "revelar__palabra";
+          sp.textContent = parte;
+          frag.appendChild(sp);
+          palabras.push(sp);
+        }
+      }
+      nodo.parentNode.replaceChild(frag, nodo);
     }
-  }, { passive: true });
+    if (palabras.length === 0) return;
 
-  function seguir() {
-    // 0.18 por cuadro: el anillo recorre el 18% de lo que le falta cada
-    // vez. Mas alto y se pega al puntero (no se nota); mas bajo y se
-    // siente elastico, como un globo atado.
-    ax += (x - ax) * 0.18;
-    ay += (y - ay) * 0.18;
-    anillo.style.transform = `translate3d(${ax}px, ${ay}px, 0)`;
-    requestAnimationFrame(seguir);
+    el.dataset.preparado = "1";
+    el.classList.add("revelar--listo");
+    el._palabras = palabras;
+    numerarRenglones(el);
   }
-  requestAnimationFrame(seguir);
 
-  // Sobre cualquier cosa que se pueda tocar, el anillo se abre.
-  const TOCABLES = "a[href], button, [role='tab'], input, textarea, label";
-  document.addEventListener("mouseover", (e) => {
-    if (e.target.closest(TOCABLES)) raiz.classList.add("cursor--activo");
-  });
-  document.addEventListener("mouseout", (e) => {
-    if (e.target.closest(TOCABLES) && !(e.relatedTarget && e.relatedTarget.closest &&
-        e.relatedTarget.closest(TOCABLES))) {
-      raiz.classList.remove("cursor--activo");
+  /**
+   * Mira a que altura quedo cada palabra y le pone el numero de renglon
+   * en --renglon. El CSS usa ese numero para el retraso: asi las
+   * palabras de un mismo renglon entran juntas y los renglones entran
+   * uno atras de otro.
+   */
+  function numerarRenglones(el) {
+    const palabras = el._palabras;
+    if (!palabras) return;
+    let altura = null;
+    let renglon = -1;
+    for (const sp of palabras) {
+      const y = Math.round(sp.getBoundingClientRect().top);
+      if (altura === null || Math.abs(y - altura) > 2) {
+        altura = y;
+        renglon++;
+      }
+      sp.style.setProperty("--renglon", renglon);
     }
-  });
+  }
 
-  // Si el mouse se va de la ventana, el cursor se apaga.
-  document.addEventListener("mouseleave", () => raiz.classList.remove("cursor--listo"));
-  document.addEventListener("mouseenter", () => { if (arranco) raiz.classList.add("cursor--listo"); });
+  objetivos.forEach(preparar);
+
+  const vigia = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add("revelar--visible");
+          vigia.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.05 }
+  );
+  objetivos.forEach((el) => vigia.observe(el));
+
+  // Donde corta cada renglon depende del ancho: al cambiar hay que
+  // volver a numerar. No hace falta rehacer nada mas.
+  let reloj = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(reloj);
+    reloj = setTimeout(() => objetivos.forEach(numerarRenglones), 250);
+  }, { passive: true });
 }
 
 
 /* =====================================================================
-   5e. BOTONES MAGNETICOS
+   5c3. INCLINACION 3D DE LA IMAGEN DE PROYECTOS
    ---------------------------------------------------------------------
-   El boton se corre unos pixeles hacia el cursor cuando te acercas. Es
-   de los detalles que mas "caro" se leen y casi nadie sabe nombrar: da
-   la sensacion de que la interfaz te esta esperando.
+   La imagen se inclina hacia el cursor, con un reflejo que la recorre.
+   Es el efecto que hace que una captura plana se lea como un objeto.
 
-   Va SOLO en los tres botones de llamada a la accion, nunca en el de
-   enviar el formulario: un boton que se mueve justo cuando vas a hacer
-   clic para mandar tus datos es una pesadilla de usabilidad.
+   Dos limites deliberados:
+   - 7 grados como maximo. Pasado eso deja de parecer una superficie
+     inclinada y empieza a parecer que la pagina esta rota.
+   - Solo con mouse. En tactil no hay cursor al que inclinarse, y en
+     una pantalla chica la perspectiva no se aprecia.
    ===================================================================== */
-function activarBotonesMagneticos() {
+function activarInclinacion() {
+  const marcos = document.querySelectorAll("[data-inclinar]");
+  if (marcos.length === 0) return;
   if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
   if (prefiereMenosMovimiento()) return;
 
-  document.querySelectorAll("[data-magnetico]").forEach((boton) => {
-    // El contenido se envuelve para poder moverlo SIN mover la caja del
-    // boton. Si moviera el boton entero, el mouse saldria de su area y
-    // el efecto se cortaria solo: el boton escaparia del cursor.
-    const interior = document.createElement("span");
-    interior.className = "boton-magnetico__interior";
-    while (boton.firstChild) interior.appendChild(boton.firstChild);
-    boton.appendChild(interior);
+  const GRADOS = 7;
 
-    let dx = 0, dy = 0, cx = 0, cy = 0, pedido = null;
+  marcos.forEach((marco) => {
+    let pedido = null;
+    let gx = 0, gy = 0, lx = 50, ly = 50;
 
-    function mover() {
-      cx += (dx - cx) * 0.2;
-      cy += (dy - cy) * 0.2;
-      interior.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-      // Se detiene solo cuando llego: no deja un bucle corriendo para
-      // siempre por cada boton de la pagina.
-      pedido = (Math.abs(dx - cx) > 0.1 || Math.abs(dy - cy) > 0.1)
-        ? requestAnimationFrame(mover)
-        : null;
+    function pintar() {
+      pedido = null;
+      marco.style.transform =
+        "perspective(1100px) rotateX(" + gy.toFixed(2) + "deg) rotateY(" +
+        gx.toFixed(2) + "deg)";
+      // El reflejo sigue al cursor por separado: es lo que vende que
+      // hay una superficie y no solo una caja girada.
+      marco.style.setProperty("--brillo-x", lx.toFixed(1) + "%");
+      marco.style.setProperty("--brillo-y", ly.toFixed(1) + "%");
     }
 
-    boton.addEventListener("mousemove", (e) => {
-      const caja = boton.getBoundingClientRect();
-      // 0.28 del desvio respecto del centro. Mas que eso y el texto se
-      // despega visiblemente del borde del boton.
-      dx = (e.clientX - caja.left - caja.width / 2) * 0.28;
-      dy = (e.clientY - caja.top - caja.height / 2) * 0.28;
-      if (!pedido) pedido = requestAnimationFrame(mover);
+    marco.addEventListener("mousemove", (e) => {
+      const caja = marco.getBoundingClientRect();
+      const px = (e.clientX - caja.left) / caja.width;   // 0 a 1
+      const py = (e.clientY - caja.top) / caja.height;
+      // El signo de rotateX va invertido: el mouse arriba tiene que
+      // inclinar el borde superior HACIA ATRAS, no hacia adelante.
+      gx = (px - 0.5) * 2 * GRADOS;
+      gy = -(py - 0.5) * 2 * GRADOS;
+      lx = px * 100;
+      ly = py * 100;
+      if (!pedido) pedido = requestAnimationFrame(pintar);
     }, { passive: true });
 
-    boton.addEventListener("mouseleave", () => {
-      dx = 0;
-      dy = 0;
-      if (!pedido) pedido = requestAnimationFrame(mover);
+    marco.addEventListener("mouseleave", () => {
+      gx = 0;
+      gy = 0;
+      lx = 50;
+      ly = 50;
+      if (!pedido) pedido = requestAnimationFrame(pintar);
     });
   });
 }
 
 
 /* =====================================================================
-   5f. BARRA DE PROGRESO DE LECTURA
+   5d. BARRA DE PROGRESO DE LECTURA
    ===================================================================== */
 function activarProgresoDeLectura() {
   const barra = document.querySelector(".progreso__barra");
@@ -1068,9 +1123,9 @@ function iniciar() {
   activarLinkActivo();
   activarBotonFlotante();
   activarOleaje();
-  activarCursor();
-  activarBotonesMagneticos();
   activarProgresoDeLectura();
+  activarRevelado();
+  activarInclinacion();
   activarProgresoDeScroll();
   activarVitrina();
   activarFormulario();

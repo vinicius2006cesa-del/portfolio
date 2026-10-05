@@ -166,12 +166,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610051528">
+  <link rel="stylesheet" href="css/styles.css?v=202610051540">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610051528"></script>
+  <script src="js/activar-animaciones.js?v=202610051540"></script>
 </head>
 
 <body>
@@ -181,13 +181,6 @@
        lector de pantalla ya sabe donde esta. -->
   <div class="progreso" aria-hidden="true"><span class="progreso__barra"></span></div>
 
-  <!-- Cursor propio. Arranca escondido y el JS lo muestra con el primer
-       movimiento del mouse: sin eso se ve un punto negro en la esquina
-       mientras carga. Solo existe en pantallas con mouse de verdad. -->
-  <div class="cursor" data-cursor aria-hidden="true">
-    <span class="cursor__punto"></span>
-    <span class="cursor__anillo"></span>
-  </div>
 
   <!-- Primer elemento enfocable: permite a quien navega con teclado
        saltear la navegacion e ir directo al contenido. -->
@@ -227,7 +220,7 @@
         <!-- Baja al formulario de contacto. Al ser un salto dentro de la
              misma pagina no lleva target="_blank": abrir una pestana nueva
              para ir a otra seccion del mismo sitio seria un error. -->
-        <a class="btn btn--acento btn--flecha navbar__cta" href="#contacto" data-magnetico>
+        <a class="btn btn--acento btn--flecha navbar__cta" href="#contacto">
           Hablemos
         </a>
       </nav>
@@ -294,17 +287,17 @@
         <!-- El texto base va apagado y solo los tres remates a pleno
              contraste. Asi, quien barre la pagina con la vista lee el
              mensaje completo sin leer la frase entera. -->
-        <p class="hero__subtitulo aparece">
+        <p class="hero__subtitulo aparece" data-revelar>
           Diseño y desarrollo de sitios web hechos a medida para que tu
           negocio <b>se vea serio</b>, <b>se distinga del resto</b> y
           <b>convierta consultas en clientes</b>.
         </p>
 
         <div class="hero__botones aparece">
-          <a class="btn btn--primario btn--grande btn--flecha" href="#contacto" data-magnetico>
+          <a class="btn btn--primario btn--grande btn--flecha" href="#contacto">
             Hablemos
           </a>
-          <a class="btn btn--secundario btn--grande btn--flecha" href="#proyectos" data-magnetico>
+          <a class="btn btn--secundario btn--grande btn--flecha" href="#proyectos">
             Ver proyectos
           </a>
         </div>
@@ -322,7 +315,7 @@
 
         <div class="seccion__encabezado aparece">
           <p class="etiqueta">Servicios</p>
-          <h2>¿Qué servicios ofrezco?</h2>
+          <h2 data-revelar>¿Qué servicios ofrezco?</h2>
         </div>
 
         <!-- data-escalonar: el JS le da a cada hijo un retraso distinto,
@@ -422,7 +415,7 @@
 
         <div class="seccion__encabezado aparece">
           <p class="etiqueta">Proyectos</p>
-          <h2>Proyectos destacados</h2>
+          <h2 data-revelar>Proyectos destacados</h2>
           <p>Landing pages, portfolios y sitios institucionales que diseñé y desarrollé.</p>
         </div>
 
@@ -495,7 +488,7 @@
             <div class="vitrina__panel  vitrina__panel--activo"
                  role="tabpanel" id="vp-01" aria-labelledby="vt-01">
 
-              <div class="vitrina__imagen">
+              <div class="vitrina__imagen" data-inclinar>
                 <img src="assets/img/proyecto-landing.svg" alt="Vista de una landing page para campañas con un botón de contacto destacado"
                      width="1200" height="750" loading="lazy">
               </div>
@@ -540,7 +533,7 @@
             <div class="vitrina__panel"
                  role="tabpanel" id="vp-02" aria-labelledby="vt-02" hidden>
 
-              <div class="vitrina__imagen">
+              <div class="vitrina__imagen" data-inclinar>
                 <img src="assets/img/proyecto-portfolio.svg" alt="Vista de un portfolio profesional con una galería de trabajos"
                      width="1200" height="750" loading="lazy">
               </div>
@@ -585,7 +578,7 @@
             <div class="vitrina__panel"
                  role="tabpanel" id="vp-03" aria-labelledby="vt-03" hidden>
 
-              <div class="vitrina__imagen">
+              <div class="vitrina__imagen" data-inclinar>
                 <img src="assets/img/proyecto-institucional.svg" alt="Vista de un sitio institucional con secciones de empresa, servicios y contacto"
                      width="1200" height="750" loading="lazy">
               </div>
@@ -653,7 +646,7 @@
 
         <div class="seccion__encabezado aparece">
           <p class="etiqueta">Proceso</p>
-          <h2>Cómo trabajo</h2>
+          <h2 data-revelar>Cómo trabajo</h2>
         </div>
 
         <!-- Cinco pasos, los cinco a la vista. Antes era un acordeon:
@@ -712,7 +705,7 @@
                para el mismo objetivo. -->
           <div class="seccion__encabezado aparece aparece--izq">
             <p class="etiqueta">Contacto</p>
-            <h2>Hablemos</h2>
+            <h2 data-revelar>Hablemos</h2>
             <p>
               En 20-30 minutos de consulta revisamos qué necesitás y cómo podemos
               avanzar de la mejor manera.
@@ -1016,7 +1009,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610051528" defer></script>
+  <script src="js/main.js?v=202610051540" defer></script>
 
 </body>
 </html>
