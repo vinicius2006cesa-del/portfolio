@@ -166,12 +166,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610051601">
+  <link rel="stylesheet" href="css/styles.css?v=202610051654">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610051601"></script>
+  <script src="js/activar-animaciones.js?v=202610051654"></script>
 </head>
 
 <body>
@@ -212,8 +212,8 @@
       <nav class="navbar__menu" id="menu-principal" aria-label="Navegación principal">
         <ul class="navbar__links">
           <li><a class="navbar__link" href="#perfil">Inicio</a></li>
-          <li><a class="navbar__link" href="#servicios">Servicios</a></li>
           <li><a class="navbar__link" href="#proyectos">Proyectos</a></li>
+          <li><a class="navbar__link" href="#servicios">Servicios</a></li>
           <li><a class="navbar__link" href="#contacto">Contacto</a></li>
         </ul>
 
@@ -308,115 +308,14 @@
 
 
     <!-- =================================================================
-         SERVICIOS
-         ================================================================= -->
-    <section class="servicios seccion seccion--gris" id="servicios">
-      <div class="contenedor">
-
-        <div class="seccion__encabezado aparece">
-          <p class="etiqueta">Servicios</p>
-          <h2 data-revelar>¿Qué servicios ofrezco?</h2>
-        </div>
-
-        <!-- data-escalonar: el JS le da a cada hijo un retraso distinto,
-             asi entran uno atras de otro en vez de todos de golpe. -->
-        <div class="servicios__grilla" data-escalonar>
-
-          <!-- Los iconos son SVG escritos directamente en el HTML. Asi
-               heredan el color del CSS y no son un archivo aparte que el
-               navegador tenga que ir a buscar.
-               aria-hidden porque son decorativos: el titulo ya dice todo.
-
-               PARA AGREGAR O SACAR UN SERVICIO: copia un <article> entero
-               y cambiale el numero, el icono, el titulo y el texto. Si
-               cambias la CANTIDAD, mira el comentario de .servicios__grilla
-               en el CSS (seccion 14): el reparto en columnas esta pensado
-               para cinco. -->
-
-          <article class="servicio aparece">
-            <div class="servicio__cabecera">
-              <div class="servicio__icono">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle>
-                </svg>
-              </div>
-              <span class="servicio__numero">01</span>
-            </div>
-            <h3>Diseño web</h3>
-            <div class="servicio__textos">
-              <p class="servicio__corto">Cómo se ve y cómo se usa tu sitio.</p>
-              <p class="servicio__detalle">Pensado desde cero para tu negocio: claro de leer, fácil de recorrer y distinto al de tu competencia.</p>
-            </div>
-          </article>
-
-          <article class="servicio aparece">
-            <div class="servicio__cabecera">
-              <div class="servicio__icono">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline>
-                </svg>
-              </div>
-              <span class="servicio__numero">02</span>
-            </div>
-            <h3>Desarrollo web</h3>
-            <div class="servicio__textos">
-              <p class="servicio__corto">El diseño convertido en un sitio real.</p>
-              <p class="servicio__detalle">Rápido, prolijo y bien construido. Se adapta a cualquier pantalla, del celular al monitor grande.</p>
-            </div>
-          </article>
-
-          <article class="servicio aparece">
-            <div class="servicio__cabecera">
-              <div class="servicio__icono">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path><path d="M11 8v6M8 11h6"></path>
-                </svg>
-              </div>
-              <span class="servicio__numero">03</span>
-            </div>
-            <h3>SEO</h3>
-            <div class="servicio__textos">
-              <p class="servicio__corto">Para cuando te buscan en Google.</p>
-              <p class="servicio__detalle">No solo te hago la web: la optimizo para que aparezca cuando buscan lo que hacés y te puedan encontrar.</p>
-            </div>
-          </article>
-
-          <article class="servicio aparece">
-            <div class="servicio__cabecera">
-              <div class="servicio__icono">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-                </svg>
-              </div>
-              <span class="servicio__numero">04</span>
-            </div>
-            <h3>Mantenimiento</h3>
-            <div class="servicio__textos">
-              <p class="servicio__corto">La web no termina el día que se publica.</p>
-              <p class="servicio__detalle">La mantengo al día, actualizada y funcionando todos los días, sin que vos tengas que ocuparte.</p>
-            </div>
-          </article>
-
-        </div>
-
-      </div>
-    </section>
-
-
-    <!-- =================================================================
          PROYECTOS
          ================================================================= -->
-    <section class="proyectos seccion" id="proyectos">
+    <section class="proyectos seccion seccion--gris" id="proyectos">
       <div class="contenedor">
 
         <div class="seccion__encabezado aparece">
           <p class="etiqueta">Proyectos</p>
           <h2 data-revelar>Proyectos destacados</h2>
-          <p>Landing pages, portfolios y sitios institucionales que diseñé y desarrollé.</p>
         </div>
 
         <!-- ============================================================
@@ -634,6 +533,106 @@
             Hablemos
           </a>
         </aside>
+      </div>
+    </section>
+
+
+    <!-- =================================================================
+         SERVICIOS
+         ================================================================= -->
+    <section class="servicios seccion" id="servicios">
+      <div class="contenedor">
+
+        <div class="seccion__encabezado aparece">
+          <p class="etiqueta">Servicios</p>
+          <h2 data-revelar>¿Qué servicios ofrezco?</h2>
+        </div>
+
+        <!-- data-escalonar: el JS le da a cada hijo un retraso distinto,
+             asi entran uno atras de otro en vez de todos de golpe. -->
+        <div class="servicios__grilla" data-escalonar>
+
+          <!-- Los iconos son SVG escritos directamente en el HTML. Asi
+               heredan el color del CSS y no son un archivo aparte que el
+               navegador tenga que ir a buscar.
+               aria-hidden porque son decorativos: el titulo ya dice todo.
+
+               PARA AGREGAR O SACAR UN SERVICIO: copia un <article> entero
+               y cambiale el numero, el icono, el titulo y el texto. Si
+               cambias la CANTIDAD, mira el comentario de .servicios__grilla
+               en el CSS (seccion 14): el reparto en columnas esta pensado
+               para cinco. -->
+
+          <article class="servicio aparece">
+            <div class="servicio__cabecera">
+              <div class="servicio__icono">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle>
+                </svg>
+              </div>
+              <span class="servicio__numero">01</span>
+            </div>
+            <h3>Diseño web</h3>
+            <div class="servicio__textos">
+              <p class="servicio__corto">Cómo se ve y cómo se usa tu sitio.</p>
+              <p class="servicio__detalle">Pensado desde cero para tu negocio: claro de leer, fácil de recorrer y distinto al de tu competencia.</p>
+            </div>
+          </article>
+
+          <article class="servicio aparece">
+            <div class="servicio__cabecera">
+              <div class="servicio__icono">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+              </div>
+              <span class="servicio__numero">02</span>
+            </div>
+            <h3>Desarrollo web</h3>
+            <div class="servicio__textos">
+              <p class="servicio__corto">El diseño convertido en un sitio real.</p>
+              <p class="servicio__detalle">Rápido, prolijo y bien construido. Se adapta a cualquier pantalla, del celular al monitor grande.</p>
+            </div>
+          </article>
+
+          <article class="servicio aparece">
+            <div class="servicio__cabecera">
+              <div class="servicio__icono">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path><path d="M11 8v6M8 11h6"></path>
+                </svg>
+              </div>
+              <span class="servicio__numero">03</span>
+            </div>
+            <h3>SEO</h3>
+            <div class="servicio__textos">
+              <p class="servicio__corto">Para cuando te buscan en Google.</p>
+              <p class="servicio__detalle">No solo te hago la web: la optimizo para que aparezca cuando buscan lo que hacés y te puedan encontrar.</p>
+            </div>
+          </article>
+
+          <article class="servicio aparece">
+            <div class="servicio__cabecera">
+              <div class="servicio__icono">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                </svg>
+              </div>
+              <span class="servicio__numero">04</span>
+            </div>
+            <h3>Mantenimiento</h3>
+            <div class="servicio__textos">
+              <p class="servicio__corto">La web no termina el día que se publica.</p>
+              <p class="servicio__detalle">La mantengo al día, actualizada y funcionando todos los días, sin que vos tengas que ocuparte.</p>
+            </div>
+          </article>
+
+        </div>
+
       </div>
     </section>
 
@@ -910,8 +909,8 @@
           <h3 class="footer__titulo">Explorar</h3>
           <ul class="footer__links">
             <li><a href="#perfil">Inicio</a></li>
-            <li><a href="#servicios">Servicios</a></li>
             <li><a href="#proyectos">Proyectos</a></li>
+            <li><a href="#servicios">Servicios</a></li>
             <li><a href="#proceso">Proceso</a></li>
             <li><a href="#contacto">Contacto</a></li>
           </ul>
@@ -1009,7 +1008,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610051601" defer></script>
+  <script src="js/main.js?v=202610051654" defer></script>
 
 </body>
 </html>
