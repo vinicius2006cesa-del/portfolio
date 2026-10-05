@@ -185,6 +185,18 @@
   padding: 0;
 }
 
+/* Los elementos que todavia no entraron estan corridos y girados unos
+   pixeles: sobresalen por el costado y en celular eso abria una barra de
+   scroll horizontal de 5px. Medido, y permanente, porque los que estan
+   mas abajo de la pagina nunca se revelan hasta que llegas.
+
+   clip y NO hidden: los dos cortan lo que sobra, pero hidden convierte
+   al elemento en un contenedor de scroll y eso rompe el position:sticky
+   de la lista de proyectos y de la columna de contacto. clip no. */
+body {
+  overflow-x: clip;
+}
+
 html {
   /* Las animaciones de aparicion corren los elementos de costado antes
      de revelarlos (aparece--izq / aparece--der). Mientras estan en esa
@@ -966,9 +978,14 @@ p {
    cargado y arriba de todo (medido). Restarlo hace que el efecto
    arranque en cero justo ahi y no con el texto ya corrido. */
 .hero__contenido {
-  transform: translateY(calc((var(--p, 0.46) - 0.46) * 170px));
-  opacity: clamp(0, calc(1 - (var(--p, 0.46) - 0.46) * 2.1), 1);
-  will-change: transform, opacity;
+  /* SIN desvanecido. Lo tuvo y se saco: el texto del hero tiene que
+     poder leerse entero siempre, y cualquier fundido atado al scroll lo
+     empieza a borrar justo cuando lo estas leyendo. Un efecto no vale
+     que el mensaje principal del sitio se vea a medias.
+     Queda solo el desplazamiento, que da profundidad sin tocar la
+     legibilidad: 70px repartidos en toda la altura del hero. */
+  transform: translateY(calc((var(--p, 0.46) - 0.46) * 70px));
+  will-change: transform;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1570,8 +1587,10 @@ p {
    cuanto bajaste. Es el efecto que mas "caro" se lee de todos los que
    hicimos, y cuesta cuatro lineas.
 
-   118% de alto deja 18% de sobra. Arranca corrida -9% (centrada) y se
-   mueve 7% para cada lado, asi nunca se ve el borde.
+   124% de alto deja 24% de sobra. Arranca corrida -12% (centrada) y se
+   mueve 7% para cada lado: sobran 5% (unos 19px) de colchon en cada
+   extremo. Con 118% el colchon era de 2px, y bastaba una ficha un poco
+   mas alta para que asomara el borde.
 
    El --p lo escribe el JS en #vitrina y baja hasta aca por herencia:
    las variables CSS se heredan, asi que un solo calculo por cuadro
@@ -1582,9 +1601,9 @@ p {
 
 .vitrina__imagen img {
   position: absolute;
-  inset: -9% 0 auto 0;
+  inset: -12% 0 auto 0;
   width: 100%;
-  height: 118%;
+  height: 124%;
   object-fit: cover;
   transform: translateY(calc((var(--p, 0.5) - 0.5) * -14%));
   will-change: transform;
@@ -2414,11 +2433,17 @@ p {
     align-items: stretch;
   }
 
-  /* El alto lo manda la ficha; la imagen lo iguala y recorta. El
-     aspect-ratio de la regla base queda anulado por este height, que es
-     justo lo que se busca aca. */
+  /* El alto lo manda la ficha y la imagen lo iguala.
+
+     aspect-ratio: auto NO es opcional. La regla base tiene
+     aspect-ratio: 16/10, y una proporcion funciona en las dos
+     direcciones: al fijarle el alto, el navegador dejo de usarla para
+     calcular la altura y empezo a usarla para calcular el ANCHO.
+     380 x 1.6 = 608px, cuando la columna mide 533. El marco se
+     desbordaba 75px y tapaba media ficha. */
   .vitrina__imagen {
     height: 100%;
+    aspect-ratio: auto;
   }
 
   /* La tarjeta final ocupa el ancho de las tres columnas.
