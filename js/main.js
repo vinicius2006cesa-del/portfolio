@@ -231,20 +231,68 @@ function activarBotonFlotante() {
   const boton = document.getElementById("wsp-flotante");
   if (!boton) return;
 
+  // El boton es fijo: SIEMPRE va a flotar sobre algo. La solucion no es
+  // moverlo, es que no este cuando molesta.
+  //
+  // Se esconde al bajar y aparece al subir. Suena al reves, pero sigue
+  // lo que esta haciendo la persona: si bajas, estas leyendo contenido
+  // nuevo y el boton solo tapa; si subis, estas buscando algo, y lo mas
+  // probable es que sea como contactarse. Ya tapaba la hora del hero y
+  // despues el año de la ficha de proyectos.
+  const MINIMO = 6;     // menos que esto es temblor del dedo, no scroll
+  const ARRANQUE = 200; // arriba de todo no se esconde: recien aparecio
+
+  let ultimoY = window.scrollY;
+  let pendiente = false;
+
   function revisar() {
+    pendiente = false;
+    const y = window.scrollY;
+
     // Cuanto falta para el fondo de la pagina:
     //   alto de la ventana + lo que scrolleaste = donde termina lo que ves
     //   scrollHeight = alto total del documento
     const llegoAlFinal =
-      window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 160;
+      window.innerHeight + y >= document.documentElement.scrollHeight - 160;
 
-    // El boton se ve desde el primer momento. Lo unico que lo esconde es
-    // llegar al pie: ahi tapaba el "Volver arriba" y ademas ya tenes el
-    // WhatsApp, el mail y el telefono escritos a la vista.
-    boton.classList.toggle("wsp-flotante--visible", !llegoAlFinal);
+    const movimiento = y - ultimoY;
+
+    let mostrar;
+    if (llegoAlFinal) {
+      // En el pie tapaba el "Volver arriba", y ademas ahi ya tenes el
+      // WhatsApp, el mail y el telefono escritos a la vista.
+      mostrar = false;
+    } else if (y < ARRANQUE) {
+      mostrar = true;
+    } else if (Math.abs(movimiento) < MINIMO) {
+      // Movimiento despreciable: dejamos el estado como esta, asi no
+      // parpadea mientras la pagina se asienta.
+      mostrar = boton.classList.contains("wsp-flotante--visible");
+    } else {
+      mostrar = movimiento < 0;   // negativo = subiendo
+    }
+
+    boton.classList.toggle("wsp-flotante--visible", mostrar);
+
+    // Solo se actualiza cuando el movimiento conto: si no, un scroll
+    // lento de 3px por cuadro nunca llegaria al minimo y el boton se
+    // quedaria trabado en el ultimo estado para siempre.
+    if (Math.abs(movimiento) >= MINIMO) ultimoY = y;
   }
 
-  window.addEventListener("scroll", revisar, { passive: true });
+  // El scroll dispara decenas de veces por segundo y la pantalla se
+  // dibuja 60: sin esto calculariamos posiciones que nadie ve.
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!pendiente) {
+        pendiente = true;
+        requestAnimationFrame(revisar);
+      }
+    },
+    { passive: true }
+  );
+
   revisar();
 }
 
