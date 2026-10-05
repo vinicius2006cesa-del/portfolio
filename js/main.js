@@ -298,105 +298,144 @@ function activarBotonFlotante() {
 
 
 
-function activarOleaje() {
+function activarPlano() {
   const lienzo = document.querySelector(".hero__oleaje");
   const hero = document.querySelector(".hero");
   if (!lienzo || !hero) return;
 
-  // En celular no se dibuja: una pantalla chica no luce el efecto y el
-  // dibujo continuo gasta bateria. Queda el degradado del CSS.
   if (window.innerWidth < 900) return;
   if (prefiereMenosMovimiento()) return;
 
   const pincel = lienzo.getContext("2d");
   if (!pincel) return;
 
-  /* TIRAS DE LA V FLOTANDO.
+  /* PLANO DE CONSTRUCCION.
 
-     La marca son dos trazos que se cruzan: pintas uno y el otro asoma
-     por detras. El fondo hace lo mismo en grande y en capas — varias V
-     anchas, a distintas escalas y profundidades, cruzandose muy
-     despacio. No es el logo apoyado encima del fondo: es el logo
-     repetido como materia.
+     No es un efecto de fondo: es el dibujo tecnico de la marca. Grilla
+     milimetrada, los dos ejes de la V trazados en punteado, el nodo del
+     vertice y las cotas de los angulos.
 
-     LA PROPORCION SALE DEL ARCHIVO, NO DE MI OJO. En el SVG el trazo
-     marino va de x=117 a x=300 y el azul de 300 a 394, sobre un lienzo
-     de 292 que arranca en 110: el vertice cae a 0.65 del ancho y el
-     brazo izquierdo es el DOBLE de ancho que el derecho. Esa asimetria
-     es lo que la hace tu V y no una flecha cualquiera.
+     Los angulos NO son decorativos, son los reales del logo: en el SVG
+     el trazo marino va de (117,118) a (299,394) — 33.2 grados respecto
+     de la vertical — y el azul de (395,118) a (303,381), 19.2 grados.
+     Son los mismos numeros con los que calculamos la V del titulo.
 
-     Y es barato: cinco trazos de tres puntos por cuadro. La version de
-     lineas finas dibujaba 960 puntos; la de pixeles, 20.736. */
-  const V_IZQ = 0.34;   // alcance del brazo izquierdo, de 0 a 1
-  const V_DER = 0.17;   // el derecho: la mitad
+     La idea: el sitio muestra como esta hecho. Es lo mas honesto que
+     puede tener de fondo el portfolio de alguien que construye cosas
+     midiendo. */
+  /* Los angulos van NEGATIVO el izquierdo y POSITIVO el derecho. Con
+     los signos al reves los brazos quedan espejados: el ancho (el del
+     trazo marino) se va a la derecha y deja de ser tu V. */
+  const EJE_IZQ = -33.2;
+  const EJE_DER = 19.2;
+  /* El vertice vive abajo a la derecha, fuera del bloque de texto. El
+     plano acompana, no compite: si las cotas caen encima del titulo,
+     dejan de leerse como anotaciones y pasan a ser ruido. */
+  const VERTICE_X = 0.86;
+  const VERTICE_Y = 0.90;
 
-  const MARINO = "13, 27, 42";
-  const AZUL = "37, 99, 235";
-
-  /* Cada tira: donde esta, cuanto mide, de que color y a que ritmo
-     flota. Las velocidades no son multiplos entre si a proposito, asi
-     el conjunto no vuelve nunca a la misma posicion. */
-  const TIRAS = [
-    { x: 0.28, y: 0.34, escala: 1.30, grosor: 0.20, color: MARINO, alfa: 0.055, vel: 0.055, fase: 0.0 },
-    { x: 0.45, y: 0.56, escala: 0.95, grosor: 0.15, color: AZUL,   alfa: 0.060, vel: 0.041, fase: 1.7 },
-    { x: 0.70, y: 0.30, escala: 1.60, grosor: 0.24, color: MARINO, alfa: 0.045, vel: 0.033, fase: 3.1 },
-    { x: 0.86, y: 0.62, escala: 1.05, grosor: 0.17, color: AZUL,   alfa: 0.050, vel: 0.047, fase: 4.4 },
-    { x: 0.12, y: 0.74, escala: 0.80, grosor: 0.13, color: MARINO, alfa: 0.040, vel: 0.062, fase: 5.6 },
-  ];
+  const TINTA = "13, 27, 42";
+  const PASO = 46;          // lado de la celda de la grilla, en px
 
   let ancho = 0;
   let alto = 0;
 
   function medir() {
     const caja = hero.getBoundingClientRect();
-    // A resolucion REAL de pantalla, no a la mitad. Antes se dibujaba
-    // chico y el CSS lo estiraba al doble: para manchas difusas daba
-    // igual, pero una linea de 1px estirada al doble sale dentada y se
-    // ve de mala calidad. Dibujar mas pixeles no cuesta nada aca: lo
-    // caro era calcular en JavaScript, y ahora solo trazamos 15 lineas;
-    // rellenarlas lo hace el navegador por su cuenta.
-    // El tope de 2 es para que una pantalla 3x no multiplique la
-    // superficie por nueve sin que se note la diferencia.
     const escala = Math.min(window.devicePixelRatio || 1, 2);
-    ancho = Math.round(caja.width * escala);
-    alto = Math.round(caja.height * escala);
-    lienzo.width = ancho;
-    lienzo.height = alto;
+    lienzo.width = Math.round(caja.width * escala);
+    lienzo.height = Math.round(caja.height * escala);
     pincel.setTransform(escala, 0, 0, escala, 0, 0);
-    // A partir de aca dibujamos en pixeles CSS y el navegador escala.
     ancho = caja.width;
     alto = caja.height;
   }
 
+  /** Dibuja una recta infinita que pasa por (x,y) con cierto angulo. */
+  function eje(x, y, grados, alfa, guion) {
+    const r = ((grados - 90) * Math.PI) / 180;
+    const largo = ancho + alto;
+    pincel.save();
+    pincel.strokeStyle = "rgba(" + TINTA + ", " + alfa + ")";
+    pincel.lineWidth = 1;
+    pincel.setLineDash(guion);
+    pincel.beginPath();
+    pincel.moveTo(x - Math.cos(r) * largo, y - Math.sin(r) * largo);
+    pincel.lineTo(x + Math.cos(r) * largo, y + Math.sin(r) * largo);
+    pincel.stroke();
+    pincel.restore();
+  }
+
   function dibujar(t) {
     pincel.clearRect(0, 0, ancho, alto);
-    // Vertice en punta, como el de la marca: la union en angulo vivo es
-    // lo que distingue una V de una U.
-    pincel.lineJoin = "miter";
-    pincel.miterLimit = 12;
-    pincel.lineCap = "butt";
 
-    for (const tira of TIRAS) {
-      // Flota: sube y baja, y se corre de costado a otro ritmo. Dos
-      // movimientos de periodo distinto hacen que el recorrido sea una
-      // curva abierta y no un vaiven.
-      const dy = Math.sin(t * tira.vel + tira.fase) * 0.055;
-      const dx = Math.cos(t * tira.vel * 0.63 + tira.fase) * 0.030;
-
-      const cx = (tira.x + dx) * ancho;   // el vertice
-      const cy = (tira.y + dy) * alto;
-      const brazo = tira.escala * alto * 0.52;
-      const abre = tira.escala * ancho * 0.62;
-
-      pincel.lineWidth = tira.grosor * alto;
-      pincel.strokeStyle = "rgba(" + tira.color + ", " + tira.alfa + ")";
-
+    // --- La grilla. Se desplaza muy despacio en diagonal: el plano
+    //     "respira" sin que se vea nada moverse. El modulo hace que el
+    //     desplazamiento sea continuo y nunca salte.
+    const corre = (t * 3) % PASO;
+    pincel.lineWidth = 1;
+    for (let x = -PASO + corre; x < ancho + PASO; x += PASO) {
+      // Cada quinta linea un poco mas marcada, como el papel milimetrado.
+      const fuerte = Math.round((x - corre) / PASO) % 5 === 0;
+      pincel.strokeStyle = "rgba(" + TINTA + ", " + (fuerte ? 0.055 : 0.025) + ")";
       pincel.beginPath();
-      pincel.moveTo(cx - V_IZQ * abre, cy - brazo);
-      pincel.lineTo(cx, cy);
-      pincel.lineTo(cx + V_DER * abre, cy - brazo);
+      pincel.moveTo(Math.round(x) + 0.5, 0);
+      pincel.lineTo(Math.round(x) + 0.5, alto);
       pincel.stroke();
     }
+    for (let y = -PASO + corre; y < alto + PASO; y += PASO) {
+      const fuerte = Math.round((y - corre) / PASO) % 5 === 0;
+      pincel.strokeStyle = "rgba(" + TINTA + ", " + (fuerte ? 0.055 : 0.025) + ")";
+      pincel.beginPath();
+      pincel.moveTo(0, Math.round(y) + 0.5);
+      pincel.lineTo(ancho, Math.round(y) + 0.5);
+      pincel.stroke();
+    }
+
+    const vx = VERTICE_X * ancho;
+    const vy = VERTICE_Y * alto;
+
+    // --- Los dos ejes de la V, en punteado de plano.
+    //     El punteado se corre con el tiempo: es la unica senal de que
+    //     el dibujo esta vivo, y se lee como un trazo en curso.
+    const avance = (t * 14) % 22;
+    pincel.lineDashOffset = -avance;
+    eje(vx, vy, EJE_IZQ, 0.16, [7, 15]);
+    eje(vx, vy, EJE_DER, 0.16, [7, 15]);
+    pincel.lineDashOffset = 0;
+
+    // --- La vertical de referencia desde la que se miden los angulos.
+    eje(vx, vy, 0, 0.07, [2, 9]);
+
+    // --- El nodo del vertice: el circulito de los planos.
+    pincel.strokeStyle = "rgba(" + TINTA + ", 0.26)";
+    pincel.lineWidth = 1;
+    pincel.beginPath();
+    pincel.arc(vx, vy, 6, 0, Math.PI * 2);
+    pincel.stroke();
+
+    // --- El arco entre los dos ejes, como en un plano de verdad.
+    //     Los angulos se calculan del MISMO numero que dibuja los ejes,
+    //     no a mano: si algun dia se cambia la inclinacion, el arco la
+    //     sigue solo en vez de quedar apuntando a cualquier lado.
+    const aIzq = ((EJE_IZQ - 90) * Math.PI) / 180;
+    const aDer = ((EJE_DER - 90) * Math.PI) / 180;
+    pincel.strokeStyle = "rgba(" + TINTA + ", 0.20)";
+    pincel.lineWidth = 1;
+    pincel.beginPath();
+    pincel.arc(vx, vy, 78, aIzq, aDer);
+    pincel.stroke();
+
+    // --- Las cotas. Dicen los angulos de verdad del logo, y se colocan
+    //     SOBRE cada eje: asi se lee cual angulo describe cada una.
+    pincel.fillStyle = "rgba(" + TINTA + ", 0.34)";
+    pincel.font = "500 11px " + getComputedStyle(document.body).fontFamily;
+    const rotulo = (ang, texto, dist) => {
+      const r = ((ang - 90) * Math.PI) / 180;
+      pincel.fillText(texto, vx + Math.cos(r) * dist - 14,
+                             vy + Math.sin(r) * dist);
+    };
+    rotulo(EJE_IZQ, "33.2°", 112);
+    rotulo(EJE_DER, "19.2°", 112);
   }
 
   // --- El reloj -------------------------------------------------------
@@ -1122,7 +1161,7 @@ function iniciar() {
   activarNavbarScroll();
   activarLinkActivo();
   activarBotonFlotante();
-  activarOleaje();
+  activarPlano();
   activarProgresoDeLectura();
   activarRevelado();
   activarInclinacion();
