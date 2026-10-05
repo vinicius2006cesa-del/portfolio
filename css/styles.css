@@ -1270,10 +1270,129 @@ p {
               transform var(--transicion-normal);
 }
 
+/* --- La vuelta de las tarjetas ---------------------------------------
+   Al pasar el mouse pasan tres cosas a la vez, y las tres cuentan:
+
+   1. La tarjeta se da vuelta de color: de crema a marino. Son los dos
+      colores de la marca, asi que el efecto no es un adorno importado,
+      es el sitio mostrando su otra cara.
+   2. El numero crece hasta volverse marca de agua. Ya estaba ahi: no se
+      agrega nada, se transforma lo que habia.
+   3. El texto corto se cambia por uno largo, con mas informacion.
+
+   El punto 3 NO mueve nada de lugar: los dos parrafos viven en la misma
+   celda de una grilla, uno encima del otro, asi que la tarjeta mide
+   siempre lo mismo y las otras tres no se enteran. Si el texto largo
+   empujara, las cuatro tarjetas saltarian cada vez que pasas el mouse.
+   -------------------------------------------------------------------- */
+.servicio {
+  position: relative;
+  /* Recorta el numero cuando crece, asi se corta contra el borde
+     redondeado en vez de salirse de la tarjeta. */
+  overflow: hidden;
+  transition: border-color var(--transicion-normal),
+              background-color var(--transicion-normal),
+              box-shadow var(--transicion-normal),
+              transform var(--transicion-normal);
+}
+
 .servicio:hover {
-  border-color: var(--color-borde-fuerte);
-  box-shadow: var(--sombra-md);
-  transform: translateY(-4px);
+  border-color: var(--color-oscuro);
+  background-color: var(--color-oscuro);
+  box-shadow: var(--sombra-lg);
+  transform: translateY(-6px);
+}
+
+.servicio:hover h3 {
+  color: var(--color-oscuro-texto);
+}
+
+.servicio:hover .servicio__corto,
+.servicio:hover .servicio__detalle {
+  color: var(--color-oscuro-suave);
+}
+
+/* El azul del icono se aclara: el #2563EB sobre marino se apaga, el
+   #3B7BFF sigue siendo el azul de la marca y mantiene el contraste. */
+.servicio:hover .servicio__icono {
+  background-color: var(--color-oscuro-acento);
+}
+
+/* --- El numero que se vuelve marca de agua --------------------------- */
+.servicio__numero {
+  position: relative;
+  z-index: 0;
+  /* Crece desde su esquina superior derecha, que es donde ya esta: asi
+     se expande hacia adentro de la tarjeta en vez de empujar. */
+  transform-origin: 100% 0%;
+  transition: transform 700ms var(--curva-salida),
+              color var(--transicion-normal);
+}
+
+.servicio:hover .servicio__numero {
+  transform: scale(3.4) translate(0.04em, 0.12em);
+  color: rgba(245, 235, 215, 0.09);
+}
+
+/* El texto va POR ENCIMA del numero agrandado. */
+.servicio h3,
+.servicio__textos {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- El cambio de texto ---------------------------------------------- */
+.servicio__textos {
+  display: grid;
+}
+
+.servicio__corto,
+.servicio__detalle {
+  /* La misma celda para los dos: la altura es la del mas alto y no hay
+     salto cuando se cambian. */
+  grid-area: 1 / 1;
+  transition: opacity 280ms var(--curva-suave),
+              transform 460ms var(--curva-salida),
+              color var(--transicion-normal);
+}
+
+.servicio__detalle {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.servicio:hover .servicio__corto {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.servicio:hover .servicio__detalle {
+  opacity: 1;
+  transform: none;
+}
+
+/* En pantallas tactiles no hay mouse que pasar: se muestra directamente
+   el texto largo, que es el que tiene la informacion. */
+@media (hover: none) {
+  .servicio__corto {
+    display: none;
+  }
+
+  .servicio__detalle {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Si pidieron menos movimiento, el cambio de texto y el color siguen
+   pasando (son informacion), pero sin desplazamientos ni el numero
+   creciendo. */
+@media (prefers-reduced-motion: reduce) {
+  .servicio__corto,
+  .servicio__detalle,
+  .servicio__numero {
+    transform: none !important;
+  }
 }
 
 .servicio__icono {
@@ -1298,9 +1417,10 @@ p {
   font-size: var(--texto-xl);
 }
 
-.servicio p {
-  flex-grow: 1;   /* empuja los tags al fondo, asi quedan alineados
-                     aunque las tarjetas tengan textos de distinto largo */
+/* El bloque de textos crece para ocupar el alto sobrante, asi las
+   cuatro tarjetas terminan parejas aunque los textos midan distinto. */
+.servicio__textos {
+  flex-grow: 1;
 }
 
 

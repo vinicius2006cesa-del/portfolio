@@ -157,12 +157,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610050136">
+  <link rel="stylesheet" href="css/styles.css?v=202610050148">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610050136"></script>
+  <script src="js/activar-animaciones.js?v=202610050148"></script>
 </head>
 
 <body>
@@ -282,7 +282,6 @@
           Diseño y desarrollo de sitios web hechos a medida para que tu
           negocio <b>se vea serio</b>, <b>se distinga del resto</b> y
           <b>convierta consultas en clientes</b>.
-          Sin plantillas, sin atajos: cada decisión tiene un porqué.
         </p>
 
         <div class="hero__botones aparece">
@@ -331,11 +330,7 @@
 
         <div class="seccion__encabezado aparece">
           <p class="etiqueta">Servicios</p>
-          <h2>¿En qué te ayudo?</h2>
-          <p>
-            Soluciones digitales para emprendedores, profesionales y pymes que
-            necesitan vender más y verse más confiables online.
-          </p>
+          <h2>Qué ofrezco</h2>
         </div>
 
         <!-- data-escalonar: el JS le da a cada hijo un retraso distinto,
@@ -364,8 +359,10 @@
               <span class="servicio__numero">01</span>
             </div>
             <h3>Diseño web</h3>
-            <p>Pensado desde cero para tu negocio: claro de leer, fácil de
-              recorrer y distinto al de tu competencia.</p>
+            <div class="servicio__textos">
+              <p class="servicio__corto">Cómo se ve y cómo se usa tu sitio.</p>
+              <p class="servicio__detalle">Pensado desde cero para tu negocio: claro de leer, fácil de recorrer y distinto al de tu competencia.</p>
+            </div>
           </article>
 
           <article class="servicio aparece">
@@ -379,8 +376,10 @@
               <span class="servicio__numero">02</span>
             </div>
             <h3>Desarrollo web</h3>
-            <p>Código propio, sin plantillas. Liviano, rápido en el celular y
-              preparado para crecer con vos.</p>
+            <div class="servicio__textos">
+              <p class="servicio__corto">El diseño convertido en un sitio real.</p>
+              <p class="servicio__detalle">Rápido, prolijo y bien construido. Se adapta a cualquier pantalla, del celular al monitor grande.</p>
+            </div>
           </article>
 
           <article class="servicio aparece">
@@ -394,8 +393,10 @@
               <span class="servicio__numero">03</span>
             </div>
             <h3>SEO</h3>
-            <p>Para que te encuentren cuando buscan lo que hacés, con la
-              estructura técnica que los buscadores necesitan leer.</p>
+            <div class="servicio__textos">
+              <p class="servicio__corto">Para cuando te buscan en Google.</p>
+              <p class="servicio__detalle">No solo te hago la web: la optimizo para que aparezca cuando buscan lo que hacés y te puedan encontrar.</p>
+            </div>
           </article>
 
           <article class="servicio aparece">
@@ -409,8 +410,10 @@
               <span class="servicio__numero">04</span>
             </div>
             <h3>Mantenimiento</h3>
-            <p>Cambios, textos nuevos y seguridad al día, sin que vos tengas
-              que tocar nada.</p>
+            <div class="servicio__textos">
+              <p class="servicio__corto">La web no termina el día que se publica.</p>
+              <p class="servicio__detalle">La mantengo al día, actualizada y funcionando todos los días, sin que vos tengas que ocuparte.</p>
+            </div>
           </article>
 
         </div>
@@ -976,7 +979,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610050136" defer></script>
+  <script src="js/main.js?v=202610050148" defer></script>
 
 </body>
 </html>
