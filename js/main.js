@@ -8,9 +8,8 @@
    4. Estado de la navbar al hacer scroll
    5. Link activo segun la seccion visible
    5b. Boton flotante de WhatsApp
-   6. Acordeon del proceso
-   7. Formulario de contacto
-   8. Arranque
+   6. Formulario de contacto
+   7. Arranque
    ===================================================================== */
 
 // "use strict" activa el modo estricto: JavaScript avisa de errores que
@@ -604,43 +603,7 @@ function activarVitrina() {
 
 
 /* =====================================================================
-   6. ACORDEON DEL PROCESO
-   ---------------------------------------------------------------------
-   Al tocar una etapa se abre su panel y se cierran las demas.
-   ===================================================================== */
-function activarProceso() {
-  const etapas = document.querySelectorAll(".etapa");
-  if (etapas.length === 0) return;
-
-  /**
-   * Abre o cierra una etapa.
-   * @param {Element} etapa - el <article class="etapa">
-   * @param {boolean} abrir
-   */
-  function cambiarEtapa(etapa, abrir) {
-    const boton = etapa.querySelector(".etapa__boton");
-    etapa.classList.toggle("etapa--abierta", abrir);
-    if (boton) boton.setAttribute("aria-expanded", String(abrir));
-  }
-
-  etapas.forEach((etapa) => {
-    const boton = etapa.querySelector(".etapa__boton");
-    if (!boton) return;
-
-    boton.addEventListener("click", () => {
-      const estaAbierta = etapa.classList.contains("etapa--abierta");
-
-      // Cerramos todas y abrimos solo la tocada. Si ya estaba abierta,
-      // queda cerrada: se puede colapsar todo.
-      etapas.forEach((otra) => cambiarEtapa(otra, false));
-      cambiarEtapa(etapa, !estaAbierta);
-    });
-  });
-}
-
-
-/* =====================================================================
-   7. FORMULARIO DE CONTACTO
+   6. FORMULARIO DE CONTACTO
    ---------------------------------------------------------------------
    Lo enviamos con fetch para no recargar la pagina y poder mostrar un
    mensaje ahi mismo. Si el JavaScript fallara, el formulario igual
@@ -721,7 +684,7 @@ function activarFormulario() {
 
 
 /* =====================================================================
-   8. ARRANQUE
+   7. ARRANQUE
    ---------------------------------------------------------------------
    El <script> tiene defer, asi que el HTML ya esta listo cuando esto
    corre. Igual agrupamos todo aca para que quede claro que se
@@ -738,7 +701,6 @@ function iniciar() {
   activarBotonFlotante();
   activarOleaje();
   activarVitrina();
-  activarProceso();
   activarFormulario();
 }
 

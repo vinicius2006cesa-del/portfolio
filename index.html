@@ -157,12 +157,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610042259">
+  <link rel="stylesheet" href="css/styles.css?v=202610042303">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610042259"></script>
+  <script src="js/activar-animaciones.js?v=202610042303"></script>
 </head>
 
 <body>
@@ -661,146 +661,46 @@
           <h2>Cómo trabajo</h2>
         </div>
 
-        <div class="proceso__lista" data-escalonar>
+        <!-- Cinco pasos, los cinco a la vista. Antes era un acordeon:
+             habia que abrir cada etapa para leerla, y adentro habia un
+             parrafo largo. Ocupaba el triple de alto y obligaba a
+             trabajar para enterarse de algo que se dice en un renglon.
 
-          <!-- Cada etapa es un boton que abre su propio panel.
-               aria-expanded dice si esta abierto; aria-controls apunta al
-               panel; y el panel usa aria-labelledby para decir a que boton
-               pertenece. Con eso el acordeon es navegable con teclado y
-               entendible con lector de pantalla. -->
-          <article class="etapa etapa--abierta aparece">
-            <h3 class="etapa__encabezado">
-              <button class="etapa__boton" type="button"
-                      id="etapa-1-boton" aria-expanded="true" aria-controls="etapa-1-panel">
-                <span class="etapa__numero">01</span>
-                <span class="etapa__texto">
-                  <span class="etapa__nombre">Nos conocemos</span>
-                  <span class="etapa__resumen">Una llamada corta para entender tu negocio, tu momento y qué necesitás resolver.</span>
-                </span>
-                <span class="etapa__icono" aria-hidden="true"></span>
-              </button>
-            </h3>
-            <div class="etapa__panel" id="etapa-1-panel" role="region" aria-labelledby="etapa-1-boton">
-              <div class="etapa__panel-interior">
-                <p class="etapa__detalle">
-                  Arrancamos con una llamada para conocer tu negocio, tu idea y lo que
-                  realmente necesitás lograr con tu web. Para mí es clave que nos
-                  conozcamos, así sabés quién va a estar detrás de la cara digital de tu
-                  marca. No se trata solo de hacer una web, sino de construir una
-                  herramienta que se entienda, que genere confianza y que trabaje para tu
-                  negocio todos los días. Para mí, Vinicius, la confianza, la claridad y
-                  el compromiso son la base de cualquier buen proyecto.
-                </p>
-              </div>
-            </div>
-          </article>
+             Es una <ol> y no una lista de divs porque el ORDEN es el
+             contenido: un lector de pantalla anuncia "1 de 5". -->
+        <ol class="proceso__lista" data-escalonar>
 
-          <article class="etapa aparece">
-            <h3 class="etapa__encabezado">
-              <button class="etapa__boton" type="button"
-                      id="etapa-2-boton" aria-expanded="false" aria-controls="etapa-2-panel">
-                <span class="etapa__numero">02</span>
-                <span class="etapa__texto">
-                  <span class="etapa__nombre">Definimos el problema</span>
-                  <span class="etapa__resumen">Detectamos qué te está frenando y qué solución realmente conviene.</span>
-                </span>
-                <span class="etapa__icono" aria-hidden="true"></span>
-              </button>
-            </h3>
-            <div class="etapa__panel" id="etapa-2-panel" role="region" aria-labelledby="etapa-2-boton">
-              <div class="etapa__panel-interior">
-                <!-- BORRADOR: revisar este texto -->
-                <p class="etapa__detalle">
-                  Con lo que me contás, ordenamos qué es lo que realmente te está
-                  frenando. Muchas veces no es la web en sí: es que no se entiende qué
-                  ofrecés, o que el cliente no sabe cómo contactarte. Antes de escribir
-                  una línea de código definimos qué problema vamos a resolver y cómo
-                  vamos a darnos cuenta de que lo resolvimos. Si pienso que no necesitás
-                  una web nueva, te lo digo, antes que venderte algo que no te va a servir.
-                </p>
-              </div>
-            </div>
-          </article>
+          <li class="etapa aparece">
+            <span class="etapa__numero" aria-hidden="true">01</span>
+            <h3 class="etapa__nombre">Nos conocemos</h3>
+            <p class="etapa__texto">Una llamada corta para entender tu negocio, tu momento y qué necesitás resolver.</p>
+          </li>
 
-          <article class="etapa aparece">
-            <h3 class="etapa__encabezado">
-              <button class="etapa__boton" type="button"
-                      id="etapa-3-boton" aria-expanded="false" aria-controls="etapa-3-panel">
-                <span class="etapa__numero">03</span>
-                <span class="etapa__texto">
-                  <span class="etapa__nombre">Planificamos y presupuestamos</span>
-                  <span class="etapa__resumen">Alcance claro, tiempos concretos y una propuesta sin sorpresas.</span>
-                </span>
-                <span class="etapa__icono" aria-hidden="true"></span>
-              </button>
-            </h3>
-            <div class="etapa__panel" id="etapa-3-panel" role="region" aria-labelledby="etapa-3-boton">
-              <div class="etapa__panel-interior">
-                <!-- BORRADOR: revisar este texto -->
-                <p class="etapa__detalle">
-                  Te paso una propuesta con todo escrito: qué incluye, qué no incluye,
-                  cuánto sale y en cuánto tiempo lo tenés. Sin letra chica ni costos que
-                  aparecen después. Si el presupuesto no entra en lo que tenías pensado,
-                  vemos juntos qué conviene hacer en una primera etapa y qué puede
-                  esperar. La idea es que decidas con la información completa y sin apuro.
-                </p>
-              </div>
-            </div>
-          </article>
+          <li class="etapa aparece">
+            <span class="etapa__numero" aria-hidden="true">02</span>
+            <h3 class="etapa__nombre">Definimos el problema</h3>
+            <p class="etapa__texto">Detectamos qué te está frenando y qué solución realmente conviene.</p>
+          </li>
 
-          <article class="etapa aparece">
-            <h3 class="etapa__encabezado">
-              <button class="etapa__boton" type="button"
-                      id="etapa-4-boton" aria-expanded="false" aria-controls="etapa-4-panel">
-                <span class="etapa__numero">04</span>
-                <span class="etapa__texto">
-                  <span class="etapa__nombre">Trabajamos con comunicación real</span>
-                  <span class="etapa__resumen">Avances desde la primera semana, transparencia y foco.</span>
-                </span>
-                <span class="etapa__icono" aria-hidden="true"></span>
-              </button>
-            </h3>
-            <div class="etapa__panel" id="etapa-4-panel" role="region" aria-labelledby="etapa-4-boton">
-              <div class="etapa__panel-interior">
-                <!-- BORRADOR: revisar este texto -->
-                <p class="etapa__detalle">
-                  Desde la primera semana ves avances, no promesas. Te muestro el trabajo
-                  a medida que va tomando forma, así podés corregir el rumbo temprano y no
-                  cuando ya está todo hecho. Si algo se complica o se atrasa, te lo digo
-                  en el momento. Prefiero una conversación incómoda a tiempo antes que una
-                  sorpresa al final.
-                </p>
-              </div>
-            </div>
-          </article>
+          <li class="etapa aparece">
+            <span class="etapa__numero" aria-hidden="true">03</span>
+            <h3 class="etapa__nombre">Planificamos y presupuestamos</h3>
+            <p class="etapa__texto">Alcance claro, tiempos concretos y una propuesta sin sorpresas.</p>
+          </li>
 
-          <article class="etapa aparece">
-            <h3 class="etapa__encabezado">
-              <button class="etapa__boton" type="button"
-                      id="etapa-5-boton" aria-expanded="false" aria-controls="etapa-5-panel">
-                <span class="etapa__numero">05</span>
-                <span class="etapa__texto">
-                  <span class="etapa__nombre">Entregamos y acompañamos</span>
-                  <span class="etapa__resumen">Publicamos, damos soporte y sostenemos la evolución de tu herramienta.</span>
-                </span>
-                <span class="etapa__icono" aria-hidden="true"></span>
-              </button>
-            </h3>
-            <div class="etapa__panel" id="etapa-5-panel" role="region" aria-labelledby="etapa-5-boton">
-              <div class="etapa__panel-interior">
-                <!-- BORRADOR: revisar este texto -->
-                <p class="etapa__detalle">
-                  Publicamos el sitio, lo dejamos andando y te explico cómo manejarlo,
-                  para que no dependas de mí por cada cambio chico. Después seguimos en
-                  contacto: una web no se termina el día que sale al aire, se va ajustando
-                  con lo que vas aprendiendo de tus clientes. Si más adelante necesitás
-                  sumar algo, ya conozco tu proyecto y arrancamos desde donde lo dejamos.
-                </p>
-              </div>
-            </div>
-          </article>
+          <li class="etapa aparece">
+            <span class="etapa__numero" aria-hidden="true">04</span>
+            <h3 class="etapa__nombre">Trabajamos con comunicación real</h3>
+            <p class="etapa__texto">Avances desde la primera semana, transparencia y foco.</p>
+          </li>
 
-        </div>
+          <li class="etapa aparece">
+            <span class="etapa__numero" aria-hidden="true">05</span>
+            <h3 class="etapa__nombre">Entregamos y acompañamos</h3>
+            <p class="etapa__texto">Publicamos, damos soporte y sostenemos la evolución de tu herramienta.</p>
+          </li>
+
+        </ol>
       </div>
     </section>
 
@@ -1076,7 +976,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610042259" defer></script>
+  <script src="js/main.js?v=202610042303" defer></script>
 
 </body>
 </html>
