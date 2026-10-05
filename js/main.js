@@ -603,6 +603,70 @@ function activarVitrina() {
 
 
 /* =====================================================================
+   5c. PROGRESO DE SCROLL
+   ---------------------------------------------------------------------
+   Esto es, en chiquito, lo que hace ScrollTrigger en los sitios que
+   miramos: a cada elemento marcado con data-progreso le escribe una
+   variable CSS --p que va de 0 a 1 segun cuanto avanzo por la pantalla.
+
+   La gracia es el reparto de trabajo: el JS SOLO calcula un numero. Que
+   hacer con ese numero (mover, escalar, girar) lo decide el CSS. Para
+   sumar un efecto nuevo no hay que tocar JavaScript.
+
+   --p vale 0 cuando el elemento esta por entrar por abajo y 1 cuando
+   termino de salir por arriba. En el medio (0.5) esta centrado.
+   ===================================================================== */
+function activarProgresoDeScroll() {
+  const objetivos = document.querySelectorAll("[data-progreso]");
+  if (objetivos.length === 0) return;
+  if (prefiereMenosMovimiento()) return;
+
+  // Solo se calculan los que estan en pantalla. Sin esto estariamos
+  // midiendo elementos que nadie ve, en cada cuadro, para siempre.
+  const activos = new Set();
+  let corriendo = false;
+
+  function cuadro() {
+    if (activos.size === 0) {
+      corriendo = false;
+      return;
+    }
+    const alto = window.innerHeight;
+    activos.forEach((el) => {
+      const caja = el.getBoundingClientRect();
+      // Recorrido total: el elemento entra por abajo y sale por arriba,
+      // o sea que atraviesa el alto de la ventana MAS su propio alto.
+      const p = (alto - caja.top) / (alto + caja.height);
+      el.style.setProperty("--p", Math.min(1, Math.max(0, p)).toFixed(4));
+    });
+    requestAnimationFrame(cuadro);
+  }
+
+  function arrancar() {
+    if (!corriendo) {
+      corriendo = true;
+      requestAnimationFrame(cuadro);
+    }
+  }
+
+  const vigia = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((e) => {
+        if (e.isIntersecting) activos.add(e.target);
+        else activos.delete(e.target);
+      });
+      arrancar();
+    },
+    // Un margen generoso: empieza a calcular un poco antes de que el
+    // elemento asome, asi nunca se ve el primer salto.
+    { rootMargin: "25% 0px" }
+  );
+
+  objetivos.forEach((o) => vigia.observe(o));
+}
+
+
+/* =====================================================================
    6. FORMULARIO DE CONTACTO
    ---------------------------------------------------------------------
    Lo enviamos con fetch para no recargar la pagina y poder mostrar un
@@ -700,6 +764,7 @@ function iniciar() {
   activarLinkActivo();
   activarBotonFlotante();
   activarOleaje();
+  activarProgresoDeScroll();
   activarVitrina();
   activarFormulario();
 }

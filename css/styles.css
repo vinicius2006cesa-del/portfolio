@@ -150,8 +150,20 @@
   --alto-navbar: 76px;
 
   /* --- Transiciones ----------------------------------------------------- */
-  --transicion-rapida: 160ms ease;
-  --transicion-normal: 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* --- Movimiento ----------------------------------------------------
+     Dos curvas y nada mas. Que TODO el sitio se mueva con la misma
+     curva es lo que hace que se sienta de una sola pieza; mezclar
+     curvas es lo que hace que un sitio se sienta armado por partes.
+
+     --salida es una exponencial de salida: arranca muy rapido y frena
+     mucho al final. Es la curva que usan los sitios que se sienten
+     caros, porque imita como frena algo con masa. La de antes
+     (0.22,1,0.36,1) es mas timida: arranca mas lento y frena antes. */
+  --curva-salida: cubic-bezier(0.16, 1, 0.3, 1);
+  --curva-suave: cubic-bezier(0.33, 1, 0.68, 1);
+
+  --transicion-rapida: 180ms var(--curva-suave);
+  --transicion-normal: 320ms var(--curva-salida);
 
   /* --- Capas (z-index) --------------------------------------------------- */
   --capa-navbar: 100;
@@ -490,8 +502,21 @@ p {
    para siempre. */
 .con-animaciones .aparece {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* perspective() adentro del propio transform: asi el giro en 3D
+     funciona sin tener que ponerle perspective al padre, que obligaria
+     a tocar el CSS de cada seccion.
+
+     Los 5 grados de rotateX son la diferencia entre "aparece" y "entra".
+     Con solo translateY el elemento se desliza como una calcomania; con
+     una pizca de giro se lee como un objeto con espesor que se endereza.
+     Mas de 6 grados y se nota el truco. */
+  transform: perspective(1200px) translateY(26px) rotateX(5deg) scale(0.985);
+  /* La opacidad termina ANTES que el movimiento (520 contra 900). Es
+     deliberado: el elemento ya se lee mientras todavia se esta
+     acomodando, y eso hace que se sienta rapido aunque el movimiento
+     dure casi un segundo. Si las dos duran lo mismo, se siente lento. */
+  transition: opacity 520ms var(--curva-suave),
+              transform 900ms var(--curva-salida);
   /* El retraso lo define el JS en los bloques con data-escalonar.
      Si nadie lo define, var() usa el 0ms de respaldo. */
   transition-delay: var(--retraso, 0ms);
@@ -499,8 +524,13 @@ p {
 
 /* Variantes de direccion. Se combinan con .aparece:
    class="aparece aparece--izq" */
-.con-animaciones .aparece--izq { transform: translateX(-28px); }
-.con-animaciones .aparece--der { transform: translateX(28px); }
+.con-animaciones .aparece--izq {
+  transform: perspective(1200px) translateX(-30px) rotateY(4deg) scale(0.985);
+}
+
+.con-animaciones .aparece--der {
+  transform: perspective(1200px) translateX(30px) rotateY(-4deg) scale(0.985);
+}
 
 /* transform: none anula cualquiera de las variantes de arriba
    sin tener que escribir una regla .visible para cada una. */
@@ -926,7 +956,19 @@ p {
   pointer-events: none;
 }
 
+/* Al bajar, el contenido del hero se queda atras y se desvanece. No es
+   decoracion: es la pista de profundidad mas vieja que hay. Lo cercano
+   se mueve rapido y lo lejano lento; aca el texto va MAS LENTO que la
+   pagina, asi que se lee como si estuviera al fondo, detras del borde
+   de la pantalla.
+
+   El 0.46 no es al azar: es cuanto vale --p cuando el hero esta recien
+   cargado y arriba de todo (medido). Restarlo hace que el efecto
+   arranque en cero justo ahi y no con el texto ya corrido. */
 .hero__contenido {
+  transform: translateY(calc((var(--p, 0.46) - 0.46) * 170px));
+  opacity: clamp(0, calc(1 - (var(--p, 0.46) - 0.46) * 2.1), 1);
+  will-change: transform, opacity;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1524,10 +1566,28 @@ p {
   background-color: var(--color-superficie-alta);
 }
 
+/* La imagen es MAS ALTA que su marco y se desplaza adentro segun
+   cuanto bajaste. Es el efecto que mas "caro" se lee de todos los que
+   hicimos, y cuesta cuatro lineas.
+
+   118% de alto deja 18% de sobra. Arranca corrida -9% (centrada) y se
+   mueve 7% para cada lado, asi nunca se ve el borde.
+
+   El --p lo escribe el JS en #vitrina y baja hasta aca por herencia:
+   las variables CSS se heredan, asi que un solo calculo por cuadro
+   alcanza para las tres imagenes. */
+.vitrina__imagen {
+  position: relative;
+}
+
 .vitrina__imagen img {
+  position: absolute;
+  inset: -9% 0 auto 0;
   width: 100%;
-  height: 100%;
+  height: 118%;
   object-fit: cover;
+  transform: translateY(calc((var(--p, 0.5) - 0.5) * -14%));
+  will-change: transform;
 }
 
 /* --- La ficha del proyecto -------------------------------------------
