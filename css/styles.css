@@ -187,19 +187,19 @@
   padding: 0;
 }
 
-/* Los elementos que todavia no entraron estan corridos y girados unos
-   pixeles: sobresalen por el costado y en celular eso abria una barra de
-   scroll horizontal de 5px. Medido, y permanente, porque los que estan
-   mas abajo de la pagina nunca se revelan hasta que llegas.
-
-   clip y NO hidden: los dos cortan lo que sobra, pero hidden convierte
-   al elemento en un contenedor de scroll y eso rompe el position:sticky
-   de la lista de proyectos y de la columna de contacto. clip no. */
-body {
-  overflow-x: clip;
-}
-
 html {
+  /* EL FONDO VA ACA, no solo en el <body>.
+
+     Normalmente alcanza con ponerlo en el body: el navegador lo copia a
+     toda la ventana. Pero esa copia deja de funcionar cuando el body
+     lleva overflow, y entonces cualquier zona que el body no cubra
+     (un rebote del scroll, un zoom, el instante en que aparece la barra)
+     queda sin pintar y se ve el fondo oscuro del navegador. Se veia como
+     una franja negra en el borde derecho, de a ratos.
+
+     Pintandolo tambien aca no hay forma de que quede un hueco. */
+  background-color: var(--color-fondo);
+
   /* Las animaciones de aparicion corren los elementos de costado antes
      de revelarlos (aparece--izq / aparece--der). Mientras estan en esa
      posicion sobresalen unos pixeles y aparece una barra de scroll
@@ -217,6 +217,11 @@ html {
 }
 
 body {
+  /* Hace falta ADEMAS del clip del <html>: medido en celular, sin esto
+     vuelven 5px de scroll horizontal que el del html no corta. Lo que
+     antes rompia (el fondo sin pintar en el borde) ya no pasa, porque
+     el color ahora tambien esta en el <html> de arriba. */
+  overflow-x: clip;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -2624,9 +2629,14 @@ p {
     align-items: start;
   }
 
+  /* Esta columna tuvo position:sticky para que los nombres siguieran a
+     la vista mientras mirabas la imagen. Se saco porque no podia
+     funcionar: un elemento pegajoso se sostiene mientras su contenedor
+     siga pasando, y aca la columna mide 322px dentro de un bloque de
+     380. Son 59px de recorrido — despues se va con la pagina igual.
+     Si algun dia la vitrina crece mucho mas alto que la lista, vuelve a
+     tener sentido. */
   .vitrina__columna {
-    position: sticky;
-    top: calc(var(--alto-navbar) + var(--esp-5));
     display: flex;
     flex-direction: column;
     gap: var(--esp-4);
