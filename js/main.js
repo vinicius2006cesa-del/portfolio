@@ -344,6 +344,14 @@ function activarOleaje() {
 
   const color = [0, 0, 0];
 
+  // 33.2 grados: el angulo del trazo marino de la V respecto de la
+  // vertical, sacado del propio SVG del logo (ver el comentario de
+  // adentro del bucle). Se calcula una sola vez, no 20.000 veces por
+  // cuadro.
+  const ANGULO = (33.2 * Math.PI) / 180;
+  const COS = Math.cos(ANGULO);
+  const SEN = Math.sin(ANGULO);
+
   function dibujar(t) {
     let i = 0;
     for (let py = 0; py < ALTO; py++) {
@@ -351,22 +359,31 @@ function activarOleaje() {
       for (let px = 0; px < ANCHO; px++) {
         const x = px / ANCHO;
 
-        // El frente de la ola: cuanto se corre hacia arriba o hacia
-        // abajo segun donde estes en el eje horizontal. Dos senos de
-        // periodo distinto que van en sentidos opuestos: asi la cresta
-        // nunca es una curva regular, se deforma mientras avanza.
+        // EL EJE DE LA MARCA.
+        // Todo el movimiento corre en la direccion del trazo marino de
+        // la V. No es una eleccion estetica suelta: ese trazo va de
+        // (117,118) a (299,394) en el SVG del logo, o sea 33.2 grados
+        // respecto de la vertical. Proyectando cada pixel sobre esa
+        // direccion, las bandas de luz quedan PARALELAS al palo de la
+        // V. El fondo se mueve con la forma de la marca.
+        const u = x * COS + y * SEN;   // avance a lo largo del trazo
+        const w = x * -SEN + y * COS;  // distancia perpendicular
+
+        // El frente de la ola se deforma a lo ancho del eje. Dos senos
+        // de periodo distinto en sentidos opuestos: la cresta nunca es
+        // una curva regular, se deforma mientras avanza.
         const frente =
-          Math.sin(x * 4.2 + t * 0.055) * 0.5 +
-          Math.sin(x * 2.3 - t * 0.031) * 0.32;
+          Math.sin(w * 4.2 + t * 0.055) * 0.5 +
+          Math.sin(w * 2.3 - t * 0.031) * 0.32;
 
-        // La ola propiamente dicha. El 1.6 es cuantas bandas entran en
-        // la altura de la pantalla: con mas, se ve rayado.
-        const ola = Math.sin((y + frente * 0.22) * 1.6 - t * 0.042);
+        // La ola, viajando a lo largo del eje de la V. El 1.6 es cuantas
+        // bandas entran en la pantalla: con mas, se ve rayado.
+        const ola = Math.sin((u + frente * 0.22) * 1.6 - t * 0.042);
 
-        // Segunda capa, mas grande y mucho mas lenta, en diagonal. Es la
-        // que evita que se lea como un patron: sola la ola de arriba se
+        // Segunda capa, mas grande y mucho mas lenta, cruzada. Es la que
+        // evita que se lea como un patron: sola la ola de arriba se
         // repite, con esta encima nunca cae dos veces igual.
-        const marea = Math.sin((x * 1.1 + y * 1.6) - t * 0.019) * 0.45;
+        const marea = Math.sin((w * 1.1 + u * 1.6) - t * 0.019) * 0.45;
 
         // 0.30 de amplitud total. Arranco en 0.55 y era demasiado: en
         // seis segundos la pantalla pasaba de calida a fria entera. Esto

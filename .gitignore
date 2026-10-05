@@ -15,6 +15,13 @@ $RECYCLE.BIN/
 *.swp
 .claude/
 
+# Skills de agentes (transitions.dev y las que sumemos). Son herramientas
+# para trabajar, no parte del sitio: Cloudflare publica TODO lo que esta
+# en el repositorio, asi que si se suben quedan servidas en
+# viniciuscesa.com. Se reinstalan con:  npx skills add <repo>
+.agents/
+skills-lock.json
+
 # --- Logs y temporales ---
 *.log
 tmp/

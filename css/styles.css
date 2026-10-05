@@ -149,7 +149,7 @@
   /* --- Layout ---------------------------------------------------------- */
   --ancho-contenedor: 1180px;
   --alto-navbar: 76px;
-  --alto-cinta: 56px;   /* la cinta de servicios debajo del hero */
+  --alto-cinta: 78px;   /* la cinta de servicios debajo del hero */
 
   /* --- Transiciones ----------------------------------------------------- */
   /* --- Movimiento ----------------------------------------------------
@@ -446,8 +446,8 @@ p {
 }
 
 .btn--grande {
-  padding: var(--esp-4) var(--esp-6);
-  font-size: var(--texto-base);
+  padding: var(--esp-4) var(--esp-7);
+  font-size: var(--texto-lg);
 }
 
 .btn--ancho {
@@ -682,7 +682,7 @@ p {
      El nombre NO hereda este cuerpo: lleva el suyo, mas chico. La V es
      el logo y manda; el nombre la acompana. */
   font-family: var(--fuente-titulos);
-  font-size: 2.1rem;
+  font-size: 2.3rem;
   font-weight: var(--peso-extra);
   letter-spacing: -0.03em;
   line-height: 1;
@@ -940,6 +940,62 @@ p {
   }
 }
 
+/* CAPA 4: el haz.
+
+   Una banda de luz muy tenue que cruza el hero en diagonal. El angulo
+   (33.2deg) es el MISMO que el del trazo marino de la V y el mismo en el
+   que corren las ondas del canvas: las tres capas se mueven sobre el eje
+   de la marca, por eso el conjunto se lee como una sola superficie.
+
+   El elemento es mas grande que el hero y se desplaza de punta a punta.
+   Se anima solo translate (la placa de video lo resuelve sola) y nunca
+   el gradiente, que obligaria a repintar.
+
+   19 segundos, y de los cuales la mayor parte esta fuera de pantalla:
+   el haz PASA, no se queda. Un destello cada tanto se nota; uno
+   permanente se vuelve un adorno.
+   -------------------------------------------------------------------- */
+.hero__haz {
+  position: absolute;
+  top: -60%;
+  left: -40%;
+  width: 60%;
+  height: 220%;
+  pointer-events: none;
+  rotate: 33.2deg;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 253, 247, 0) 0%,
+    rgba(255, 253, 247, 0.55) 45%,
+    rgba(255, 253, 247, 0.75) 50%,
+    rgba(255, 253, 247, 0.55) 55%,
+    rgba(255, 253, 247, 0) 100%
+  );
+  /* mix-blend-mode: soft-light hace que el haz ACLARE lo que hay debajo
+     en vez de taparlo con un velo blanco. Es la diferencia entre "luz
+     sobre una superficie" y "una tira blanca encima". */
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  animation: pasa-haz 19s linear infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes pasa-haz {
+  /* Entra apagado, se enciende mientras cruza y se apaga antes de
+     salir: asi no se ve aparecer ni desaparecer por los bordes. */
+  0%   { transform: translateX(-60%); opacity: 0; }
+  12%  { opacity: 0.55; }
+  38%  { opacity: 0.55; }
+  50%  { transform: translateX(260%); opacity: 0; }
+  100% { transform: translateX(260%); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__haz {
+    display: none;
+  }
+}
+
 /* Resplandor suave detras del titulo. Se hace con ::before, un
    pseudo-elemento: existe solo en el CSS, no ensucia el HTML. */
 .hero::before {
@@ -1005,8 +1061,10 @@ p {
      navegador. Con 100vh el contenido queda tapado detras de ella. */
   /* Se le descuenta el alto de la cinta ademas del de la barra. Sin
      esto el hero ocupa EXACTO la pantalla y la cinta queda justo abajo
-     del pliegue: hay que scrollear para descubrir que existe. Asomando
-     unos pixeles se lee como "esto sigue" y te invita a bajar. */
+     del pliegue: hay que scrollear para descubrir que existe. El 78
+     es el alto completo de la cinta (74px) mas aire: asoma ENTERA. Con
+     56 se veia cortada por abajo y el corte recto contra el borde de la
+     pantalla se leia como una barra de tareas, no como contenido. */
   min-height: calc(100svh - var(--alto-navbar) - var(--alto-cinta));
   padding-bottom: var(--esp-5);
 }
@@ -1093,9 +1151,9 @@ p {
      porque el titular es un nombre de dos palabras, no una frase: no se
      lee, se mira. El tope de 7rem (112px) esta calculado para que
      "Vinicius Cesa" entre en un solo renglon dentro del contenedor de
-     1180px (medido: 788px de ancho a 136px de cuerpo, sobre 1140
+     1180px (medido: 881px de ancho a 152px de cuerpo, sobre 1140
      disponibles); mas grande que eso y se parte al medio. */
-  font-size: clamp(2.6rem, 9.5vw, 8.5rem);
+  font-size: clamp(2.8rem, 10.5vw, 9.5rem);
   max-width: 18ch;
 }
 
@@ -1118,7 +1176,7 @@ p {
   /* Apenas mas grande que el --texto-lg del resto del sitio (1.2rem):
      es el unico parrafo de la pagina que compite con un titulo de
      136px, y al tamano normal se veia perdido debajo. */
-  font-size: clamp(1.1rem, 0.45vw + 1rem, 1.35rem);
+  font-size: clamp(1.15rem, 0.6vw + 1rem, 1.5rem);
   /* Base apagada a proposito: el contraste lo hacen las palabras en
      negrita de adentro. Igual cumple accesibilidad (4.9:1 sobre crema),
      no es texto "gris decorativo". */
@@ -1881,7 +1939,7 @@ p {
 
 .etapa__nombre {
   font-family: var(--fuente-titulos);
-  font-size: var(--texto-lg);
+  font-size: var(--texto-xl);
   font-weight: var(--peso-extra);
   letter-spacing: -0.02em;
   line-height: 1.25;
@@ -1889,7 +1947,7 @@ p {
 }
 
 .etapa__texto {
-  font-size: var(--texto-sm);
+  font-size: var(--texto-base);
   color: var(--color-texto-suave);
 }
 
@@ -2528,7 +2586,7 @@ p {
 
   .navbar__link {
     padding: 0;
-    font-size: var(--texto-sm);
+    font-size: var(--texto-base);
   }
 
   .navbar__cta {
@@ -2647,10 +2705,13 @@ p {
      propio contenido: medido, las descripciones arrancaban en 537, 541,
      541, 541 y 538. Cuatro pixeles de diferencia se ven. Con un ancho
      fijo las cinco caen en la misma columna.
-     22rem = 352px, y el nombre mas largo ("Trabajamos con comunicacion
-     real") mide 314: entra con aire. */
+     26rem = 416px. El nombre mas largo ("Trabajamos con comunicacion
+     real") mide 392 al cuerpo actual (--texto-xl): entra con aire.
+     Ojo si cambia el tamano de letra: con 22rem, que alcanzaba para el
+     cuerpo anterior, este nombre se partia en dos renglones y la fila
+     quedaba del doble de alto que las otras cuatro. */
   .etapa {
-    grid-template-columns: 2.5rem 22rem 1fr;
+    grid-template-columns: 2.5rem 26rem 1fr;
     align-items: baseline;
     gap: var(--esp-5);
   }
