@@ -2131,19 +2131,105 @@ p {
   gap: var(--esp-7);
 }
 
-.contacto__alternativa {
+/* =====================================================================
+   LAS TRES VIAS DIRECTAS DE CONTACTO
+   ---------------------------------------------------------------------
+   Cada una muestra el dato A LA VISTA, no escondido detras de un boton
+   que dice "escribime". Quien no tiene ganas de llenar un formulario
+   puede copiar el numero o el mail de una, sin tener que hacer click
+   para averiguar cual es.
+   ===================================================================== */
+.contacto__vias {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--esp-3);
-  padding-top: var(--esp-5);
-  border-top: 1px solid var(--color-borde);
+  margin-top: var(--esp-5);
+  list-style: none;
+  border-top: 1px solid var(--color-borde-alterno);
 }
 
-.contacto__alternativa p {
+.contacto__vias li {
+  border-bottom: 1px solid var(--color-borde-alterno);
+}
+
+.via {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--esp-4);
+  padding: var(--esp-4) var(--esp-2);
+  transition: background-color var(--transicion-rapida);
+}
+
+.via:hover {
+  background-color: var(--color-superficie-alta);
+}
+
+.via__icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--color-borde-alterno);
+  border-radius: 50%;
+  color: var(--color-acento);
+  transition: border-color var(--transicion-rapida),
+              background-color var(--transicion-rapida);
+}
+
+.via__icono svg {
+  width: 19px;
+  height: 19px;
+}
+
+.via:hover .via__icono {
+  border-color: var(--color-acento);
+  background-color: var(--color-fondo);
+}
+
+.via__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  /* min-width: 0 para que un mail largo se pueda recortar en vez de
+     empujar la flecha fuera de la fila. */
+  min-width: 0;
+}
+
+.via__rotulo {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+}
+
+.via__valor {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-base);
   font-weight: var(--peso-semi);
   color: var(--color-texto);
+  /* El mail es largo y en pantallas chicas no entra: se recorta con
+     puntos suspensivos en vez de desbordar la fila. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+.via__flecha {
+  color: var(--color-texto-tenue);
+  opacity: 0.5;
+  transform: translateX(-3px);
+  transition: opacity var(--transicion-rapida),
+              transform var(--transicion-rapida),
+              color var(--transicion-rapida);
+}
+
+.via:hover .via__flecha {
+  color: var(--color-acento);
+  opacity: 1;
+  transform: translateX(0);
+}
+
 
 /* --- Formulario -------------------------------------------------------- */
 .formulario {
@@ -2803,6 +2889,12 @@ p {
      Se hace asi y no con una grilla de tres a proposito: la ficha tiene
      que vivir DENTRO del panel para que cambie sola al elegir otro
      proyecto. Si estuviera afuera habria que sincronizarla con JS. */
+  .vitrina__columna {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+  }
+
   .vitrina {
     /* 0.9fr y no 0.72: desde que cada proyecto lleva flecha a la
        derecha, al titulo le quedaba menos ancho y "Landing page para
@@ -2812,93 +2904,31 @@ p {
     align-items: start;
   }
 
-  /* Esta columna tuvo position:sticky para que los nombres siguieran a
-     la vista mientras mirabas la imagen. Se saco porque no podia
-     funcionar: un elemento pegajoso se sostiene mientras su contenedor
-     siga pasando, y aca la columna mide 322px dentro de un bloque de
-     380. Son 59px de recorrido — despues se va con la pagina igual.
-     Si algun dia la vitrina crece mucho mas alto que la lista, vuelve a
-     tener sentido. */
-  .vitrina__columna {
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-4);
-  }
-
-  .vitrina__panel {
-    /* La imagen manda y la ficha acompaña. El minmax evita que la ficha
-       se angoste tanto que las etiquetas se partan letra por letra.
-
-       2.25fr y no 1.75: la ficha pasa de 327px a unos 280. Lo que gana
-       de ancho la preview se traduce en alto, porque la preview tiene
-       proporcion fija. El minimo baja a 210px, que sigue alcanzando
-       para que "PROXIMAMENTE" entre en un renglon. */
-    grid-template-columns: 2.25fr minmax(210px, 1fr);
-    gap: var(--esp-5);
-    /* stretch y no start: las dos columnas cierran parejas arriba y
-       abajo. Con start, la ficha (que siempre es mas alta que la
-       imagen) sobresalia por abajo y el bloque quedaba desprolijo. */
-    align-items: stretch;
-  }
-
-  /* EL ALTO LO MANDA LA PREVIEW, NO LA FICHA.
-
-     Antes era al reves: la ficha definia la altura y la imagen la
-     copiaba con height: 100%. Funcionaba mientras el contenedor media
-     1180px, pero al ensancharlo a 1560 la preview siguio creciendo a lo
-     ancho sin crecer a lo alto. Medido: a 1920 quedaba de 720x323, o
-     sea 2.23:1. Una captura de un sitio web en ese formato se ve
-     aplastada. A 16/10 el mismo ancho da 450px de alto.
-
-     align-self: start es la pieza que lo hace posible: la fila sigue en
-     align-items: stretch (la ficha necesita estirarse para cerrar
-     pareja abajo), pero la preview se baja de esa regla y conserva su
-     proporcion.
-
-     OJO con volver a poner height aca: aspect-ratio funciona en las DOS
-     direcciones. Si se le fija el alto, el navegador deja de usarla
-     para calcular la altura y la usa para calcular el ANCHO, y el marco
-     se desborda tapando la ficha. Ya nos paso. */
-  .vitrina__imagen {
-    align-self: start;
-  }
-
-  /* La tarjeta final ocupa el ancho de las tres columnas.
-     1 / -1 significa "desde la primera linea hasta la ultima". */
-  .proyecto-cta {
-    grid-column: 1 / -1;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--esp-6);
-    padding: var(--esp-7);
-  }
-
   .proyecto-cta__texto {
     max-width: 60%;
   }
 
+  /* Dos columnas: a la izquierda el titulo y las vias de contacto, a
+     la derecha el formulario. El formulario se lleva un poco mas de
+     ancho porque son campos que hay que completar. */
   .contacto__interior {
-    /* Dos columnas: el texto ocupa 5 partes y el formulario 6 */
     grid-template-columns: 5fr 6fr;
     gap: var(--esp-8);
     align-items: start;
   }
 
-  /* La columna de texto acompana el scroll, igual que la lista de
-     Proyectos. El formulario es largo y la columna izquierda corta: sin
-     esto el titulo y el boton de WhatsApp se iban de pantalla apenas
-     empezabas a completar el formulario.
+  /* ESTA COLUMNA YA NO SE PEGA.
 
-     align-self:start es obligatorio: por defecto el grid estira el hijo
-     a toda la altura de la fila y un elemento tan alto como su
-     contenedor no se puede pegar a ningun lado. Se pega al borde de
-     abajo de la navbar, no al borde de la ventana. */
-  .contacto__columna {
-    position: sticky;
-    top: calc(var(--alto-navbar) + var(--esp-6));
-    align-self: start;
-  }
+     Tuvo position: sticky para que el titulo y el boton siguieran a la
+     vista mientras completabas el formulario. Se saco por dos motivos.
+
+     El primero es que ahora no hace falta: la columna lleva las tres
+     vias de contacto, asi que tiene altura propia parecida a la del
+     formulario y ya no queda medio vacia a partir de la mitad.
+
+     El segundo es que un bloque pegado al lado de un formulario alto
+     genera dos cosas que se mueven a distinto ritmo en la misma
+     pantalla, y eso distrae justo cuando la persona esta escribiendo. */
 
   .contacto .seccion__encabezado {
     margin-bottom: var(--esp-5);
