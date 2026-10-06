@@ -34,7 +34,7 @@
   <meta property="og:url" content="https://viniciuscesa.com/">
   <!-- La imagen que se ve al compartir el link. Tiene que ser PNG o JPG
        de 1200x630: WhatsApp y Facebook no leen SVG. -->
-  <meta property="og:image" content="https://viniciuscesa.com/assets/img/og-image.png">
+  <meta property="og:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610060307">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -43,7 +43,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Vinicius Cesa — Diseño y desarrollo web que convierte">
   <meta name="twitter:description" content="Diseño y desarrollo landing pages, portfolios y sitios institucionales que convierten visitas en consultas reales.">
-  <meta name="twitter:image" content="https://viniciuscesa.com/assets/img/og-image.png">
+  <meta name="twitter:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610060307">
 
   <!-- ===================================================================
        FAVICON Y COLOR DE MARCA
@@ -166,12 +166,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610060257">
+  <link rel="stylesheet" href="css/styles.css?v=202610060307">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610060257"></script>
+  <script src="js/activar-animaciones.js?v=202610060307"></script>
 </head>
 
 <body>
@@ -638,63 +638,6 @@
     </section>
 
 
-    <!-- =================================================================
-         PROCESO
-         ================================================================= -->
-    <section class="proceso seccion seccion--gris" id="proceso">
-      <div class="contenedor">
-
-        <div class="seccion__encabezado aparece">
-          <p class="etiqueta">Proceso</p>
-          <h2 data-revelar>Cómo trabajo</h2>
-        </div>
-
-        <!-- Cinco pasos, los cinco a la vista. Antes era un acordeon:
-             habia que abrir cada etapa para leerla, y adentro habia un
-             parrafo largo. Ocupaba el triple de alto y obligaba a
-             trabajar para enterarse de algo que se dice en un renglon.
-
-             Es una <ol> y no una lista de divs porque el ORDEN es el
-             contenido: un lector de pantalla anuncia "1 de 5". -->
-        <ol class="proceso__lista" data-escalonar>
-          <li class="etapa aparece">
-            <span class="etapa__numero" aria-hidden="true">01</span>
-            <h3 class="etapa__nombre">Nos conocemos</h3>
-            <p class="etapa__texto">Una llamada corta para entender qué hacés, cómo trabajás y hacia dónde querés ir.</p>
-
-          </li>
-
-          <li class="etapa aparece">
-            <span class="etapa__numero" aria-hidden="true">02</span>
-            <h3 class="etapa__nombre">Planificamos</h3>
-            <p class="etapa__texto">Definimos la estructura, el contenido y la dirección visual de tu sitio.</p>
-
-          </li>
-
-          <li class="etapa aparece">
-            <span class="etapa__numero" aria-hidden="true">03</span>
-            <h3 class="etapa__nombre">Diseñamos</h3>
-            <p class="etapa__texto">Convertimos tu idea en una experiencia visual clara, atractiva y pensada para tus clientes.</p>
-
-          </li>
-
-          <li class="etapa aparece">
-            <span class="etapa__numero" aria-hidden="true">04</span>
-            <h3 class="etapa__nombre">Construimos</h3>
-            <p class="etapa__texto">Desarrollamos el sitio para que sea rápido, se adapte a cualquier pantalla y convierta visitas en consultas.</p>
-
-          </li>
-
-          <li class="etapa aparece">
-            <span class="etapa__numero" aria-hidden="true">05</span>
-            <h3 class="etapa__nombre">Publicamos</h3>
-            <p class="etapa__texto">Lo ponemos online, revisamos que todo funcione y después seguimos dando soporte.</p>
-
-          </li>
-        </ol>
-      </div>
-    </section>
-
 
     <!-- =================================================================
          CONTACTO
@@ -715,7 +658,7 @@
          El atributo name agrupa a los cinco: al abrir uno se cierra el
          anterior, sin una linea de JavaScript.
          ================================================================= -->
-    <section class="preguntas seccion" id="preguntas">
+    <section class="preguntas seccion seccion--gris" id="preguntas">
       <div class="contenedor preguntas__interior">
 
         <div class="preguntas__columna aparece">
@@ -791,7 +734,7 @@
       </div>
     </section>
 
-    <section class="contacto seccion seccion--gris" id="contacto">
+    <section class="contacto seccion" id="contacto">
       <div class="contenedor contacto__interior">
 
         <div class="contacto__columna">
@@ -1063,8 +1006,7 @@
             <li><a href="#perfil">Inicio</a></li>
             <li><a href="#proyectos">Proyectos</a></li>
             <li><a href="#servicios">Servicios</a></li>
-            <li><a href="#proceso">Proceso</a></li>
-            <li><a href="#contacto">Contacto</a></li>
+              <li><a href="#contacto">Contacto</a></li>
           </ul>
         </nav>
 
@@ -1160,7 +1102,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610060257" defer></script>
+  <script src="js/main.js?v=202610060307" defer></script>
 
 </body>
 </html>

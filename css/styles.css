@@ -12,7 +12,7 @@
    8. Inicio (hero)
    9. Servicios
    10. Proyectos
-   11. Proceso
+   11. Preguntas frecuentes
    12. Contacto
    13. Footer
    14. Desktop (media queries)
@@ -2066,64 +2066,6 @@ p {
 }
 
 /* =====================================================================
-   11. PROCESO
-   ---------------------------------------------------------------------
-   Cinco filas, las cinco a la vista. Era un acordeon y ocupaba el triple
-   de alto: habia que abrir cada etapa para leer un parrafo largo.
-
-   Cada fila es numero + nombre + una frase. Se eligio fila y no cinco
-   columnas a proposito: en columnas, nombres como "Trabajamos con
-   comunicacion real" se partian en tres renglones y la grilla quedaba
-   despareja. En fila entra todo de corrido.
-   ===================================================================== */
-.proceso__lista {
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-}
-
-.etapa {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: var(--esp-1) var(--esp-5);
-  padding-block: var(--esp-5);
-  border-top: 1px solid var(--color-borde-alterno);
-}
-
-/* La ultima lleva linea abajo tambien: sin esto la lista se "desfonda"
-   y el bloque no se lee como una unidad cerrada. */
-.etapa:last-child {
-  border-bottom: 1px solid var(--color-borde-alterno);
-}
-
-.etapa__numero {
-  /* Ocupa las dos filas de la grilla, asi el nombre y la frase quedan
-     los dos a su derecha en vez de empujarse entre si. */
-  grid-row: 1 / 3;
-  font-family: var(--fuente-titulos);
-  font-size: var(--texto-lg);
-  font-weight: var(--peso-extra);
-  letter-spacing: -0.02em;
-  line-height: 1.25;
-  color: var(--color-acento-legible);
-}
-
-.etapa__nombre {
-  font-family: var(--fuente-titulos);
-  font-size: var(--texto-xl);
-  font-weight: var(--peso-extra);
-  letter-spacing: -0.02em;
-  line-height: 1.25;
-  color: var(--color-texto);
-}
-
-.etapa__texto {
-  font-size: var(--texto-base);
-  color: var(--color-texto-suave);
-}
-
-
-/* =====================================================================
    12. CONTACTO
    ===================================================================== */
 .contacto__interior {
@@ -2735,7 +2677,6 @@ p {
 }
 
 
-
 /* =====================================================================
    15. PAGINA 404
    --------------------------------------------------------------------
@@ -3012,16 +2953,6 @@ p {
      Ojo si cambia el tamano de letra: con 22rem, que alcanzaba para el
      cuerpo anterior, este nombre se partia en dos renglones y la fila
      quedaba del doble de alto que las otras cuatro. */
-  .etapa {
-    grid-template-columns: 2.5rem 26rem 1fr;
-    align-items: baseline;
-    gap: var(--esp-5);
-  }
-
-  .etapa__numero {
-    grid-row: auto;
-  }
-
   /* Footer en cuatro columnas. 1.6fr contra 1fr significa "esta mide
      1.6 veces lo que cada una de las otras". La de Contacto lleva un
      poco mas porque el mail es largo. */
@@ -3121,245 +3052,6 @@ p {
 
 
 /* =====================================================================
-   EL RIEL DE LAMINAS  (solo pantallas anchas, y solo si corre el JS)
-   ---------------------------------------------------------------------
-   DE DONDE SALE. El fondo del inicio dibuja un plano de construccion.
-   Cinco pasos para construir algo no son cinco cartas de un mazo: son
-   cinco LAMINAS de un plano. Por eso cada paso lleva la misma grilla
-   tecnica del inicio, y las cerradas quedan de canto con el nombre
-   girado, como los lomos de las laminas paradas en un atril.
-
-   Hubo tambien un cajetin (el recuadro de datos que todo plano real
-   lleva en la esquina). Se saco: decia "LAMINA 03 / 05", que es
-   exactamente lo que ya dice el contador de la barra de abajo, y
-   ocupaba un tercio de una lamina que tiene poco texto.
-
-   POR QUE RIEL Y NO PILA. Lo probamos antes con las laminas apiladas en
-   abanico. Dos problemas, los dos reales: ocupaba una franja angosta en
-   el medio de una seccion ancha, y las de atras dejaban pasar su texto
-   por debajo de la de adelante, asi que el conjunto se leia sucio.
-
-   Puestas en riel se arregla todo junto: ocupan el ancho completo,
-   ninguna tapa a otra, y las cinco estan siempre a la vista. Las que no
-   estan abiertas quedan de canto, como los lomos de las laminas paradas
-   en un atril.
-
-   COMO SE ANIMA. El JS solo escribe grid-template-columns en el
-   contenedor: 1fr para la abierta y el ancho del lomo para las demas.
-   Los navegadores saben interpolar esa propiedad, asi que la apertura se
-   anima sola sin calcular ni una medida a mano.
-   ===================================================================== */
-@media (min-width: 900px) {
-
-  .proceso--riel .proceso__lista {
-    /* LOS DOS ANCHOS DEL RIEL, Y POR QUE SON LOS DOS LONGITUDES.
-
-       La version anterior usaba 1fr para la lamina abierta y 5.5rem
-       para las cerradas. Se veia bien quieto y pesimo al cambiar: la
-       transicion no corria, el riel pegaba un salto seco.
-
-       El motivo es de especificacion. grid-template-columns solo se
-       puede interpolar entre valores del MISMO tipo. 1fr es una
-       fraccion y 5.5rem es una longitud: el navegador no sabe que hay a
-       mitad de camino entre las dos, asi que no anima nada y cambia de
-       golpe. Medido cuadro por cuadro: la columna tomaba exactamente
-       dos valores, 893px y 88px, sin un solo paso intermedio.
-
-       Escrita como calc(100% - ...) la abierta pasa a ser tambien una
-       longitud, y ahi si el navegador puede interpolar las dos. */
-    --lomo: 5.5rem;
-    --riel-hueco: var(--esp-2);
-
-    display: grid;
-    /* 13rem y no 21: con el cajetin afuera, cada lamina tiene un numero,
-       un titulo y un renglon de texto. A 21rem quedaba mas de media
-       lamina vacia.
-
-       Mas bajo que esto no se puede: el lomo lleva el nombre girado, y
-       ese texto vertical marca el piso. Medido a 14px, el mas largo
-       ("Nos conocemos") ocupa 114px, y sumando numero, hueco y relleno
-       dan unos 200px. Por eso tambien se acorto el quinto paso a
-       "Publicamos": con "y acompanamos" el minimo se iba a 16rem y no
-       habia forma de bajar. Lo que decia el titulo lo sigue diciendo su
-       descripcion. */
-    height: 13rem;
-    margin-top: var(--esp-6);
-    gap: var(--riel-hueco);
-    /* El JS reescribe esto en cada cambio. El respaldo es por si algo
-       falla antes del primer dibujado: cinco columnas iguales. */
-    grid-template-columns: repeat(5, 1fr);
-    transition: grid-template-columns 520ms var(--curva-salida);
-  }
-
-  .proceso--riel .etapa {
-    position: relative;
-    /* min-width: 0 es obligatorio en grilla: sin esto una columna nunca
-       se achica mas alla de su contenido y el lomo no cierra. */
-    min-width: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-3);
-    padding: var(--esp-5);
-    border: 1px solid var(--color-borde-alterno);
-    border-radius: var(--radio-lg);
-    background-color: var(--color-superficie-alta);
-    /* La grilla del plano: dos degradados repetidos cruzados. Lo dibuja
-       la placa de video; no hace falta canvas ni imagen. */
-    background-image:
-      repeating-linear-gradient(to right,
-        rgba(13, 27, 42, 0.05) 0 1px, transparent 1px 2.75rem),
-      repeating-linear-gradient(to bottom,
-        rgba(13, 27, 42, 0.05) 0 1px, transparent 1px 2.75rem);
-    transition: background-color var(--transicion-rapida),
-                border-color var(--transicion-rapida);
-  }
-
-  /* El numero se ve siempre, abierta o de canto: es lo que identifica la
-     lamina cuando no hay lugar para nada mas. */
-  .proceso--riel .etapa__numero {
-    font-size: var(--texto-xl);
-    line-height: 1;
-  }
-
-  .proceso--riel .etapa__nombre {
-    /* nowrap: de canto la columna es angostisima y sin esto el nombre se
-       partiria letra por letra. */
-    white-space: nowrap;
-  }
-
-  /* --- De canto (el lomo) -------------------------------------------- */
-  .proceso--riel .etapa[data-abierta="no"] {
-    background-color: transparent;
-    cursor: pointer;
-  }
-
-  .proceso--riel .etapa[data-abierta="no"]:hover {
-    background-color: var(--color-superficie-alta);
-    border-color: var(--color-acento);
-  }
-
-  /* El nombre girado es lo que hace que se lean como laminas paradas y
-     no como columnas vacias. vertical-rl mas la rotacion deja el texto
-     de abajo hacia arriba, que es como se rotulan los lomos. */
-  .proceso--riel .etapa[data-abierta="no"] .etapa__nombre {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    margin-top: var(--esp-3);
-    /* 0.875rem = 14px. Es lo que permite que el riel baje a 13rem sin
-       que el nombre mas largo se corte. */
-    font-size: 0.875rem;
-    color: var(--color-texto-suave);
-  }
-
-  /* De canto no hay lugar para el parrafo. */
-  .proceso--riel .etapa[data-abierta="no"] .etapa__texto {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 160ms linear, visibility 0s linear 160ms;
-  }
-
-  /* --- Abierta ------------------------------------------------------- */
-  .proceso--riel .etapa[data-abierta="si"] .etapa__texto {
-    opacity: 1;
-    visibility: visible;
-    /* El retraso deja que la columna termine de abrirse antes de que
-       aparezca el contenido. Sin el, el texto asoma apretado y se
-       reacomoda a los tirones mientras la columna todavia crece. */
-    transition: opacity 260ms var(--curva-suave) 260ms;
-  }
-
-  .proceso--riel .etapa[data-abierta="si"] .etapa__texto {
-    max-width: 42ch;
-    margin-bottom: auto;
-  }
-
-
-  /* El boton que el JS pone adentro de cada lamina: se toca la lamina
-     entera, no un blanco chiquito. */
-  .proceso--riel .etapa__tocar {
-    position: absolute;
-    inset: 0;
-    border: 0;
-    border-radius: inherit;
-    background: none;
-    cursor: inherit;
-  }
-
-  .proceso--riel .etapa__tocar:focus-visible {
-    outline: 3px solid var(--color-acento);
-    outline-offset: -4px;
-  }
-
-  /* --- La barra de control -------------------------------------------
-     Dos flechas y en que lamina vas. Le da al teclado un lugar obvio
-     donde parar y deja claro de entrada que esto se navega. */
-  .mazo__barra {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--esp-5);
-    margin-top: var(--esp-6);
-  }
-
-  .mazo__flecha {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    /* 44px aunque sea escritorio: son dos botones chicos y hay gente que
-       maneja el mouse con poca precision. No cuesta nada. */
-    width: 44px;
-    height: 44px;
-    border: 1px solid var(--color-borde-alterno);
-    border-radius: 50%;
-    background-color: var(--color-superficie-alta);
-    color: var(--color-texto);
-    font-size: var(--texto-lg);
-    line-height: 1;
-    cursor: pointer;
-    transition: border-color var(--transicion-rapida),
-                color var(--transicion-rapida),
-                transform var(--transicion-rapida);
-  }
-
-  .mazo__flecha:hover {
-    border-color: var(--color-acento);
-    color: var(--color-acento);
-  }
-
-  .mazo__flecha:active {
-    transform: scale(0.94);
-  }
-
-  .mazo__flecha:focus-visible {
-    outline: 3px solid var(--color-acento);
-    outline-offset: 3px;
-  }
-
-  /* Cifras tabulares: con las normales el 1 es mas angosto que el resto
-     y el contador se corre un pelo en cada cambio. */
-  .mazo__cuenta {
-    min-width: 5ch;
-    font-family: var(--fuente-titulos);
-    font-size: var(--texto-base);
-    font-weight: var(--peso-semi);
-    font-variant-numeric: tabular-nums;
-    text-align: center;
-    color: var(--color-texto-tenue);
-  }
-}
-
-/* Con menos movimiento pedido, el riel abre de golpe en vez de
-   deslizarse. Sigue funcionando igual. */
-@media (prefers-reduced-motion: reduce) {
-  .proceso--riel .proceso__lista,
-  .proceso--riel .etapa__texto {
-    transition: none !important;
-  }
-}
-
-
-/* =====================================================================
    PREGUNTAS FRECUENTES
    ---------------------------------------------------------------------
    Dos columnas: a la izquierda el titulo y el remate que manda a
@@ -3416,7 +3108,7 @@ p {
   /* 44px de alto minimo para el dedo, y el relleno hace el resto. */
   min-height: 44px;
   /* esp-6 y no esp-5: medida contra el resto, esta seccion quedaba en
-     544px cuando servicios da 596 y proceso 618. Se leia apretada al
+     544px cuando servicios da 596. Se leia apretada al
      lado de las demas. Con el relleno mas grande, las cinco preguntas
      ocupan lo que tiene que ocupar un bloque de este peso. */
   padding-block: var(--esp-6);

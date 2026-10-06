@@ -45,8 +45,30 @@ for f in index.html legal.html 404.html; do
   # bug de cache que este bloque existe para evitar.
   sed -i -E "s|(href=\"/?css/[A-Za-z0-9._-]+\.css)(\?v=[0-9]+)?\"|\1?v=$version\"|g" "$f"
   sed -i -E "s|(src=\"/?js/[A-Za-z0-9._-]+\.js)(\?v=[0-9]+)?\"|\1?v=$version\"|g" "$f"
+
+  # LA IMAGEN DE LA VISTA PREVIA TAMBIEN SE VERSIONA.
+  #
+  # Cuando compartis el link por WhatsApp, Instagram o LinkedIn, esas
+  # aplicaciones NO leen tu sitio cada vez: lo leen una sola vez, se
+  # guardan el titulo, la descripcion y la imagen, y despues sirven esa
+  # copia a todo el mundo durante dias. Por eso al compartir seguia
+  # apareciendo una vista previa vieja aunque el sitio ya estuviera
+  # cambiado.
+  #
+  # Lo que esas aplicaciones usan como identificador es la DIRECCION de
+  # la imagen. Mientras sea siempre la misma, no tienen motivo para ir a
+  # buscarla de nuevo. Agregandole ?v= en cada publicacion, la direccion
+  # cambia y la tienen que volver a pedir.
+  #
+  # Ojo: esto arregla la imagen a futuro, pero NO borra lo que esas
+  # aplicaciones ya tienen guardado de antes. Para eso hay que pedirles
+  # que relean, ver el final de este archivo.
+  # El separador del sed es # y no la barra vertical: la barra vertical
+  # tambien separa alternativas adentro de la expresion, y las dos cosas
+  # se chocan. Probado: el comando se partia al medio y no corria.
+  sed -i -E "s#(content=\"https://viniciuscesa\.com/assets/img/[A-Za-z0-9._-]+\.(png|jpg|webp))(\?v=[0-9]+)?\"#\1?v=$version\"#g" "$f"
 done
-echo "Version nueva de CSS y JS: $version"
+echo "Version nueva de CSS, JS e imagen de vista previa: $version"
 echo
 
 echo "Se van a publicar estos archivos:"
@@ -61,3 +83,10 @@ git push                   || { echo "Fallo el push. Revisa tu conexion."; exit 
 echo
 echo "Listo. Cloudflare publica el sitio en 30-60 segundos."
 echo "Para comprobarlo:  curl -I https://viniciuscesa.com/"
+echo
+echo "Si cambiaste la imagen o los textos de la vista previa, pedile a"
+echo "cada aplicacion que relea el sitio (si no, siguen mostrando la"
+echo "copia vieja que se guardaron):"
+echo "  WhatsApp y Facebook  https://developers.facebook.com/tools/debug/"
+echo "  LinkedIn             https://www.linkedin.com/post-inspector/"
+echo "  X / Twitter          https://cards-dev.twitter.com/validator"
