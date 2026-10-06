@@ -3085,13 +3085,6 @@ p {
   gap: var(--esp-7);
 }
 
-.preguntas__bajada {
-  margin-top: var(--esp-4);
-  max-width: 34ch;
-  font-size: var(--texto-lg);
-  color: var(--color-texto-suave);
-}
-
 .preguntas__pie a {
   color: var(--color-acento-legible);
   text-decoration: underline;
@@ -3237,17 +3230,13 @@ p {
   block-size: auto;
 }
 
-/* EL REMATE VA AL FINAL EN CELULAR.
+/* El remate vive adentro de la columna, debajo del encabezado, igual
+   que las vias de contacto viven debajo del encabezado de Contacto.
 
-   "¿No esta la tuya? Escribime" esta pensado para despues de haber
-   leido las preguntas. En escritorio vive en la columna de la izquierda
-   y eso se entiende solo, porque esta al costado. Pero apilado en un
-   telefono quedaba ARRIBA de las preguntas: lo invitaba a escribir
-   antes de haber leido una sola respuesta.
-
-   Por eso el remate es hermano de la lista y no hijo de la columna: en
-   celular cae ultimo por orden natural, y en escritorio se lo manda de
-   vuelta a la primera columna con grid-row. */
+   Se probo sacandolo afuera y colocandolo con grid-row, para que en
+   celular cayera despues de las preguntas. Salio mal: la lista abarca
+   las dos filas, eso infla la primera, y el remate terminaba flotando a
+   150px del texto de arriba. */
 .preguntas__pie {
   margin-top: var(--esp-5);
   font-size: var(--texto-base);
@@ -3261,24 +3250,6 @@ p {
     grid-template-columns: minmax(16rem, 0.8fr) 1.5fr;
     gap: var(--esp-8, 5rem);
     align-items: start;
-  }
-
-  /* Colocacion explicita: titulo arriba a la izquierda, remate debajo
-     de el, y la lista ocupando las dos filas de la segunda columna. */
-  .preguntas__columna {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .preguntas__pie {
-    grid-column: 1;
-    grid-row: 2;
-    margin-top: 0;
-  }
-
-  .preguntas__lista {
-    grid-column: 2;
-    grid-row: 1 / span 2;
   }
 }
 

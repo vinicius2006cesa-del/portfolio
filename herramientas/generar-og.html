@@ -26,9 +26,17 @@ cargarse por HTTP), y hacé clic en el botón. Se descarga el PNG; copialo a
 
 <script>
 /* ---- TITULAR: cambiá estas cuatro líneas y listo ---- */
-const LINEA_SUAVE_1 = 'Tu web no necesita';
-const LINEA_SUAVE_2 = 'verse bien.';
-const LINEA_FUERTE  = ['Necesita ', 'vender', ' mejor.'];  // el del medio va en la caja azul
+/* Antes decia 'Tu web no necesita verse bien. Necesita vender mejor.'
+   Se cambio por lo que HACE y no por lo que promete: una promesa de
+   marketing envejece (esa era de una etapa anterior de la marca) y
+   ademas obliga a regenerar la imagen cada vez que cambia el discurso.
+   Lo que hace, no cambia. */
+const LINEA_SUAVE_1 = 'Diseño y desarrollo';
+const LINEA_SUAVE_2 = 'de sitios web';
+const LINEA_FUERTE  = ['hechos ', 'a medida', ''];  // el del medio va en la caja azul
+/* El tercer elemento va vacio: el texto que sigue a la caja azul se
+   dibuja con la misma separacion que lleva la caja por dentro, asi que
+   un punto solo quedaba flotando lejos de la palabra. Probado. */
 const DOMINIO       = 'viniciuscesa.com';
 
 /* ---- colores de marca ---- */

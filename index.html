@@ -34,7 +34,7 @@
   <meta property="og:url" content="https://viniciuscesa.com/">
   <!-- La imagen que se ve al compartir el link. Tiene que ser PNG o JPG
        de 1200x630: WhatsApp y Facebook no leen SVG. -->
-  <meta property="og:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610060323">
+  <meta property="og:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610060332">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -43,7 +43,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Vinicius Cesa — Diseño y desarrollo web">
   <meta name="twitter:description" content="Diseño y desarrollo de sitios web a medida para que tu trabajo se tome en serio y convierta consultas en clientes.">
-  <meta name="twitter:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610060323">
+  <meta name="twitter:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610060332">
 
   <!-- ===================================================================
        FAVICON Y COLOR DE MARCA
@@ -166,12 +166,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610060323">
+  <link rel="stylesheet" href="css/styles.css?v=202610060332">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610060323"></script>
+  <script src="js/activar-animaciones.js?v=202610060332"></script>
 </head>
 
 <body>
@@ -661,12 +661,24 @@
     <section class="preguntas seccion seccion--gris" id="preguntas">
       <div class="contenedor preguntas__interior">
 
-        <div class="preguntas__columna aparece">
-          <p class="etiqueta">Preguntas</p>
-          <h2 data-revelar>Preguntas frecuentes</h2>
-          <p class="preguntas__bajada">
-            Las dudas que aparecen siempre, resueltas antes de que
-            tengas que preguntarlas.
+        <!-- Misma estructura que Contacto: un .seccion__encabezado con la
+             pastilla, el titulo y la bajada, y abajo el remate. Antes
+             esta columna tenia marcado propio, y por eso la separacion
+             entre la pastilla y el titulo no coincidia con la del resto
+             del sitio. -->
+        <div class="preguntas__columna">
+          <div class="seccion__encabezado aparece aparece--izq">
+            <p class="etiqueta">Preguntas</p>
+            <h2 data-revelar>Preguntas frecuentes</h2>
+            <p>
+              Las dudas que aparecen siempre, resueltas antes de que
+              tengas que preguntarlas.
+            </p>
+          </div>
+
+          <p class="preguntas__pie aparece">
+            ¿No está la tuya?
+            <a href="#contacto">Escribime y te la contesto</a>.
           </p>
         </div>
 
@@ -727,13 +739,6 @@
           </details>
         </div>
 
-        <!-- El remate es hermano de la lista y no hijo de la columna: en
-             celular tiene que caer DESPUES de las preguntas. Ver el
-             comentario de .preguntas__pie en el CSS. -->
-        <p class="preguntas__pie aparece">
-          ¿No está la tuya?
-          <a href="#contacto">Escribime y te la contesto</a>.
-        </p>
 
       </div>
     </section>
@@ -804,6 +809,22 @@
                 <span class="via__texto">
                   <span class="via__rotulo">Instagram</span>
                   <span class="via__valor">@vinii.cesa</span>
+                </span>
+                <span class="via__flecha" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+            <li>
+              <a class="via" href="https://www.linkedin.com/in/vinicius-cesa-ribeiro-532b61336/"
+                 target="_blank" rel="noopener noreferrer"
+                 aria-label="LinkedIn (se abre en una pestaña nueva)">
+                <span class="via__icono" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                       stroke-width="1.8" stroke-linecap="round"
+                       stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </span>
+                <span class="via__texto">
+                  <span class="via__rotulo">LinkedIn</span>
+                  <span class="via__valor">Vinicius Cesa</span>
                 </span>
                 <span class="via__flecha" aria-hidden="true">&rarr;</span>
               </a>
@@ -1106,7 +1127,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610060323" defer></script>
+  <script src="js/main.js?v=202610060332" defer></script>
 
 </body>
 </html>
