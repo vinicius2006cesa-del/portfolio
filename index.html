@@ -166,12 +166,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610060150">
+  <link rel="stylesheet" href="css/styles.css?v=202610060217">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610060150"></script>
+  <script src="js/activar-animaciones.js?v=202610060217"></script>
 </head>
 
 <body>
@@ -698,7 +698,99 @@
     <!-- =================================================================
          CONTACTO
          ================================================================= -->
-    <section class="contacto seccion" id="contacto">
+    <!-- =================================================================
+         PREGUNTAS FRECUENTES
+         -----------------------------------------------------------------
+         Va ANTES de contacto a proposito: las dudas que frenan a alguien
+         (cuanto sale, cuanto tarda, que tengo que hacer yo) se contestan
+         justo antes de pedirle que escriba. Despues del formulario ya no
+         sirven de nada.
+
+         Son <details> nativos y no divs con JavaScript. Asi el acordeon
+         abre y cierra aunque el JS no llegue, se puede buscar con Ctrl+F
+         adentro de las respuestas cerradas, y los lectores de pantalla
+         ya saben anunciarlo sin que haya que explicarles nada con aria.
+
+         El atributo name agrupa a los cinco: al abrir uno se cierra el
+         anterior, sin una linea de JavaScript.
+         ================================================================= -->
+    <section class="preguntas seccion" id="preguntas">
+      <div class="contenedor preguntas__interior">
+
+        <div class="preguntas__columna aparece">
+          <p class="etiqueta">Preguntas</p>
+          <h2 data-revelar>Preguntas frecuentes</h2>
+          <p class="preguntas__bajada">
+            Lo que me preguntan siempre, contestado antes de que tengas
+            que escribirme.
+          </p>
+          <p class="preguntas__pie">
+            ¿No está la tuya?
+            <a href="#contacto">Escribime y te la contesto</a>.
+          </p>
+        </div>
+
+        <div class="preguntas__lista aparece" data-escalonar>
+          <details class="pregunta" name="preguntas">
+            <summary class="pregunta__cabeza">
+              <span class="pregunta__numero" aria-hidden="true">01</span>
+              <span class="pregunta__titulo">¿Cuánto cuesta una página web?</span>
+              <span class="pregunta__signo" aria-hidden="true"></span>
+            </summary>
+            <div class="pregunta__cuerpo">
+              <p>Depende de cuántas secciones lleve y de qué tenga que resolver. Después de la primera llamada te paso un precio cerrado, sin sorpresas después.</p>
+            </div>
+          </details>
+
+          <details class="pregunta" name="preguntas">
+            <summary class="pregunta__cabeza">
+              <span class="pregunta__numero" aria-hidden="true">02</span>
+              <span class="pregunta__titulo">¿Cuánto tarda?</span>
+              <span class="pregunta__signo" aria-hidden="true"></span>
+            </summary>
+            <div class="pregunta__cuerpo">
+              <p>Una landing de una sola página, alrededor de dos semanas. Un sitio con varias secciones, entre tres y cuatro. El plazo te lo confirmo junto con el presupuesto.</p>
+            </div>
+          </details>
+
+          <details class="pregunta" name="preguntas">
+            <summary class="pregunta__cabeza">
+              <span class="pregunta__numero" aria-hidden="true">03</span>
+              <span class="pregunta__titulo">¿Qué necesitás de mí para empezar?</span>
+              <span class="pregunta__signo" aria-hidden="true"></span>
+            </summary>
+            <div class="pregunta__cuerpo">
+              <p>Los textos y las imágenes de tu trabajo. Si no los tenés armados no es un problema: lo ordenamos juntos en la etapa de planificación.</p>
+            </div>
+          </details>
+
+          <details class="pregunta" name="preguntas">
+            <summary class="pregunta__cabeza">
+              <span class="pregunta__numero" aria-hidden="true">04</span>
+              <span class="pregunta__titulo">¿Se va a ver bien en el celular?</span>
+              <span class="pregunta__signo" aria-hidden="true"></span>
+            </summary>
+            <div class="pregunta__cuerpo">
+              <p>Sí. De hecho arranco por ahí: la mayoría de tus visitas van a entrar desde un teléfono. Reviso cada sección en pantallas chicas, medianas y grandes antes de publicar.</p>
+            </div>
+          </details>
+
+          <details class="pregunta" name="preguntas">
+            <summary class="pregunta__cabeza">
+              <span class="pregunta__numero" aria-hidden="true">05</span>
+              <span class="pregunta__titulo">¿Puedo actualizarla yo después?</span>
+              <span class="pregunta__signo" aria-hidden="true"></span>
+            </summary>
+            <div class="pregunta__cuerpo">
+              <p>Sí. Te dejo explicado cómo cambiar textos, fotos y datos de contacto. Y si preferís no tocar nada, me lo podés pedir a mí.</p>
+            </div>
+          </details>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="contacto seccion seccion--gris" id="contacto">
       <div class="contenedor contacto__interior">
 
         <div class="contacto__columna">
@@ -964,7 +1056,7 @@
       </div>
 
       <div class="footer__inferior">
-        <p>© 2026 Vinicius Cesa. Todos los derechos reservados.</p>
+        <p>© 2026 <strong>Vinicius Cesa</strong>. Todos los derechos reservados.</p>
 
         <!-- Los links legales y "Volver arriba" van juntos en un mismo
              bloque para que queden alineados a la derecha como una sola
@@ -1021,7 +1113,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610060150" defer></script>
+  <script src="js/main.js?v=202610060217" defer></script>
 
 </body>
 </html>

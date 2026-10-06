@@ -505,15 +505,25 @@ p {
   display: inline-flex;
   align-items: center;
   gap: var(--esp-2);
-  /* Apenas mas chicas que antes (eran esp-2/esp-4 y 0.75rem): la
-     pastilla es una aclaracion, no un titulo, y a tamano completo
-     competia con el h2 que tiene abajo. */
+  /* Relleno chico: la pastilla es una aclaracion, no un titulo. */
   padding: var(--esp-1) var(--esp-3);
   border: 1px solid var(--color-borde);
   border-radius: var(--radio-full);
   background-color: var(--color-fondo);
   color: var(--color-acento-legible);
-  font-size: 0.7rem;
+  /* OJO: esta linea decia 0.7rem y nunca se aplico en ningun lado. La
+     etiqueta es un <p>, y .seccion__encabezado p (que es mas especifica)
+     le impone --texto-lg en todas las secciones. O sea que el sitio
+     entero venia mostrando las pastillas a 16.8px, no a 11.2px.
+
+     Se descubrio al agregar Preguntas, que tiene la etiqueta FUERA de
+     .seccion__encabezado: ahi si tomaba los 0.7rem y quedaba la mitad
+     de chica que las demas.
+
+     Se deja el tamano que de verdad se venia usando. Cambiarlo a 0.7rem
+     achicaria las pastillas de todo el sitio de golpe, y ademas 11.2px
+     esta por debajo del minimo comodo de lectura. */
+  font-size: var(--texto-lg);
   font-weight: var(--peso-semi);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1889,7 +1899,15 @@ p {
 /* aspect-ratio reserva el espacio antes de que cargue la imagen, asi la
    pagina no pega un salto cuando aparece. */
 .vitrina__imagen {
-  aspect-ratio: 16 / 10;
+  /* 3/2 y no 16/10. Dos motivos.
+
+     Uno: la captura de un sitio web es alta, no apaisada. A 16/10 habia
+     que recortarle la mitad de la pagina para que entrara.
+
+     Dos: el alto de toda la seccion sale de aca. Medida contra la
+     referencia que miramos, la seccion quedaba en 903px contra 1260.
+     Esta proporcion es lo que la levanta sin dejar huecos vacios. */
+  aspect-ratio: 3 / 2;
   overflow: hidden;
   border: 1px solid var(--color-borde);
   border-radius: var(--radio-lg);
@@ -2809,8 +2827,13 @@ p {
 
   .vitrina__panel {
     /* La imagen manda y la ficha acompaña. El minmax evita que la ficha
-       se angoste tanto que las etiquetas se partan letra por letra. */
-    grid-template-columns: 1.75fr minmax(230px, 1fr);
+       se angoste tanto que las etiquetas se partan letra por letra.
+
+       2.25fr y no 1.75: la ficha pasa de 327px a unos 280. Lo que gana
+       de ancho la preview se traduce en alto, porque la preview tiene
+       proporcion fija. El minimo baja a 210px, que sigue alcanzando
+       para que "PROXIMAMENTE" entre en un renglon. */
+    grid-template-columns: 2.25fr minmax(210px, 1fr);
     gap: var(--esp-5);
     /* stretch y no start: las dos columnas cierran parejas arriba y
        abajo. Con start, la ficha (que siempre es mas alta que la
@@ -2945,6 +2968,7 @@ p {
   .footer__links a,
   .footer__datos a,
   .footer__legales a,
+  .preguntas__pie a,
   .footer__arriba {
     display: inline-flex;
     align-items: center;
@@ -3236,5 +3260,264 @@ p {
   .proceso--riel .proceso__lista,
   .proceso--riel .etapa__texto {
     transition: none !important;
+  }
+}
+
+
+/* =====================================================================
+   PREGUNTAS FRECUENTES
+   ---------------------------------------------------------------------
+   Dos columnas: a la izquierda el titulo y el remate que manda a
+   contacto, a la derecha el acordeon. En celular se apilan.
+
+   El acordeon son <details> nativos. Eso trae gratis tres cosas que con
+   divs habria que escribir a mano: abre y cierra sin JavaScript, el
+   buscador del navegador (Ctrl+F) encuentra texto adentro de una
+   respuesta cerrada y la abre solo, y los lectores de pantalla ya saben
+   anunciar si esta abierto o cerrado.
+   ===================================================================== */
+.preguntas__interior {
+  display: grid;
+  gap: var(--esp-7);
+}
+
+.preguntas__bajada {
+  margin-top: var(--esp-4);
+  max-width: 34ch;
+  font-size: var(--texto-lg);
+  color: var(--color-texto-suave);
+}
+
+.preguntas__pie {
+  margin-top: var(--esp-5);
+  font-size: var(--texto-base);
+  color: var(--color-texto-tenue);
+}
+
+.preguntas__pie a {
+  color: var(--color-acento-legible);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.preguntas__pie a:hover {
+  color: var(--color-acento-hover);
+}
+
+/* --- Cada pregunta ---------------------------------------------------- */
+.pregunta {
+  border-top: 1px solid var(--color-borde);
+}
+
+.pregunta:last-child {
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.pregunta__cabeza {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--esp-4);
+  /* 44px de alto minimo para el dedo, y el relleno hace el resto. */
+  min-height: 44px;
+  padding-block: var(--esp-5);
+  cursor: pointer;
+  /* Saca el triangulito que el navegador dibuja por defecto: el signo
+     de la derecha lo reemplaza. */
+  list-style: none;
+}
+
+.pregunta__cabeza::-webkit-details-marker {
+  display: none;
+}
+
+.pregunta__cabeza:focus-visible {
+  outline: 3px solid var(--color-acento);
+  outline-offset: 3px;
+}
+
+.pregunta__numero {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-semi);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-acento-legible);
+}
+
+.pregunta__titulo {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semi);
+  line-height: 1.3;
+  color: var(--color-texto);
+}
+
+/* El signo + dibujado con dos lineas: al abrir, la vertical gira y
+   queda un signo menos. Dos pseudo-elementos y nada de iconos. */
+.pregunta__signo {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.pregunta__signo::before,
+.pregunta__signo::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 2px;
+  background-color: var(--color-texto-tenue);
+  transition: transform var(--transicion-rapida),
+              background-color var(--transicion-rapida);
+}
+
+.pregunta__signo::after {
+  transform: rotate(90deg);
+}
+
+.pregunta:hover .pregunta__signo::before,
+.pregunta:hover .pregunta__signo::after {
+  background-color: var(--color-acento);
+}
+
+.pregunta[open] .pregunta__signo::after {
+  /* De 90 a 0 grados: la linea vertical se acuesta sobre la horizontal
+     y el mas se convierte en un menos. */
+  transform: rotate(0deg);
+}
+
+.pregunta[open] .pregunta__signo::before,
+.pregunta[open] .pregunta__signo::after {
+  background-color: var(--color-acento);
+}
+
+.pregunta__cuerpo {
+  padding-bottom: var(--esp-5);
+  padding-right: var(--esp-7);
+}
+
+.pregunta__cuerpo p {
+  max-width: 62ch;
+  color: var(--color-texto-suave);
+}
+
+/* LA APERTURA ANIMADA.
+
+   ::details-content es la caja que el navegador arma solo con todo lo
+   que hay adentro del <details> menos el <summary>. Animarla necesita
+   dos cosas:
+
+     interpolate-size: allow-keywords  le permite al navegador calcular
+       el camino entre 0 y auto, que normalmente no sabe hacer.
+
+     allow-discrete en la transicion deja que content-visibility cambie
+       al final en vez de cortar la animacion de entrada.
+
+   Donde no este soportado, el acordeon abre de golpe. Sigue
+   funcionando: es un adorno, no la funcion. */
+:root {
+  interpolate-size: allow-keywords;
+}
+
+.pregunta::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition: block-size 320ms var(--curva-salida),
+              content-visibility 320ms allow-discrete;
+}
+
+.pregunta[open]::details-content {
+  block-size: auto;
+}
+
+@media (min-width: 900px) {
+  .preguntas__interior {
+    /* La columna del titulo mas angosta que la de las preguntas: el
+       peso de la seccion esta en las respuestas, no en el encabezado. */
+    grid-template-columns: minmax(16rem, 0.8fr) 1.5fr;
+    gap: var(--esp-8, 5rem);
+    align-items: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pregunta::details-content {
+    transition: none;
+  }
+  .pregunta__signo::before,
+  .pregunta__signo::after {
+    transition: none;
+  }
+}
+
+
+/* =====================================================================
+   EL TRAZO DE LLEGADA
+   ---------------------------------------------------------------------
+   Cuando tocas un link del menu, la pagina ya se desplaza sola y suave
+   (scroll-behavior arriba de todo). El problema es lo que pasa DESPUES:
+   el scroll frena y no pasa nada mas. No hay nada que diga "llegaste,
+   esto es lo que fuiste a buscar".
+
+   Esto lo resuelve: una linea se traza de izquierda a derecha sobre el
+   borde superior de la seccion a la que llegaste, y se apaga. Es el
+   mismo gesto que el plotter dibujando el borde de una lamina, igual
+   que el fondo del inicio.
+
+   Va SOLO al navegar por el menu, no al scrollear. Scrolleando pasarias
+   por cinco secciones y verias cinco lineas: seria ruido. Al tocar un
+   link estas buscando algo puntual, y ahi el aviso sirve.
+   ===================================================================== */
+.seccion,
+.hero {
+  position: relative;
+}
+
+.seccion::after,
+.hero::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-acento);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  opacity: 0;
+  /* Sin esto la franja se comeria los clicks del borde de la seccion. */
+  pointer-events: none;
+}
+
+.seccion--llegada::after {
+  animation: trazo-llegada 820ms var(--curva-salida);
+}
+
+@keyframes trazo-llegada {
+  /* Se dibuja rapido y se queda un instante antes de apagarse: si se
+     fuera apagando mientras todavia crece, no se llega a leer como un
+     trazo, se lee como un parpadeo. */
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  55% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seccion--llegada::after {
+    animation: none;
   }
 }

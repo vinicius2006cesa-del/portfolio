@@ -1254,6 +1254,59 @@ function activarRiel() {
 
 
 /* =====================================================================
+   5f. EL TRAZO DE LLEGADA
+   ---------------------------------------------------------------------
+   Marca la seccion a la que acabas de llegar desde el menu. Ver el
+   bloque "EL TRAZO DE LLEGADA" en el CSS para el por que.
+
+   Escucha los clicks en un solo lugar (el documento) y no link por
+   link: asi funciona tambien con los links del pie y con cualquiera que
+   agreguemos despues, sin tener que acordarse de conectarlo.
+   ===================================================================== */
+function activarTrazoDeLlegada() {
+  if (prefiereMenosMovimiento()) return;
+
+  let anterior = null;
+
+  function marcar(seccion) {
+    if (!seccion) return;
+    /* Si tocas dos veces seguidas, hay que sacar y volver a poner la
+       clase para que la animacion arranque de cero. Sin el reflow del
+       medio, el navegador junta las dos escrituras y no pasa nada. */
+    if (anterior) anterior.classList.remove("seccion--llegada");
+    seccion.classList.remove("seccion--llegada");
+    void seccion.offsetWidth;
+    seccion.classList.add("seccion--llegada");
+    anterior = seccion;
+
+    seccion.addEventListener(
+      "animationend",
+      () => seccion.classList.remove("seccion--llegada"),
+      { once: true }
+    );
+  }
+
+  document.addEventListener("click", (evento) => {
+    const link = evento.target.closest('a[href^="#"]');
+    if (!link) return;
+    const id = link.getAttribute("href");
+    if (!id || id === "#") return;
+    let destino = null;
+    try {
+      destino = document.querySelector(id);
+    } catch (e) {
+      return;   // un href raro no tiene que romper nada
+    }
+    /* El scroll suave tarda. Si marcamos en el momento del click, la
+       linea se dibuja mientras la seccion todavia esta fuera de
+       pantalla y nadie la ve. Se espera a que el desplazamiento
+       termine. */
+    if (destino) setTimeout(() => marcar(destino), 520);
+  });
+}
+
+
+/* =====================================================================
    6. FORMULARIO DE CONTACTO
    ---------------------------------------------------------------------
    Lo enviamos con fetch para no recargar la pagina y poder mostrar un
@@ -1476,6 +1529,7 @@ function iniciar() {
   activarProgresoDeScroll();
   activarVitrina();
   activarRiel();
+  activarTrazoDeLlegada();
   activarFormulario();
 }
 
