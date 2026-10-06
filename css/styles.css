@@ -57,7 +57,12 @@
      dos muy por arriba del minimo de 4.5:1. */
   --color-fondo-alterno:  #E9DABB;  /* crema de banda — secciones alternas */
   --color-superficie-alta:#FBF5E9;  /* crema clara — tarjetas y campos */
-  --color-borde:          #E2D6BE;  /* bordes decorativos */
+  --color-borde:          #E2D6BE;  /* bordes decorativos sobre el fondo general */
+  /* Borde para lo que vive DENTRO de una banda alterna. El de arriba se
+     eligio contra el crema claro y sobre la banda da 1.04:1: o sea,
+     invisible. Se vio en la lista de proyectos, donde los recuadros sin
+     seleccionar parecian texto suelto. Este da 1.32:1. */
+  --color-borde-alterno:  #D1BE98;
   --color-borde-fuerte:   #8C8270;  /* bordes de campos — 3.2:1 */
 
   /* --- Texto sobre fondo claro ------------------------------------------
@@ -176,11 +181,11 @@
        - el PISO de 1180px esta para que no se achique en pantallas
          medianas. Con 92vw solo, una tablet de 1024 habria quedado en
          942px: MAS angosta que hoy. El piso lo evita.
-       - el TECHO de 1560px esta porque un renglon mas largo que eso
+       - el TECHO de 1540px esta porque un renglon mas largo que eso
          obliga al ojo a viajar demasiado de punta a punta y se pierde
          en que linea iba. Crecer no es gratis.
-     Resultado: 1366 pasa de 1180 a 1257, y 1920 de 1180 a 1560. */
-  --ancho-contenedor: clamp(1180px, 92vw, 1560px);
+     Resultado: 1366 pasa de 1180 a 1257, y 1920 de 1180 a 1540. */
+  --ancho-contenedor: clamp(1180px, 92vw, 1540px);
   --alto-navbar: 76px;
 
   /* --- Transiciones ----------------------------------------------------- */
@@ -1695,7 +1700,10 @@ p {
 .vitrina__lista {
   display: flex;
   flex-direction: column;
-  gap: var(--esp-2);
+  /* Mas separacion que antes: ahora cada proyecto tiene borde propio, y
+     con el hueco chico los recuadros se tocaban y parecian una sola
+     caja dividida en vez de tres opciones. */
+  gap: var(--esp-3);
 }
 
 /* Cada nombre de la lista. Es un <button> de verdad, no un div con
@@ -1703,7 +1711,11 @@ p {
    anuncian como lo que es. */
 .vitrina__nombre {
   display: flex;
-  align-items: baseline;
+  /* center y no baseline: ahora el item lleva una flecha a la derecha
+     que tiene que quedar alineada con el bloque de texto, no con la
+     primera linea de letras. */
+  align-items: center;
+  justify-content: space-between;
   gap: var(--esp-4);
   width: 100%;
   /* position es el ancla de la barra del seleccionado (mas abajo). No
@@ -1712,7 +1724,14 @@ p {
      partian en dos renglones. */
   position: relative;
   padding: var(--esp-4);
-  border: 1px solid transparent;
+  /* El borde se ve SIEMPRE, no solo en el seleccionado. Antes era
+     transparente y la lista parecia texto suelto: no se leia que cada
+     renglon fuera algo en lo que se puede hacer click. Con el recuadro
+     puesto, se entiende de entrada que son tres cosas elegibles.
+
+     Va el borde de banda y no el general: esta lista vive adentro de una
+     seccion alterna, y ahi el borde general no se ve. */
+  border: 1px solid var(--color-borde-alterno);
   border-radius: var(--radio-md);
   background: none;
   text-align: left;
@@ -1720,18 +1739,6 @@ p {
   transition: background-color var(--transicion-rapida),
               border-color var(--transicion-rapida),
               transform var(--transicion-rapida);
-}
-
-.vitrina__indice {
-  flex-shrink: 0;
-  font-family: var(--fuente-titulos);
-  font-size: var(--texto-sm);
-  font-weight: var(--peso-extra);
-  /* Era --color-titulo-suave, que la propia paleta documenta como
-     "3.4:1 — solo el titular gigante": ese minimo vale para texto
-     grande, no para 14px. Medido en la pagina daba 2.9:1. */
-  color: var(--color-texto-tenue);
-  transition: color var(--transicion-rapida);
 }
 
 .vitrina__texto {
@@ -1756,8 +1763,9 @@ p {
   font-weight: var(--peso-semi);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  /* Mismo caso que .vitrina__indice: color de titular gigante en
-     texto de 12px. */
+  /* Era --color-titulo-suave, que la paleta documenta como "solo el
+     titular gigante": ese minimo vale para texto grande, no para 12px.
+     Medido daba 2.9:1. */
   color: var(--color-texto-tenue);
 }
 
@@ -1805,6 +1813,37 @@ p {
   transform: scaleY(1);
 }
 
+/* LA FLECHA DE CADA PROYECTO.
+
+   Reemplaza al 01 / 02 / 03 que habia antes. El numero no decia nada
+   util: nadie elige un proyecto por ser "el dos". La flecha, en cambio,
+   dice que ese recuadro lleva a algun lado.
+
+   Va en el HTML como caracter y no como icono suelto para que herede el
+   color y el tamano del texto sin tener que mantener un SVG aparte. */
+.vitrina__flecha {
+  flex-shrink: 0;
+  color: var(--color-texto-tenue);
+  /* La flecha apagada y corrida a la izquierda: en el que esta abierto
+     se endereza y se pone del azul de marca. */
+  opacity: 0.45;
+  transform: translateX(-2px);
+  transition: opacity var(--transicion-rapida),
+              transform var(--transicion-rapida),
+              color var(--transicion-rapida);
+}
+
+.vitrina__nombre:hover .vitrina__flecha {
+  opacity: 0.8;
+  transform: translateX(0);
+}
+
+.vitrina__nombre[aria-selected="true"] .vitrina__flecha {
+  opacity: 1;
+  color: var(--color-acento);
+  transform: translateX(0);
+}
+
 /* Con menos movimiento pedido, la barra aparece y desaparece sin
    crecer: sigue cumpliendo su funcion, que es avisar. */
 @media (prefers-reduced-motion: reduce) {
@@ -1817,9 +1856,6 @@ p {
   color: var(--color-texto);
 }
 
-.vitrina__nombre[aria-selected="true"] .vitrina__indice {
-  color: var(--color-acento-legible);
-}
 
 /* --- El visor -------------------------------------------------------
    Todos los paneles ocupan la MISMA celda de la grilla (grid-area 1/1),
@@ -2750,7 +2786,10 @@ p {
      que vivir DENTRO del panel para que cambie sola al elegir otro
      proyecto. Si estuviera afuera habria que sincronizarla con JS. */
   .vitrina {
-    grid-template-columns: minmax(190px, 0.72fr) 2.6fr;
+    /* 0.9fr y no 0.72: desde que cada proyecto lleva flecha a la
+       derecha, al titulo le quedaba menos ancho y "Landing page para
+       campañas" se partia en dos renglones. */
+    grid-template-columns: minmax(190px, 0.9fr) 2.6fr;
     gap: var(--esp-6);
     align-items: start;
   }

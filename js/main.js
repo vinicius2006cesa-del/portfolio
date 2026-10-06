@@ -705,16 +705,17 @@ function activarVitrina() {
   // --- Mouse y tacto -------------------------------------------------
   pestanas.forEach((pestana, i) => {
     pestana.addEventListener("click", () => {
-      detenerCiclado();
-      mostrar(i, false);
-    });
-    // En desktop basta con pasar el cursor. En tactil este evento no
-    // existe, asi que ahi manda el click de arriba.
-    pestana.addEventListener("mouseenter", () => {
-      detenerCiclado();
       mostrar(i, false);
     });
   });
+
+  /* NO HAY CAMBIO AL PASAR EL CURSOR, Y ES A PROPOSITO.
+
+     Antes bastaba con pasar el mouse por arriba para cambiar de
+     proyecto. Parecia comodo y era al reves: moviendo el cursor para
+     cualquier otra cosa se cambiaba solo, y uno perdia de vista cual
+     estaba mirando. Elegir un proyecto es una decision, no algo que
+     pase de casualidad: ahora hay que hacer click. */
 
   // --- Teclado --------------------------------------------------------
   vitrina.addEventListener("keydown", (evento) => {
@@ -728,47 +729,22 @@ function activarVitrina() {
     };
     if (!(evento.key in mapa)) return;
     evento.preventDefault();
-    detenerCiclado();
     // El modulo hace que de la ultima se pase a la primera y al reves.
     const destino = (mapa[evento.key] + pestanas.length) % pestanas.length;
     mostrar(destino, true);
   });
 
-  // --- Ciclado automatico ---------------------------------------------
-  // Va pasando los proyectos solo, como una demostracion. Se frena para
-  // siempre apenas la persona toca algo: a partir de ahi manda ella.
-  let reloj = null;
+  /* TAMPOCO SE CAMBIA SOLO.
 
-  function detenerCiclado() {
-    if (reloj) {
-      clearInterval(reloj);
-      reloj = null;
-    }
-  }
+     Habia un ciclado automatico que pasaba de proyecto cada 4,5
+     segundos. La idea era mostrar los tres sin que nadie tocara nada,
+     pero en la practica le movia el contenido a alguien que estaba
+     leyendo, y se mezclaba con el cambio por hover: costaba entender si
+     el proyecto cambio porque uno hizo algo o porque si.
 
-  function arrancarCiclado() {
-    // Si pidieron menos movimiento, no se mueve nada solo.
-    if (prefiereMenosMovimiento()) return;
-    reloj = setInterval(() => {
-      mostrar((actual + 1) % pestanas.length, false);
-    }, 4500);
-  }
-
-  // Solo cicla mientras la seccion esta a la vista: no tiene sentido
-  // gastar animacion si la persona esta leyendo otra parte de la pagina.
-  const vigia = new IntersectionObserver(
-    (entradas) => {
-      entradas.forEach((entrada) => {
-        if (entrada.isIntersecting && !reloj) arrancarCiclado();
-        else if (!entrada.isIntersecting) detenerCiclado();
-      });
-    },
-    { threshold: 0.4 }
-  );
-  vigia.observe(vitrina);
-
-  // Al enfocar con teclado tambien se frena.
-  vitrina.addEventListener("focusin", detenerCiclado);
+     La lista se ve entera de un vistazo, con los tres nombres y el
+     recuadro marcando cual esta abierto. No hace falta que se mueva
+     sola para que se entienda que hay mas de uno. */
 }
 
 
