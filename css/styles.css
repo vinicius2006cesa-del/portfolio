@@ -3033,6 +3033,24 @@ p {
 @media (min-width: 900px) {
 
   .proceso--riel .proceso__lista {
+    /* LOS DOS ANCHOS DEL RIEL, Y POR QUE SON LOS DOS LONGITUDES.
+
+       La version anterior usaba 1fr para la lamina abierta y 5.5rem
+       para las cerradas. Se veia bien quieto y pesimo al cambiar: la
+       transicion no corria, el riel pegaba un salto seco.
+
+       El motivo es de especificacion. grid-template-columns solo se
+       puede interpolar entre valores del MISMO tipo. 1fr es una
+       fraccion y 5.5rem es una longitud: el navegador no sabe que hay a
+       mitad de camino entre las dos, asi que no anima nada y cambia de
+       golpe. Medido cuadro por cuadro: la columna tomaba exactamente
+       dos valores, 893px y 88px, sin un solo paso intermedio.
+
+       Escrita como calc(100% - ...) la abierta pasa a ser tambien una
+       longitud, y ahi si el navegador puede interpolar las dos. */
+    --lomo: 5.5rem;
+    --riel-hueco: var(--esp-2);
+
     display: grid;
     /* 13rem y no 21: con el cajetin afuera, cada lamina tiene un numero,
        un titulo y un renglon de texto. A 21rem quedaba mas de media
@@ -3047,7 +3065,7 @@ p {
        descripcion. */
     height: 13rem;
     margin-top: var(--esp-6);
-    gap: var(--esp-2);
+    gap: var(--riel-hueco);
     /* El JS reescribe esto en cada cambio. El respaldo es por si algo
        falla antes del primer dibujado: cinco columnas iguales. */
     grid-template-columns: repeat(5, 1fr);

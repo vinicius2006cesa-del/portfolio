@@ -1130,9 +1130,20 @@ function activarRiel() {
   let abierta = 0;
   let contador = null;
 
-  /* Cuanto mide una lamina cerrada. Es el unico numero que el JS
-     necesita saber del diseno, y esta puesto una sola vez. */
-  const LOMO = "5.5rem";
+  /* Los dos anchos los define el CSS (--lomo y --riel-hueco). El JS no
+     conoce ninguna medida: solo arma la lista de columnas.
+
+     La abierta se calcula restandole al 100% lo que ocupan las cerradas
+     y los huecos, en vez de poner 1fr. No es un capricho: 1fr es una
+     fraccion y el lomo es una longitud, y el navegador NO puede
+     interpolar entre dos tipos distintos. Con 1fr el riel cambiaba de
+     golpe en vez de deslizarse. Escritas las dos como longitud, la
+     transicion corre sola. */
+  const cerradas = laminas.length - 1;
+  const ANCHO_CERRADA = "var(--lomo)";
+  const ANCHO_ABIERTA =
+    "calc(100% - " + cerradas + " * var(--lomo) - " +
+    cerradas + " * var(--riel-hueco))";
 
   function armar() {
     if (armado || !anchas.matches) return;
@@ -1214,12 +1225,12 @@ function activarRiel() {
 
     /* UNA SOLA ESCRITURA PARA TODA LA ANIMACION.
 
-       La abierta se lleva el espacio que sobra (1fr) y las demas quedan
-       en el ancho del lomo. Los navegadores saben interpolar
-       grid-template-columns, asi que el riel se abre y se cierra solo,
-       sin que el JS calcule ni una medida ni toque un cuadro. */
+       La abierta se lleva el espacio que sobra y las demas quedan en el
+       ancho del lomo. Como los dos valores son longitudes, el navegador
+       puede interpolar la propiedad: el riel se abre y se cierra solo,
+       sin que el JS toque un cuadro. */
     lista.style.gridTemplateColumns = laminas
-      .map((_, i) => (i === indice ? "1fr" : LOMO))
+      .map((_, i) => (i === indice ? ANCHO_ABIERTA : ANCHO_CERRADA))
       .join(" ");
 
     laminas.forEach((lamina, i) => {
