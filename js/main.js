@@ -1098,6 +1098,149 @@ function activarProgresoDeLectura() {
 
 
 /* =====================================================================
+   5e. EL MAZO DE LAMINAS DEL PROCESO
+   ---------------------------------------------------------------------
+   El HTML es una lista ordenada comun y corriente, y asi se queda en
+   celulares y si este archivo no llega: cinco pasos, uno abajo del
+   otro, perfectamente legibles. Esta funcion la CONVIERTE en un mazo
+   de laminas superpuestas, nada mas que en pantallas anchas.
+
+   Se hace desde JavaScript y no en el HTML a proposito: los botones que
+   agrega aca solo tienen sentido cuando las laminas estan apiladas. En
+   la lista los cinco pasos se ven enteros al mismo tiempo, y un boton
+   que no cambia nada seria una parada de teclado que no lleva a ningun
+   lado.
+
+   El JS solo calcula a que distancia esta cada lamina de la que esta
+   al frente y escribe dos numeros. Todo lo demas (cuanto se corre,
+   cuanto se inclina, cuanto se achica) lo decide el CSS.
+   ===================================================================== */
+function activarMazo() {
+  const seccion = document.getElementById("proceso");
+  const lista = seccion && seccion.querySelector(".proceso__lista");
+  if (!lista) return;
+
+  const laminas = [...lista.querySelectorAll(".etapa")];
+  if (laminas.length < 2) return;
+
+  const anchas = window.matchMedia("(min-width: 900px)");
+  let armado = false;
+  let frente = 0;
+  let indicador = null;
+
+  function armar() {
+    if (armado || !anchas.matches) return;
+    armado = true;
+    seccion.classList.add("proceso--mazo");
+
+    laminas.forEach((lamina, i) => {
+      /* FUERA LA ANIMACION DE APARICION DE CADA LAMINA.
+
+         No es prolijidad: .con-animaciones .aparece.visible pone
+         transform: none, y son TRES clases contra las dos de
+         .proceso--mazo .etapa. Gana la de aparicion, el mazo se queda
+         sin inclinacion y las cinco laminas terminan exactamente una
+         encima de la otra. Medido: las cinco daban la misma caja.
+
+         La entrada no se pierde, la sigue haciendo el encabezado de la
+         seccion, que tiene su propio .aparece. */
+      lamina.classList.remove("aparece", "visible");
+
+      /* Cada lamina es tocable, pero hacen cosas distintas segun donde
+         esten: una de atras viene al frente, y la de adelante pasa a la
+         siguiente. Es como se usa un juego de planos de verdad: tocas
+         el que asoma para sacarlo, o corres el de arriba para seguir. */
+      const nombre = lamina.querySelector(".etapa__nombre");
+      const boton = document.createElement("button");
+      boton.type = "button";
+      boton.className = "etapa__tocar";
+      boton.setAttribute(
+        "aria-label",
+        "Ver " + (nombre ? nombre.textContent.trim() : "paso " + (i + 1))
+      );
+      boton.addEventListener("click", () => {
+        if (i === frente) mover(1);
+        else traerAlFrente(i);
+      });
+      lamina.appendChild(boton);
+    });
+
+    /* LOS CONTROLES, Y POR QUE NO ALCANZABA CON TOCAR LAS LAMINAS.
+
+       Apiladas, la de adelante tapa a las demas: de cada una de atras
+       asoma una tira de unos 50px. Se puede tocar, pero es un blanco
+       chico y, sobre todo, nada le avisa a nadie que ahi se puede
+       tocar. Alguien que entra ve un dibujo lindo y sigue de largo sin
+       enterarse de que hay cinco pasos.
+
+       Esta barra lo dice sin vueltas: dos flechas y en que lamina vas.
+       Ademas le da al teclado un lugar obvio donde parar. */
+    const barra = document.createElement("div");
+    barra.className = "mazo__barra";
+
+    const anterior = document.createElement("button");
+    anterior.type = "button";
+    anterior.className = "mazo__flecha";
+    anterior.setAttribute("aria-label", "Lamina anterior");
+    anterior.textContent = "←";
+    anterior.addEventListener("click", () => mover(-1));
+
+    const siguiente = document.createElement("button");
+    siguiente.type = "button";
+    siguiente.className = "mazo__flecha";
+    siguiente.setAttribute("aria-label", "Lamina siguiente");
+    siguiente.textContent = "→";
+    siguiente.addEventListener("click", () => mover(1));
+
+    indicador = document.createElement("p");
+    indicador.className = "mazo__cuenta";
+    /* aria-live: al cambiar de lamina, un lector de pantalla anuncia la
+       nueva posicion sin que haya que ir a buscarla. */
+    indicador.setAttribute("aria-live", "polite");
+
+    barra.append(anterior, indicador, siguiente);
+    lista.insertAdjacentElement("afterend", barra);
+
+    lista.addEventListener("keydown", (evento) => {
+      const pasos = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+      if (!(evento.key in pasos)) return;
+      evento.preventDefault();
+      mover(pasos[evento.key]);
+      const boton = laminas[frente].querySelector(".etapa__tocar");
+      if (boton) boton.focus();
+    });
+
+    traerAlFrente(0);
+  }
+
+  function mover(paso) {
+    traerAlFrente((frente + paso + laminas.length) % laminas.length);
+  }
+
+  function traerAlFrente(indice) {
+    frente = indice;
+    laminas.forEach((lamina, i) => {
+      const d = i - indice;
+      lamina.style.setProperty("--d", d);
+      lamina.style.setProperty("--a", Math.abs(d));
+      lamina.setAttribute("data-frente", i === indice ? "si" : "no");
+      /* No se esconde ninguna: las cinco se leen igual y en orden con un
+         lector de pantalla, aunque visualmente esten tapadas. */
+      if (i === indice) lamina.setAttribute("aria-current", "step");
+      else lamina.removeAttribute("aria-current");
+    });
+    if (indicador) {
+      indicador.textContent =
+        String(indice + 1).padStart(2, "0") + " / " +
+        String(laminas.length).padStart(2, "0");
+    }
+  }
+
+  anchas.addEventListener("change", armar);
+  armar();
+}
+
+/* =====================================================================
    6. FORMULARIO DE CONTACTO
    ---------------------------------------------------------------------
    Lo enviamos con fetch para no recargar la pagina y poder mostrar un
@@ -1319,6 +1462,7 @@ function iniciar() {
   activarInclinacion();
   activarProgresoDeScroll();
   activarVitrina();
+  activarMazo();
   activarFormulario();
 }
 

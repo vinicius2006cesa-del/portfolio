@@ -2069,13 +2069,22 @@ p {
   grid-template-columns: auto 1fr;
   gap: var(--esp-1) var(--esp-5);
   padding-block: var(--esp-5);
-  border-top: 1px solid var(--color-borde);
+  border-top: 1px solid var(--color-borde-alterno);
 }
 
 /* La ultima lleva linea abajo tambien: sin esto la lista se "desfonda"
    y el bloque no se lee como una unidad cerrada. */
 .etapa:last-child {
-  border-bottom: 1px solid var(--color-borde);
+  border-bottom: 1px solid var(--color-borde-alterno);
+}
+
+/* EL CAJETIN.
+   En la lista (celular, y escritorio sin JS) no se muestra: ahi cada
+   paso ya tiene su numero a la izquierda y el cajetin seria repetir el
+   mismo dato dos veces en el mismo renglon. Aparece recien en el mazo,
+   donde es lo que convierte la tarjeta en una lamina. */
+.etapa__cajetin {
+  display: none;
 }
 
 .etapa__numero {
@@ -2997,5 +3006,237 @@ p {
     translate: -50% -50%;
     width: max(100%, 44px);
     height: 44px;
+  }
+}
+
+
+/* =====================================================================
+   EL MAZO DE LAMINAS  (solo pantallas anchas, y solo si corre el JS)
+   ---------------------------------------------------------------------
+   DE DONDE SALE LA IDEA. El fondo del inicio dibuja un plano de
+   construccion: grilla, lineas finas, la V como zona rayada. Un proceso
+   de cinco pasos para construir algo no son cinco cartas de un mazo:
+   son cinco LAMINAS de un plano. Por eso cada paso tiene la misma
+   grilla del inicio y un cajetin, que es el recuadro que todo plano
+   real lleva en la esquina. Una carta no tiene cajetin.
+
+   La inclinacion es despareja a proposito (-2.4, -1.1, 0, 1.3, 2.6
+   grados por distancia, no un abanico simetrico): son papeles apoyados
+   sobre una mesa, no naipes repartidos.
+
+   COMO FUNCIONA. El JS le escribe a cada lamina dos numeros:
+     --d  cuantos lugares esta de la que esta al frente, con signo
+     --a  lo mismo pero sin signo
+   El CSS hace todo el resto a partir de esos dos. Para cambiar como se
+   abre el mazo no hay que tocar JavaScript.
+
+   La clase .proceso--mazo la pone el JS. Si el JS no llega, nada de
+   esto aplica y queda la lista de arriba, que se lee perfecto.
+   ===================================================================== */
+@media (min-width: 900px) {
+
+  .proceso--mazo .proceso__lista {
+    position: relative;
+    /* Alto fijo porque las laminas estan superpuestas y salen del flujo:
+       si no se lo damos, el contenedor colapsa a cero. */
+    height: 23rem;
+    margin-top: var(--esp-6);
+    /* La pila se corre a la IZQUIERDA la mitad de lo que el abanico se
+       abre a la derecha (cuatro laminas por 3.4rem = 13.6rem, o sea
+       6.8rem de correccion). Sin esto el conjunto queda pegado a la
+       derecha y la seccion se ve desbalanceada: el titulo arriba a la
+       izquierda y un hueco grande en el medio. */
+    transform: translateX(-6.8rem);
+  }
+
+  .proceso--mazo .etapa {
+    position: absolute;
+    /* Centrada: desde ahi cada una se corre segun su distancia. */
+    left: 50%;
+    top: 0;
+    width: min(30rem, 100%);
+    margin-left: calc(min(30rem, 100%) / -2);
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+    padding: var(--esp-6);
+    border: 1px solid var(--color-borde-alterno);
+    border-radius: var(--radio-lg);
+    background-color: var(--color-superficie-alta);
+    /* LA GRILLA DEL PLANO. Dos degradados repetidos cruzados: cuesta
+       cuatro lineas de CSS y lo dibuja la placa de video. No hace falta
+       un canvas ni una imagen. */
+    background-image:
+      repeating-linear-gradient(to right,
+        rgba(13, 27, 42, 0.05) 0 1px, transparent 1px 2.75rem),
+      repeating-linear-gradient(to bottom,
+        rgba(13, 27, 42, 0.05) 0 1px, transparent 1px 2.75rem);
+    box-shadow: 0 1px 2px rgba(13, 27, 42, 0.04),
+                0 12px 28px rgba(13, 27, 42, 0.10);
+
+    transform:
+      translateX(calc(var(--d, 0) * 3.4rem))
+      translateY(calc(var(--a, 0) * 0.85rem))
+      rotate(calc(var(--d, 0) * 1.3deg))
+      scale(calc(1 - var(--a, 0) * 0.035));
+    /* La de adelante tapa a las de atras. 10 es simplemente un numero
+       mas alto que la cantidad de laminas. */
+    z-index: calc(10 - var(--a, 0));
+    transition: transform 520ms var(--curva-salida),
+                opacity 320ms var(--curva-suave),
+                box-shadow 520ms var(--curva-salida);
+  }
+
+  /* Las de atras se apagan, pero NO se ocultan: se tienen que poder
+     tocar para traerlas al frente. */
+  .proceso--mazo .etapa[data-frente="no"] {
+    opacity: calc(1 - var(--a, 0) * 0.22);
+  }
+
+  .proceso--mazo .etapa[data-frente="si"] {
+    box-shadow: 0 2px 4px rgba(13, 27, 42, 0.05),
+                0 22px 50px rgba(13, 27, 42, 0.16);
+  }
+
+  /* El numero grande arriba, como la referencia de la lamina. */
+  .proceso--mazo .etapa__numero {
+    font-size: var(--texto-2xl);
+  }
+
+  .proceso--mazo .etapa__nombre {
+    font-size: var(--texto-xl);
+  }
+
+  .proceso--mazo .etapa__texto {
+    /* auto empuja el cajetin al fondo de la lamina, quede corto o largo
+       el texto. Asi las cinco tienen el cajetin a la misma altura. */
+    margin-bottom: auto;
+  }
+
+  /* --- El cajetin ---------------------------------------------------
+     Dos campos con rotulo arriba y valor abajo, separados por una linea
+     vertical, igual que en un plano. Pegado al borde inferior y con el
+     borde propio, como corresponde. */
+  .proceso--mazo .etapa__cajetin {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: var(--esp-4) calc(var(--esp-6) * -1) calc(var(--esp-6) * -1);
+    border-top: 1px solid var(--color-borde-alterno);
+  }
+
+  .etapa__cajetin-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: var(--esp-3) var(--esp-6);
+  }
+
+  .etapa__cajetin-campo + .etapa__cajetin-campo {
+    border-left: 1px solid var(--color-borde-alterno);
+  }
+
+  .etapa__cajetin-rotulo {
+    /* 0.75rem = 12px, no menos. Un cajetin de verdad tiene letra
+       chiquita, pero por abajo de 12px deja de ser estilo y empieza a
+       ser un problema de lectura. */
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-texto-tenue);
+  }
+
+  .etapa__cajetin-valor {
+    font-family: var(--fuente-titulos);
+    font-size: var(--texto-sm);
+    font-weight: var(--peso-semi);
+    color: var(--color-texto);
+  }
+
+  /* El boton que el JS envuelve alrededor de cada lamina. No se ve: la
+     lamina entera es lo que se toca. */
+  .proceso--mazo .etapa__tocar {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    border-radius: inherit;
+    background: none;
+    cursor: pointer;
+  }
+
+  .proceso--mazo .etapa[data-frente="si"] .etapa__tocar {
+    cursor: default;
+  }
+
+  .proceso--mazo .etapa__tocar:focus-visible {
+    outline: 3px solid var(--color-acento);
+    outline-offset: 4px;
+  }
+
+  /* --- La barra de control ------------------------------------------
+     Dos flechas y en que lamina vas. Es lo unico que le avisa a quien
+     entra que el dibujo es navegable: sin esto, el mazo se lee como una
+     ilustracion y nadie toca nada. */
+  .mazo__barra {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--esp-5);
+    margin-top: var(--esp-6);
+  }
+
+  .mazo__flecha {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* 44px aunque sea escritorio: estos dos botones son chicos y hay
+       gente que usa el mouse con poca precision. No cuesta nada. */
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--color-borde-alterno);
+    border-radius: 50%;
+    background-color: var(--color-superficie-alta);
+    color: var(--color-texto);
+    font-size: var(--texto-lg);
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color var(--transicion-rapida),
+                border-color var(--transicion-rapida),
+                transform var(--transicion-rapida);
+  }
+
+  .mazo__flecha:hover {
+    border-color: var(--color-acento);
+    color: var(--color-acento);
+  }
+
+  .mazo__flecha:active {
+    transform: scale(0.94);
+  }
+
+  .mazo__flecha:focus-visible {
+    outline: 3px solid var(--color-acento);
+    outline-offset: 3px;
+  }
+
+  /* El contador en cifras tabulares: con las normales, el 1 es mas
+     angosto que el resto y el texto se corre un pelo en cada cambio. */
+  .mazo__cuenta {
+    min-width: 5ch;
+    font-family: var(--fuente-titulos);
+    font-size: var(--texto-base);
+    font-weight: var(--peso-semi);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: var(--color-texto-tenue);
+  }
+}
+
+/* Con menos movimiento pedido, las laminas no se deslizan al cambiar:
+   saltan a su lugar. Siguen siendo un mazo, pero quieto. */
+@media (prefers-reduced-motion: reduce) {
+  .proceso--mazo .etapa {
+    transition: none !important;
   }
 }
