@@ -436,7 +436,12 @@ function dibujarPlano(lienzo, hero) {
   let alto = 0;
 
   function medir() {
-    const caja = hero.getBoundingClientRect();
+    /* Se mide el LIENZO, no el hero. Desde que el lienzo lleva sangrado
+       (inset: -24px en el CSS, para que al seguir al mouse no destape
+       el borde), es 48px mas ancho y mas alto que el hero. Midiendo el
+       hero, el mapa de pixeles quedaba chico y el navegador lo estiraba
+       para rellenar: lineas gruesas y borrosas. */
+    const caja = lienzo.getBoundingClientRect();
     const escala = Math.min(window.devicePixelRatio || 1, 2);
     lienzo.width = Math.round(caja.width * escala);
     lienzo.height = Math.round(caja.height * escala);

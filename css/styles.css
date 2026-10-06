@@ -41,7 +41,21 @@
      superficie: el fondo general es el medio, las secciones alternas
      van mas oscuras y las tarjetas mas claras. */
   --color-fondo:          #F5EBD7;  /* crema — fondo general */
-  --color-fondo-suave:    #EFE3CC;  /* crema profunda — secciones alternas */
+  --color-fondo-suave:    #EFE3CC;  /* crema profunda — chapitas y superficies */
+  /* LA BANDA DE LAS SECCIONES ALTERNAS.
+     Token propio y no el de arriba a proposito: --color-fondo-suave
+     tambien lo usan la chapita de "PROXIMAMENTE", las categorias de los
+     proyectos y el fondo de las imagenes, y ahi el tono actual esta
+     bien. Lo que habia que separar era la BANDA.
+
+     Por que: medido, el fondo general contra la banda daba 1.07:1. Eso
+     es practicamente invisible — la alternancia de secciones que creiamos
+     tener, no se veia. Con este tono la separacion sube a 1.17:1: se
+     distingue sin gritar. Probamos antes con #E6D5B2 (1.22:1, la misma
+     separacion que daria pasar el fondo a blanco) y marcaba de mas.
+     El texto sigue comodo encima: titulos 12.6:1 y parrafos 5.5:1, los
+     dos muy por arriba del minimo de 4.5:1. */
+  --color-fondo-alterno:  #E9DABB;  /* crema de banda — secciones alternas */
   --color-superficie-alta:#FBF5E9;  /* crema clara — tarjetas y campos */
   --color-borde:          #E2D6BE;  /* bordes decorativos */
   --color-borde-fuerte:   #8C8270;  /* bordes de campos — 3.2:1 */
@@ -52,7 +66,12 @@
      grande. Todos estos estan verificados. */
   --color-texto:          #0D1B2A;  /* 14.7:1 — titulos y texto principal */
   --color-texto-suave:    #44566A;  /*  6.4:1 — parrafos */
-  --color-texto-tenue:    #566878;  /*  4.9:1 — textos chicos secundarios */
+  /* Se oscurecio de #566878 a #4F6070. Motivo: la paleta no tenia nada
+     de margen — TODO estaba justo arriba del minimo de 4.5:1, y por eso
+     las dos cremas no se podian separar sin romper algo. Con este tono
+     hay aire: 5.5:1 sobre el fondo, 4.7:1 sobre la banda alterna y
+     6.0:1 sobre las tarjetas. A ojo es el mismo gris azulado. */
+  --color-texto-tenue:    #4F6070;  /*  5.5:1 — textos chicos secundarios */
   --color-titulo-suave:   #7F7F78;  /*  3.4:1 — solo el titular gigante */
 
   /* --- Acento azul -------------------------------------------------------
@@ -147,7 +166,21 @@
   --sombra-lg: 0 24px 60px rgba(11, 11, 13, 0.12);
 
   /* --- Layout ---------------------------------------------------------- */
-  --ancho-contenedor: 1180px;
+  /* ANCHO DEL CONTENIDO. Antes era 1180px clavado y no crecia nunca:
+     medido, en un monitor de 1920 el contenido ocupaba el 61% de la
+     pantalla y quedaban 370px de margen vacio a cada lado; en uno de
+     2560, el 46% con 690px de margen. Se veia chiquito y perdido.
+
+     clamp(piso, fluido, techo) resuelve los tres casos de una:
+       - 92vw es el valor fluido: crece con la pantalla
+       - el PISO de 1180px esta para que no se achique en pantallas
+         medianas. Con 92vw solo, una tablet de 1024 habria quedado en
+         942px: MAS angosta que hoy. El piso lo evita.
+       - el TECHO de 1560px esta porque un renglon mas largo que eso
+         obliga al ojo a viajar demasiado de punta a punta y se pierde
+         en que linea iba. Crecer no es gratis.
+     Resultado: 1366 pasa de 1180 a 1257, y 1920 de 1180 a 1560. */
+  --ancho-contenedor: clamp(1180px, 92vw, 1560px);
   --alto-navbar: 76px;
 
   /* --- Transiciones ----------------------------------------------------- */
@@ -344,7 +377,7 @@ p {
 }
 
 .seccion--gris {
-  background-color: var(--color-fondo-suave);
+  background-color: var(--color-fondo-alterno);
 }
 
 /* Invisible en pantalla, pero el lector de pantalla lo lee.
@@ -1047,9 +1080,21 @@ p {
    -------------------------------------------------------------------- */
 .hero__oleaje {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  /* SANGRADO DE 24px POR LADO, Y NO inset: 0.
+
+     El JS corre este lienzo hasta 7px siguiendo el mouse. Si mide
+     exactamente lo mismo que el hero, al correrse destapa el borde de
+     enfrente: se veia una ranura entre el final del hero y el principio
+     de Proyectos, justo mientras movias el mouse. 24px es holgado de
+     sobra para los 7 que se mueve.
+
+     El alto y el ancho van EXPLICITOS y no en auto confiando en el
+     inset: <canvas> es un elemento reemplazado, y con width: auto toma
+     su tamano intrinseco (los width="192" height="108" del HTML) en vez
+     de estirarse hasta los bordes. Probado: colapsaba a 192x108. */
+  inset: -24px;
+  width: calc(100% + 48px);
+  height: calc(100% + 48px);
   pointer-events: none;
   background-image:
     radial-gradient(
@@ -1661,6 +1706,11 @@ p {
   align-items: baseline;
   gap: var(--esp-4);
   width: 100%;
+  /* position es el ancla de la barra del seleccionado (mas abajo). No
+     se le suma relleno a la izquierda: la barra mide 3px y entra de
+     sobra en el que ya hay. Probado con relleno extra y los titulos se
+     partian en dos renglones. */
+  position: relative;
   padding: var(--esp-4);
   border: 1px solid transparent;
   border-radius: var(--radio-md);
@@ -1677,7 +1727,10 @@ p {
   font-family: var(--fuente-titulos);
   font-size: var(--texto-sm);
   font-weight: var(--peso-extra);
-  color: var(--color-titulo-suave);
+  /* Era --color-titulo-suave, que la propia paleta documenta como
+     "3.4:1 — solo el titular gigante": ese minimo vale para texto
+     grande, no para 14px. Medido en la pagina daba 2.9:1. */
+  color: var(--color-texto-tenue);
   transition: color var(--transicion-rapida);
 }
 
@@ -1703,7 +1756,9 @@ p {
   font-weight: var(--peso-semi);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-titulo-suave);
+  /* Mismo caso que .vitrina__indice: color de titular gigante en
+     texto de 12px. */
+  color: var(--color-texto-tenue);
 }
 
 .vitrina__nombre:hover {
@@ -1718,6 +1773,44 @@ p {
 .vitrina__nombre[aria-selected="true"] {
   background-color: var(--color-superficie-alta);
   border-color: var(--color-borde);
+}
+
+/* LA BARRA QUE DICE CUAL ESTAS VIENDO.
+
+   Antes el unico aviso era el fondo de la tarjeta, y con tres proyectos
+   en una lista corta cuesta ver cual esta prendido de un vistazo. Una
+   barra vertical en el borde se lee de reojo, sin tener que comparar
+   los tres.
+
+   Va en el azul de marca y no en el marino: es el unico elemento de
+   esta lista que lleva color, asi que el ojo va directo ahi.
+
+   scaleY en vez de aparecer de golpe: la barra crece desde el centro
+   cuando cambias de proyecto. Es el mismo gesto que ya usa la barra de
+   progreso de lectura. */
+.vitrina__nombre::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: var(--esp-3);
+  bottom: var(--esp-3);
+  width: 3px;
+  border-radius: 3px;
+  background-color: var(--color-acento);
+  transform: scaleY(0);
+  transition: transform var(--transicion-rapida);
+}
+
+.vitrina__nombre[aria-selected="true"]::before {
+  transform: scaleY(1);
+}
+
+/* Con menos movimiento pedido, la barra aparece y desaparece sin
+   crecer: sigue cumpliendo su funcion, que es avisar. */
+@media (prefers-reduced-motion: reduce) {
+  .vitrina__nombre::before {
+    transition: none;
+  }
 }
 
 .vitrina__nombre[aria-selected="true"] .vitrina__titulo {
@@ -2686,17 +2779,26 @@ p {
     align-items: stretch;
   }
 
-  /* El alto lo manda la ficha y la imagen lo iguala.
+  /* EL ALTO LO MANDA LA PREVIEW, NO LA FICHA.
 
-     aspect-ratio: auto NO es opcional. La regla base tiene
-     aspect-ratio: 16/10, y una proporcion funciona en las dos
-     direcciones: al fijarle el alto, el navegador dejo de usarla para
-     calcular la altura y empezo a usarla para calcular el ANCHO.
-     380 x 1.6 = 608px, cuando la columna mide 533. El marco se
-     desbordaba 75px y tapaba media ficha. */
+     Antes era al reves: la ficha definia la altura y la imagen la
+     copiaba con height: 100%. Funcionaba mientras el contenedor media
+     1180px, pero al ensancharlo a 1560 la preview siguio creciendo a lo
+     ancho sin crecer a lo alto. Medido: a 1920 quedaba de 720x323, o
+     sea 2.23:1. Una captura de un sitio web en ese formato se ve
+     aplastada. A 16/10 el mismo ancho da 450px de alto.
+
+     align-self: start es la pieza que lo hace posible: la fila sigue en
+     align-items: stretch (la ficha necesita estirarse para cerrar
+     pareja abajo), pero la preview se baja de esa regla y conserva su
+     proporcion.
+
+     OJO con volver a poner height aca: aspect-ratio funciona en las DOS
+     direcciones. Si se le fija el alto, el navegador deja de usarla
+     para calcular la altura y la usa para calcular el ANCHO, y el marco
+     se desborda tapando la ficha. Ya nos paso. */
   .vitrina__imagen {
-    height: 100%;
-    aspect-ratio: auto;
+    align-self: start;
   }
 
   /* La tarjeta final ocupa el ancho de las tres columnas.
