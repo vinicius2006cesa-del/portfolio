@@ -2529,9 +2529,26 @@ p {
 /* Punto separador entre links, dibujado por CSS.
    :not(:last-child) evita que quede un punto suelto al final. */
 .footer__legales a:not(:last-child)::after {
-  content: "·";
+  content: "\00b7";
   margin-left: var(--esp-4);
   opacity: 0.5;
+}
+
+/* Abajo de 700px los cuatro links no entran en un renglon y se parten.
+   Cuando eso pasa, el separador del ultimo link del renglon queda
+   colgado al final, sin nada que separar: se veia "Cookies ·" y abajo
+   "Aviso Legal". Medido en un telefono de 393px.
+
+   La lista ya es flex con hueco propio, asi que sin los puntos se
+   siguen leyendo igual de separados. */
+@media (max-width: 699px) {
+  /* El selector repite el :not(:last-child) a proposito. La regla de
+     arriba lo lleva, y eso le da mas especificidad: con un
+     ".footer__legales a::after" a secas, esta no ganaba y el punto
+     seguia apareciendo. Probado. */
+  .footer__legales a:not(:last-child)::after {
+    content: none;
+  }
 }
 
 .footer__arriba {
@@ -3075,12 +3092,6 @@ p {
   color: var(--color-texto-suave);
 }
 
-.preguntas__pie {
-  margin-top: var(--esp-5);
-  font-size: var(--texto-base);
-  color: var(--color-texto-tenue);
-}
-
 .preguntas__pie a {
   color: var(--color-acento-legible);
   text-decoration: underline;
@@ -3226,6 +3237,23 @@ p {
   block-size: auto;
 }
 
+/* EL REMATE VA AL FINAL EN CELULAR.
+
+   "¿No esta la tuya? Escribime" esta pensado para despues de haber
+   leido las preguntas. En escritorio vive en la columna de la izquierda
+   y eso se entiende solo, porque esta al costado. Pero apilado en un
+   telefono quedaba ARRIBA de las preguntas: lo invitaba a escribir
+   antes de haber leido una sola respuesta.
+
+   Por eso el remate es hermano de la lista y no hijo de la columna: en
+   celular cae ultimo por orden natural, y en escritorio se lo manda de
+   vuelta a la primera columna con grid-row. */
+.preguntas__pie {
+  margin-top: var(--esp-5);
+  font-size: var(--texto-base);
+  color: var(--color-texto-tenue);
+}
+
 @media (min-width: 900px) {
   .preguntas__interior {
     /* La columna del titulo mas angosta que la de las preguntas: el
@@ -3233,6 +3261,24 @@ p {
     grid-template-columns: minmax(16rem, 0.8fr) 1.5fr;
     gap: var(--esp-8, 5rem);
     align-items: start;
+  }
+
+  /* Colocacion explicita: titulo arriba a la izquierda, remate debajo
+     de el, y la lista ocupando las dos filas de la segunda columna. */
+  .preguntas__columna {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .preguntas__pie {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 0;
+  }
+
+  .preguntas__lista {
+    grid-column: 2;
+    grid-row: 1 / span 2;
   }
 }
 

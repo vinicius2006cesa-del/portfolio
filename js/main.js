@@ -913,8 +913,36 @@ function activarRevelado() {
       if (!nodo.textContent.trim()) continue;
       const partes = nodo.textContent.split(/(\s+)/);
       const frag = document.createDocumentFragment();
+      let primera = true;
       for (const parte of partes) {
         if (parte === "") continue;
+
+        /* PUNTUACION PEGADA A LA PALABRA DE ANTES.
+
+           El subtitulo dice: ...<b>se tome en serio</b>, <b>se distinga...
+           La coma vive FUERA del <b>, asi que arranca su propio nodo de
+           texto y terminaba en un <span> aparte. Y como cada palabra es
+           display: inline-block, el navegador puede cortar el renglon
+           entre dos inline-block aunque no haya un espacio en el medio.
+
+           Resultado medido en un telefono de 393px: un renglon
+           arrancaba con ", se distinga del resto". Una coma sola al
+           principio de una linea.
+
+           Cuando el nodo EMPIEZA con puntuacion (o sea, viene pegada a
+           lo que habia antes), se le suma el texto al ultimo span en
+           vez de crear uno nuevo. Asi no hay dos cajas que separar.
+
+           Solo se hace con la primera parte del nodo: una puntuacion en
+           el medio de un texto normal ya viene pegada a su palabra y no
+           hay nada que arreglar. */
+        if (primera && /^[,.;:!?)\]…»]+$/.test(parte) && palabras.length) {
+          palabras[palabras.length - 1].textContent += parte;
+          primera = false;
+          continue;
+        }
+        primera = false;
+
         if (!parte.trim()) {
           // Los espacios se conservan tal cual: son los que separan las
           // palabras y los que permiten que el renglon corte donde debe.

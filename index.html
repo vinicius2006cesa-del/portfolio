@@ -34,7 +34,7 @@
   <meta property="og:url" content="https://viniciuscesa.com/">
   <!-- La imagen que se ve al compartir el link. Tiene que ser PNG o JPG
        de 1200x630: WhatsApp y Facebook no leen SVG. -->
-  <meta property="og:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610060307">
+  <meta property="og:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610060316">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -43,7 +43,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Vinicius Cesa — Diseño y desarrollo web que convierte">
   <meta name="twitter:description" content="Diseño y desarrollo landing pages, portfolios y sitios institucionales que convierten visitas en consultas reales.">
-  <meta name="twitter:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610060307">
+  <meta name="twitter:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610060316">
 
   <!-- ===================================================================
        FAVICON Y COLOR DE MARCA
@@ -166,12 +166,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610060307">
+  <link rel="stylesheet" href="css/styles.css?v=202610060316">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610060307"></script>
+  <script src="js/activar-animaciones.js?v=202610060316"></script>
 </head>
 
 <body>
@@ -668,10 +668,6 @@
             Las dudas que aparecen siempre, resueltas antes de que
             tengas que preguntarlas.
           </p>
-          <p class="preguntas__pie">
-            ¿No está la tuya?
-            <a href="#contacto">Escribime y te la contesto</a>.
-          </p>
         </div>
 
         <div class="preguntas__lista aparece" data-escalonar>
@@ -730,6 +726,14 @@
             </div>
           </details>
         </div>
+
+        <!-- El remate es hermano de la lista y no hijo de la columna: en
+             celular tiene que caer DESPUES de las preguntas. Ver el
+             comentario de .preguntas__pie en el CSS. -->
+        <p class="preguntas__pie aparece">
+          ¿No está la tuya?
+          <a href="#contacto">Escribime y te la contesto</a>.
+        </p>
 
       </div>
     </section>
@@ -1102,7 +1106,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610060307" defer></script>
+  <script src="js/main.js?v=202610060316" defer></script>
 
 </body>
 </html>
