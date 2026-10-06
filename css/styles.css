@@ -2078,15 +2078,6 @@ p {
   border-bottom: 1px solid var(--color-borde-alterno);
 }
 
-/* EL CAJETIN.
-   En la lista (celular, y escritorio sin JS) no se muestra: ahi cada
-   paso ya tiene su numero a la izquierda y el cajetin seria repetir el
-   mismo dato dos veces en el mismo renglon. Aparece recien en el mazo,
-   donde es lo que convierte la tarjeta en una lamina. */
-.etapa__cajetin {
-  display: none;
-}
-
 .etapa__numero {
   /* Ocupa las dos filas de la grilla, asi el nombre y la frase quedan
      los dos a su derecha en vez de empujarse entre si. */
@@ -3016,8 +3007,13 @@ p {
    DE DONDE SALE. El fondo del inicio dibuja un plano de construccion.
    Cinco pasos para construir algo no son cinco cartas de un mazo: son
    cinco LAMINAS de un plano. Por eso cada paso lleva la misma grilla
-   del inicio y un cajetin, que es el recuadro que todo plano real tiene
-   en la esquina. Una carta no tiene cajetin.
+   tecnica del inicio, y las cerradas quedan de canto con el nombre
+   girado, como los lomos de las laminas paradas en un atril.
+
+   Hubo tambien un cajetin (el recuadro de datos que todo plano real
+   lleva en la esquina). Se saco: decia "LAMINA 03 / 05", que es
+   exactamente lo que ya dice el contador de la barra de abajo, y
+   ocupaba un tercio de una lamina que tiene poco texto.
 
    POR QUE RIEL Y NO PILA. Lo probamos antes con las laminas apiladas en
    abanico. Dos problemas, los dos reales: ocupaba una franja angosta en
@@ -3038,7 +3034,18 @@ p {
 
   .proceso--riel .proceso__lista {
     display: grid;
-    height: 21rem;
+    /* 13rem y no 21: con el cajetin afuera, cada lamina tiene un numero,
+       un titulo y un renglon de texto. A 21rem quedaba mas de media
+       lamina vacia.
+
+       Mas bajo que esto no se puede: el lomo lleva el nombre girado, y
+       ese texto vertical marca el piso. Medido a 14px, el mas largo
+       ("Nos conocemos") ocupa 114px, y sumando numero, hueco y relleno
+       dan unos 200px. Por eso tambien se acorto el quinto paso a
+       "Publicamos": con "y acompanamos" el minimo se iba a 16rem y no
+       habia forma de bajar. Lo que decia el titulo lo sigue diciendo su
+       descripcion. */
+    height: 13rem;
     margin-top: var(--esp-6);
     gap: var(--esp-2);
     /* El JS reescribe esto en cada cambio. El respaldo es por si algo
@@ -3102,21 +3109,21 @@ p {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
     margin-top: var(--esp-3);
-    font-size: var(--texto-base);
+    /* 0.875rem = 14px. Es lo que permite que el riel baje a 13rem sin
+       que el nombre mas largo se corte. */
+    font-size: 0.875rem;
     color: var(--color-texto-suave);
   }
 
-  /* De canto no entra ni el parrafo ni el cajetin. */
-  .proceso--riel .etapa[data-abierta="no"] .etapa__texto,
-  .proceso--riel .etapa[data-abierta="no"] .etapa__cajetin {
+  /* De canto no hay lugar para el parrafo. */
+  .proceso--riel .etapa[data-abierta="no"] .etapa__texto {
     opacity: 0;
     visibility: hidden;
     transition: opacity 160ms linear, visibility 0s linear 160ms;
   }
 
   /* --- Abierta ------------------------------------------------------- */
-  .proceso--riel .etapa[data-abierta="si"] .etapa__texto,
-  .proceso--riel .etapa[data-abierta="si"] .etapa__cajetin {
+  .proceso--riel .etapa[data-abierta="si"] .etapa__texto {
     opacity: 1;
     visibility: visible;
     /* El retraso deja que la columna termine de abrirse antes de que
@@ -3130,44 +3137,6 @@ p {
     margin-bottom: auto;
   }
 
-  /* --- El cajetin ----------------------------------------------------
-     Dos campos con rotulo arriba y valor abajo, separados por una linea,
-     igual que en un plano. Pegado al borde inferior de la lamina. */
-  .proceso--riel .etapa__cajetin {
-    display: grid;
-    grid-template-columns: auto auto;
-    justify-content: start;
-    margin: var(--esp-4) calc(var(--esp-5) * -1) calc(var(--esp-5) * -1);
-    border-top: 1px solid var(--color-borde-alterno);
-  }
-
-  .etapa__cajetin-campo {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    padding: var(--esp-3) var(--esp-5);
-  }
-
-  .etapa__cajetin-campo + .etapa__cajetin-campo {
-    border-left: 1px solid var(--color-borde-alterno);
-  }
-
-  .etapa__cajetin-rotulo {
-    /* 0.75rem = 12px, no menos. Un cajetin de verdad tiene letra
-       chiquita, pero por abajo de 12px deja de ser estilo y pasa a ser
-       un problema de lectura. */
-    font-size: 0.75rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--color-texto-tenue);
-  }
-
-  .etapa__cajetin-valor {
-    font-family: var(--fuente-titulos);
-    font-size: var(--texto-sm);
-    font-weight: var(--peso-semi);
-    color: var(--color-texto);
-  }
 
   /* El boton que el JS pone adentro de cada lamina: se toca la lamina
      entera, no un blanco chiquito. */
@@ -3247,8 +3216,7 @@ p {
    deslizarse. Sigue funcionando igual. */
 @media (prefers-reduced-motion: reduce) {
   .proceso--riel .proceso__lista,
-  .proceso--riel .etapa__texto,
-  .proceso--riel .etapa__cajetin {
+  .proceso--riel .etapa__texto {
     transition: none !important;
   }
 }
