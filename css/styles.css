@@ -2405,14 +2405,31 @@ p {
   flex-shrink: 0;
 }
 
-.footer__frase {
-  margin-top: var(--esp-4);
-  /* 38ch dejaba la frase en 349px y nueve renglones aunque la columna
-     midiera 556: el tope le ganaba al ancho disponible. 58ch es un
-     renglon comodo de leer y aprovecha la columna. */
+.footer__frase,
+.footer__legal {
+  /* 38ch dejaba el texto en 349px aunque la columna midiera 556: el
+     tope le ganaba al ancho disponible. 58ch es un renglon comodo de
+     leer y aprovecha la columna. */
   max-width: 58ch;
   font-size: var(--texto-sm);
   color: var(--color-oscuro-suave);
+  /* text-wrap: pretty le pide al navegador que no deje la ultima linea
+     con una o dos palabras sueltas; reparte el texto para evitarlo.
+     Medido a 1920px, la frase terminaba en "sin autorizacion." sola.
+     Donde no este soportado, simplemente corta como antes. */
+  text-wrap: pretty;
+}
+
+.footer__frase {
+  margin-top: var(--esp-4);
+}
+
+/* La letra chica, un punto mas apagada que la presentacion: es
+   informacion que tiene que estar, no que haya que leer primero. */
+.footer__legal {
+  margin-top: var(--esp-4);
+  font-size: var(--texto-xs);
+  opacity: 0.75;
 }
 
 /* --- Iconos de redes --------------------------------------------- */
