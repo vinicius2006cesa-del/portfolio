@@ -2267,7 +2267,11 @@ p {
 
 .campo input,
 .campo textarea {
-  padding: var(--esp-4);
+  /* Relleno asimetrico: 0.8rem arriba y abajo contra 1rem a los lados.
+     Los campos median 61 a 68px de alto, cuando un campo comodo anda en
+     48 a 52. El ancho del relleno lateral se deja igual porque ahi no
+     sobraba: es lo que separa el texto del borde. */
+  padding: 0.8rem var(--esp-4);
   border: 1px solid transparent;
   border-radius: var(--radio-sm);
   background-color: var(--color-superficie-alta);
@@ -2326,7 +2330,12 @@ p {
 }
 
 .campo textarea {
-  min-height: 130px;
+  /* 104px en vez de 130: son unos cuatro renglones, de sobra para el
+     mensaje de una primera consulta. Era el campo que mas estiraba el
+     formulario, y un recuadro grande y vacio da la sensacion de que hay
+     que escribir mucho, que es justo lo que frena a alguien que solo
+     queria preguntar un precio. Si escribe mas, crece solo. */
+  min-height: 104px;
   resize: vertical;   /* solo se estira a lo alto, no a lo ancho */
 }
 
@@ -2843,6 +2852,17 @@ p {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    /* width: max-content NO es opcional.
+
+       Un elemento con position: absolute y left: 50% sin ancho propio
+       se achica a lo que queda entre ese 50% y el borde derecho, o sea
+       a media barra. Con cuatro links entraba justo; al sumar
+       "Preguntas" dejo de entrar y el menu se partia en tres renglones
+       EN TODOS LOS ANCHOS, hasta en 1920.
+
+       Con max-content mide lo que miden los links y el translate lo
+       centra, sin importar cuantos sean. */
+    width: max-content;
     flex-direction: row;
     align-items: center;
     gap: var(--esp-6);
@@ -2903,7 +2923,52 @@ p {
     gap: var(--esp-6);
     align-items: start;
   }
+  .vitrina__panel {
+    /* La imagen manda y la ficha acompaña. El minmax evita que la ficha
+       se angoste tanto que las etiquetas se partan letra por letra.
 
+       2.25fr y no 1.75: la ficha pasa de 327px a unos 280. Lo que gana
+       de ancho la preview se traduce en alto, porque la preview tiene
+       proporcion fija. El minimo baja a 210px, que sigue alcanzando
+       para que "PROXIMAMENTE" entre en un renglon. */
+    grid-template-columns: 2.25fr minmax(210px, 1fr);
+    gap: var(--esp-5);
+    /* stretch y no start: las dos columnas cierran parejas arriba y
+       abajo. Con start, la ficha (que siempre es mas alta que la
+       imagen) sobresalia por abajo y el bloque quedaba desprolijo. */
+    align-items: stretch;
+  }
+  /* EL ALTO LO MANDA LA PREVIEW, NO LA FICHA.
+
+     Antes era al reves: la ficha definia la altura y la imagen la
+     copiaba con height: 100%. Funcionaba mientras el contenedor media
+     1180px, pero al ensancharlo a 1560 la preview siguio creciendo a lo
+     ancho sin crecer a lo alto. Medido: a 1920 quedaba de 720x323, o
+     sea 2.23:1. Una captura de un sitio web en ese formato se ve
+     aplastada. A 16/10 el mismo ancho da 450px de alto.
+
+     align-self: start es la pieza que lo hace posible: la fila sigue en
+     align-items: stretch (la ficha necesita estirarse para cerrar
+     pareja abajo), pero la preview se baja de esa regla y conserva su
+     proporcion.
+
+     OJO con volver a poner height aca: aspect-ratio funciona en las DOS
+     direcciones. Si se le fija el alto, el navegador deja de usarla
+     para calcular la altura y la usa para calcular el ANCHO, y el marco
+     se desborda tapando la ficha. Ya nos paso. */
+  .vitrina__imagen {
+    align-self: start;
+  }
+  /* La tarjeta final ocupa el ancho de las tres columnas.
+     1 / -1 significa "desde la primera linea hasta la ultima". */
+  .proyecto-cta {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--esp-6);
+    padding: var(--esp-7);
+  }
   .proyecto-cta__texto {
     max-width: 60%;
   }
@@ -3350,7 +3415,11 @@ p {
   gap: var(--esp-4);
   /* 44px de alto minimo para el dedo, y el relleno hace el resto. */
   min-height: 44px;
-  padding-block: var(--esp-5);
+  /* esp-6 y no esp-5: medida contra el resto, esta seccion quedaba en
+     544px cuando servicios da 596 y proceso 618. Se leia apretada al
+     lado de las demas. Con el relleno mas grande, las cinco preguntas
+     ocupan lo que tiene que ocupar un bloque de este peso. */
+  padding-block: var(--esp-6);
   cursor: pointer;
   /* Saca el triangulito que el navegador dibuja por defecto: el signo
      de la derecha lo reemplaza. */
