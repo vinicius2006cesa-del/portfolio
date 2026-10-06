@@ -181,11 +181,11 @@
        - el PISO de 1180px esta para que no se achique en pantallas
          medianas. Con 92vw solo, una tablet de 1024 habria quedado en
          942px: MAS angosta que hoy. El piso lo evita.
-       - el TECHO de 1540px esta porque un renglon mas largo que eso
+       - el TECHO de 1520px esta porque un renglon mas largo que eso
          obliga al ojo a viajar demasiado de punta a punta y se pierde
          en que linea iba. Crecer no es gratis.
-     Resultado: 1366 pasa de 1180 a 1257, y 1920 de 1180 a 1540. */
-  --ancho-contenedor: clamp(1180px, 92vw, 1540px);
+     Resultado: 1366 pasa de 1180 a 1257, y 1920 de 1180 a 1520. */
+  --ancho-contenedor: clamp(1180px, 92vw, 1520px);
   --alto-navbar: 76px;
 
   /* --- Transiciones ----------------------------------------------------- */
