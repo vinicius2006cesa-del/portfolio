@@ -1098,24 +1098,23 @@ function activarProgresoDeLectura() {
 
 
 /* =====================================================================
-   5e. EL MAZO DE LAMINAS DEL PROCESO
+   5e. EL RIEL DE LAMINAS DEL PROCESO
    ---------------------------------------------------------------------
    El HTML es una lista ordenada comun y corriente, y asi se queda en
    celulares y si este archivo no llega: cinco pasos, uno abajo del
-   otro, perfectamente legibles. Esta funcion la CONVIERTE en un mazo
-   de laminas superpuestas, nada mas que en pantallas anchas.
+   otro, perfectamente legibles. Esta funcion la convierte en un riel de
+   laminas, nada mas que en pantallas anchas.
 
    Se hace desde JavaScript y no en el HTML a proposito: los botones que
-   agrega aca solo tienen sentido cuando las laminas estan apiladas. En
-   la lista los cinco pasos se ven enteros al mismo tiempo, y un boton
+   agrega aca solo tienen sentido cuando las laminas estan de canto. En
+   la lista los cinco pasos se leen enteros al mismo tiempo, y un boton
    que no cambia nada seria una parada de teclado que no lleva a ningun
    lado.
 
-   El JS solo calcula a que distancia esta cada lamina de la que esta
-   al frente y escribe dos numeros. Todo lo demas (cuanto se corre,
-   cuanto se inclina, cuanto se achica) lo decide el CSS.
+   Todo el trabajo visual lo hace el CSS. El JS se limita a escribir
+   que columna esta abierta.
    ===================================================================== */
-function activarMazo() {
+function activarRiel() {
   const seccion = document.getElementById("proceso");
   const lista = seccion && seccion.querySelector(".proceso__lista");
   if (!lista) return;
@@ -1123,33 +1122,36 @@ function activarMazo() {
   const laminas = [...lista.querySelectorAll(".etapa")];
   if (laminas.length < 2) return;
 
+  /* Igual que el fondo del inicio: la decision no se toma una sola vez.
+     Si alguien gira la tablet de vertical a horizontal, el riel se tiene
+     que armar ahi mismo. */
   const anchas = window.matchMedia("(min-width: 900px)");
   let armado = false;
-  let frente = 0;
-  let indicador = null;
+  let abierta = 0;
+  let contador = null;
+
+  /* Cuanto mide una lamina cerrada. Es el unico numero que el JS
+     necesita saber del diseno, y esta puesto una sola vez. */
+  const LOMO = "5.5rem";
 
   function armar() {
     if (armado || !anchas.matches) return;
     armado = true;
-    seccion.classList.add("proceso--mazo");
+    seccion.classList.add("proceso--riel");
 
     laminas.forEach((lamina, i) => {
       /* FUERA LA ANIMACION DE APARICION DE CADA LAMINA.
 
          No es prolijidad: .con-animaciones .aparece.visible pone
          transform: none, y son TRES clases contra las dos de
-         .proceso--mazo .etapa. Gana la de aparicion, el mazo se queda
-         sin inclinacion y las cinco laminas terminan exactamente una
-         encima de la otra. Medido: las cinco daban la misma caja.
+         .proceso--riel .etapa. Gana la de aparicion y pisa el giro del
+         nombre en los lomos. Ya nos paso con la version anterior de
+         esta seccion, donde dejaba las cinco laminas sin inclinacion.
 
-         La entrada no se pierde, la sigue haciendo el encabezado de la
+         La entrada no se pierde: la sigue haciendo el encabezado de la
          seccion, que tiene su propio .aparece. */
       lamina.classList.remove("aparece", "visible");
 
-      /* Cada lamina es tocable, pero hacen cosas distintas segun donde
-         esten: una de atras viene al frente, y la de adelante pasa a la
-         siguiente. Es como se usa un juego de planos de verdad: tocas
-         el que asoma para sacarlo, o corres el de arriba para seguir. */
       const nombre = lamina.querySelector(".etapa__nombre");
       const boton = document.createElement("button");
       boton.type = "button";
@@ -1158,23 +1160,13 @@ function activarMazo() {
         "aria-label",
         "Ver " + (nombre ? nombre.textContent.trim() : "paso " + (i + 1))
       );
-      boton.addEventListener("click", () => {
-        if (i === frente) mover(1);
-        else traerAlFrente(i);
-      });
+      boton.addEventListener("click", () => abrir(i));
       lamina.appendChild(boton);
     });
 
-    /* LOS CONTROLES, Y POR QUE NO ALCANZABA CON TOCAR LAS LAMINAS.
-
-       Apiladas, la de adelante tapa a las demas: de cada una de atras
-       asoma una tira de unos 50px. Se puede tocar, pero es un blanco
-       chico y, sobre todo, nada le avisa a nadie que ahi se puede
-       tocar. Alguien que entra ve un dibujo lindo y sigue de largo sin
-       enterarse de que hay cinco pasos.
-
-       Esta barra lo dice sin vueltas: dos flechas y en que lamina vas.
-       Ademas le da al teclado un lugar obvio donde parar. */
+    /* La barra de flechas con el contador. Las laminas de canto ya se
+       pueden tocar, pero nada avisa que ahi hay algo: sin esta barra,
+       alguien ve un dibujo lindo y sigue de largo. */
     const barra = document.createElement("div");
     barra.className = "mazo__barra";
 
@@ -1182,23 +1174,23 @@ function activarMazo() {
     anterior.type = "button";
     anterior.className = "mazo__flecha";
     anterior.setAttribute("aria-label", "Lamina anterior");
-    anterior.textContent = "←";
+    anterior.textContent = "\u2190";
     anterior.addEventListener("click", () => mover(-1));
 
     const siguiente = document.createElement("button");
     siguiente.type = "button";
     siguiente.className = "mazo__flecha";
     siguiente.setAttribute("aria-label", "Lamina siguiente");
-    siguiente.textContent = "→";
+    siguiente.textContent = "\u2192";
     siguiente.addEventListener("click", () => mover(1));
 
-    indicador = document.createElement("p");
-    indicador.className = "mazo__cuenta";
+    contador = document.createElement("p");
+    contador.className = "mazo__cuenta";
     /* aria-live: al cambiar de lamina, un lector de pantalla anuncia la
        nueva posicion sin que haya que ir a buscarla. */
-    indicador.setAttribute("aria-live", "polite");
+    contador.setAttribute("aria-live", "polite");
 
-    barra.append(anterior, indicador, siguiente);
+    barra.append(anterior, contador, siguiente);
     lista.insertAdjacentElement("afterend", barra);
 
     lista.addEventListener("keydown", (evento) => {
@@ -1206,31 +1198,40 @@ function activarMazo() {
       if (!(evento.key in pasos)) return;
       evento.preventDefault();
       mover(pasos[evento.key]);
-      const boton = laminas[frente].querySelector(".etapa__tocar");
+      const boton = laminas[abierta].querySelector(".etapa__tocar");
       if (boton) boton.focus();
     });
 
-    traerAlFrente(0);
+    abrir(0);
   }
 
   function mover(paso) {
-    traerAlFrente((frente + paso + laminas.length) % laminas.length);
+    abrir((abierta + paso + laminas.length) % laminas.length);
   }
 
-  function traerAlFrente(indice) {
-    frente = indice;
+  function abrir(indice) {
+    abierta = indice;
+
+    /* UNA SOLA ESCRITURA PARA TODA LA ANIMACION.
+
+       La abierta se lleva el espacio que sobra (1fr) y las demas quedan
+       en el ancho del lomo. Los navegadores saben interpolar
+       grid-template-columns, asi que el riel se abre y se cierra solo,
+       sin que el JS calcule ni una medida ni toque un cuadro. */
+    lista.style.gridTemplateColumns = laminas
+      .map((_, i) => (i === indice ? "1fr" : LOMO))
+      .join(" ");
+
     laminas.forEach((lamina, i) => {
-      const d = i - indice;
-      lamina.style.setProperty("--d", d);
-      lamina.style.setProperty("--a", Math.abs(d));
-      lamina.setAttribute("data-frente", i === indice ? "si" : "no");
+      lamina.setAttribute("data-abierta", i === indice ? "si" : "no");
       /* No se esconde ninguna: las cinco se leen igual y en orden con un
-         lector de pantalla, aunque visualmente esten tapadas. */
+         lector de pantalla, aunque visualmente esten de canto. */
       if (i === indice) lamina.setAttribute("aria-current", "step");
       else lamina.removeAttribute("aria-current");
     });
-    if (indicador) {
-      indicador.textContent =
+
+    if (contador) {
+      contador.textContent =
         String(indice + 1).padStart(2, "0") + " / " +
         String(laminas.length).padStart(2, "0");
     }
@@ -1239,6 +1240,7 @@ function activarMazo() {
   anchas.addEventListener("change", armar);
   armar();
 }
+
 
 /* =====================================================================
    6. FORMULARIO DE CONTACTO
@@ -1462,7 +1464,7 @@ function iniciar() {
   activarInclinacion();
   activarProgresoDeScroll();
   activarVitrina();
-  activarMazo();
+  activarRiel();
   activarFormulario();
 }
 
