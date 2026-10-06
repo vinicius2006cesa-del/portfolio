@@ -2407,7 +2407,10 @@ p {
 
 .footer__frase {
   margin-top: var(--esp-4);
-  max-width: 38ch;
+  /* 38ch dejaba la frase en 349px y nueve renglones aunque la columna
+     midiera 556: el tope le ganaba al ancho disponible. 58ch es un
+     renglon comodo de leer y aprovecha la columna. */
+  max-width: 58ch;
   font-size: var(--texto-sm);
   color: var(--color-oscuro-suave);
 }
@@ -2973,14 +2976,27 @@ p {
   /* Footer en cuatro columnas. 1.6fr contra 1fr significa "esta mide
      1.6 veces lo que cada una de las otras". La de Contacto lleva un
      poco mas porque el mail es largo. */
+  /* LA COLUMNA DEL TEXTO SE LLEVA MAS DE LA MITAD.
+
+     Medido antes: la frase de marca vivia en 340px y ocupaba DIEZ
+     renglones, mientras "Explorar" tenia 227px para cuatro links
+     cortos. El pie terminaba en 539px de alto, con mucho aire muerto
+     entre las columnas de la derecha y un bloque de texto angostisimo
+     a la izquierda.
+
+     Ahora el texto se lleva 2.4 partes de 5. Pasa a unos 545px, o sea
+     seis renglones en vez de diez, y el pie baja mas de cien pixeles.
+     Las tres columnas de links se achican a lo que de verdad miden sus
+     palabras, asi el hueco entre ellas es el del gap y no el sobrante
+     de una columna vacia. */
   .footer__superior {
-    grid-template-columns: 1.5fr 1fr 1.3fr 1.2fr;
-    gap: var(--esp-7);
+    grid-template-columns: 2.4fr 0.75fr 1.1fr 0.85fr;
+    gap: var(--esp-7) var(--esp-6);
   }
 
   .footer__marca-col {
     grid-column: auto;   /* deja de ocupar toda la fila */
-    padding-right: var(--esp-5);
+    padding-right: var(--esp-6);
   }
 }
 

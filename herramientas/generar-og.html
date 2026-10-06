@@ -22,7 +22,7 @@ cargarse por HTTP), y hacé clic en el botón. Se descarga el PNG; copialo a
    border:0;border-radius:8px;background:#2563EB;color:#fff;cursor:pointer">
    Descargar og-image.png</button></p>
 
-<canvas id="c" width="1200" height="630"></canvas>
+<canvas id="c" width="2400" height="1260"></canvas>
 
 <script>
 /* ---- TITULAR: cambiá estas cuatro líneas y listo ---- */
@@ -43,6 +43,23 @@ const DOMINIO       = 'viniciuscesa.com';
 const MARINO='#0D1B2A', CREMA='#F5EBD7', AZUL='#2563EB', SUAVE='#8FA2B5';
 
 const c=document.getElementById('c'), x=c.getContext('2d');
+
+/* EL LIENZO VA AL DOBLE, PERO SE DIBUJA EN 1200x630.
+
+   La medida que piden las redes es 1200x630, y esa era la que teniamos.
+   El problema es que 1200 es exactamente 1x: en un telefono o una
+   notebook con pantalla de alta densidad, la tarjeta se dibuja con el
+   doble de puntos y el navegador tiene que ESTIRAR la imagen. Por eso
+   se veia borrosa al compartir, sobre todo el texto.
+
+   Generandola a 2400x1260, la plataforma la ACHICA en vez de
+   estirarla, y achicar siempre sale mas nitido que agrandar.
+
+   El scale(2,2) hace que todo el codigo de abajo siga escribiendo
+   coordenadas de 1200x630: no hay que tocar ni una medida, ni un
+   tamano de letra, ni la posicion del logo. */
+const ESCALA = 2;
+x.scale(ESCALA, ESCALA);
 
 function cajaRedonda(ctx,px,py,w,h,r){ctx.beginPath();ctx.moveTo(px+r,py);
   ctx.arcTo(px+w,py,px+w,py+h,r);ctx.arcTo(px+w,py+h,px,py+h,r);
