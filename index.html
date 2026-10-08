@@ -34,7 +34,7 @@
   <meta property="og:url" content="https://viniciuscesa.com/">
   <!-- La imagen que se ve al compartir el link. Tiene que ser PNG o JPG
        de 1200x630: WhatsApp y Facebook no leen SVG. -->
-  <meta property="og:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610060354">
+  <meta property="og:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610081553">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="2400">
   <meta property="og:image:height" content="1260">
@@ -43,7 +43,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Vinicius Cesa — Diseño y desarrollo web">
   <meta name="twitter:description" content="Diseño y desarrollo de sitios web a medida para que tu trabajo se tome en serio y convierta consultas en clientes.">
-  <meta name="twitter:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610060354">
+  <meta name="twitter:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610081553">
 
   <!-- ===================================================================
        FAVICON Y COLOR DE MARCA
@@ -166,12 +166,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610060354">
+  <link rel="stylesheet" href="css/styles.css?v=202610081553">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610060354"></script>
+  <script src="js/activar-animaciones.js?v=202610081553"></script>
 </head>
 
 <body>
@@ -354,8 +354,8 @@
                     role="tab" id="vt-01" aria-controls="vp-01"
                     aria-selected="true" tabindex="0">
               <span class="vitrina__texto">
-                <span class="vitrina__titulo">Landing page para campañas</span>
-                <span class="vitrina__rubro">Landing page</span>
+                <span class="vitrina__titulo">Equipia</span>
+                <span class="vitrina__rubro">Tienda online</span>
               </span>
               <span class="vitrina__flecha" aria-hidden="true">&rarr;</span>
             </button>
@@ -389,21 +389,26 @@
                  role="tabpanel" id="vp-01" aria-labelledby="vt-01">
 
               <div class="vitrina__imagen" data-inclinar>
-                <img src="assets/img/proyecto-landing.svg" alt="Vista de una landing page para campañas con un botón de contacto destacado"
-                     width="1200" height="750" loading="lazy">
+                <!-- width y height van con las medidas REALES del archivo
+                     (1800x1200). El navegador las usa para reservar el
+                     lugar antes de que la imagen llegue: si no coinciden,
+                     la pagina pega un salto cuando termina de cargar. -->
+                <img src="assets/img/proyecto-equipia.jpg"
+                     alt="Portada de Equipia: una camiseta de River Plate sobre un fondo azul, con el titular del producto y un boton de compra"
+                     width="1800" height="1200" loading="lazy">
               </div>
 
               <!-- La ficha. Lleva los datos del proyecto en el mismo
                    panel que la imagen: asi cambian juntos al elegir otro
                    nombre y el JS no tiene que tocar nada aparte. -->
               <aside class="ficha">
-                <p class="ficha__estado">Próximamente</p>
-                <h3 class="ficha__nombre">Landing page para campañas</h3>
-                <p class="ficha__texto">Una sola página con una oferta clara, un botón directo a WhatsApp y carga rápida en celulares.</p>
+                <h3 class="ficha__nombre">Equipia</h3>
+                <p class="ficha__texto">Tienda de camisetas de fútbol importadas, con catálogo por versión, guía de talles, carrito propio y pago en cuotas.</p>
 
                 <ul class="ficha__etiquetas">
+                  <li>E-commerce</li>
                   <li>Diseño web</li>
-                  <li>Conversión</li>
+                  <li>Desarrollo</li>
                 </ul>
 
                 <!-- <dl> es la etiqueta correcta para pares dato/valor:
@@ -415,17 +420,15 @@
                   </div>
                   <div>
                     <dt>Entrega</dt>
-                    <dd>2 semanas</dd>
+                    <dd>1 semana</dd>
                   </div>
                 </dl>
 
-                <!-- CUANDO EL PROYECTO ESTÉ ONLINE: borra el <p> de
-                     arriba que dice "Próximamente" y descomenta esto.
                 <a class="btn btn--secundario btn--flecha ficha__enlace"
-                   href="https://EL-SITIO.com" target="_blank" rel="noopener noreferrer">
+                   href="https://equipia.vinicius2006cesa.workers.dev/"
+                   target="_blank" rel="noopener noreferrer">
                   Ver proyecto
                 </a>
-                -->
               </aside>
 
             </div>
@@ -1137,7 +1140,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610060354" defer></script>
+  <script src="js/main.js?v=202610081553" defer></script>
 
 </body>
 </html>

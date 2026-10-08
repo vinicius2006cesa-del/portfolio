@@ -1,8 +1,25 @@
-Reemplazá los archivos de esta carpeta por tus imágenes reales,
-manteniendo exactamente los mismos nombres. Así no hace falta tocar el código.
+Capturas de los proyectos de la vitrina.
 
-(el logo de la marca ya no va aca: vive en assets/marca/)
-proyecto-landing.jpg        -> captura del proyecto 1 (1200 x 750 px)
-proyecto-portfolio.jpg      -> captura del proyecto 2 (1200 x 750 px)
-proyecto-institucional.jpg  -> captura del proyecto 3 (1200 x 750 px)
-og-image.png                -> imagen que se ve al compartir el link (1200 x 630 px)
+MEDIDA: 1800 x 1200 px (proporcion 3:2). Es la que usa el visor.
+Si subis una con otra proporcion no se rompe nada, pero se recorta.
+
+FORMATO: .jpg para capturas de sitios. Pesan mucho menos que .png
+sin que se note la diferencia en una foto de pantalla.
+
+IMPORTANTE: si cambias el nombre de un archivo, hay que cambiarlo
+tambien en index.html, y ademas el width y el height del <img> tienen
+que coincidir con las medidas REALES del archivo. El navegador los usa
+para reservar el lugar antes de que la imagen llegue: si no coinciden,
+la pagina pega un salto cuando termina de cargar.
+
+EN USO
+  proyecto-equipia.jpg   -> Equipia (tienda online)
+
+PENDIENTES (todavia son SVG de muestra y dicen "Proximamente")
+  proyecto-portfolio.svg
+  proyecto-institucional.svg
+
+OTRA
+  og-image.png -> la imagen que se ve al compartir el link.
+                  NO se edita a mano: se genera con
+                  herramientas/generar-og.html
