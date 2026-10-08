@@ -1179,6 +1179,41 @@ function activarTrazoDeLlegada() {
 
 
 /* =====================================================================
+   5g. EL RECORRIDO DE LA VITRINA EMPIEZA AL LLEGAR
+   ---------------------------------------------------------------------
+   La imagen de cada proyecto es una captura de la pagina entera que se
+   va corriendo sola, como un paseo. Toda la animacion la hace el CSS;
+   aca solo se decide CUANDO empieza.
+
+   Sin esto arrancaba al cargar la pagina, con la seccion todavia fuera
+   de pantalla: para cuando alguien bajaba hasta Proyectos ya iba por la
+   mitad, y lo primero que veia era un pedazo cualquiera en vez del
+   inicio del sitio. Medido: a los dos segundos ya estaba en el 7%.
+
+   Tampoco tiene sentido gastar CPU animando algo que nadie esta
+   mirando, asi que al salir de pantalla se saca la clase y la animacion
+   se detiene.
+   ===================================================================== */
+function activarRecorridoVitrina() {
+  const vitrina = document.getElementById("vitrina");
+  if (!vitrina) return;
+  if (prefiereMenosMovimiento()) return;
+
+  const vigia = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((e) => {
+        vitrina.classList.toggle("vitrina--a-la-vista", e.isIntersecting);
+      });
+    },
+    /* Un cuarto de la seccion ya visible: asi el recorrido arranca
+       cuando de verdad la estas mirando, no cuando asoma un pixel. */
+    { threshold: 0.25 }
+  );
+  vigia.observe(vitrina);
+}
+
+
+/* =====================================================================
    6. FORMULARIO DE CONTACTO
    ---------------------------------------------------------------------
    Lo enviamos con fetch para no recargar la pagina y poder mostrar un
@@ -1400,6 +1435,7 @@ function iniciar() {
   activarInclinacion();
   activarProgresoDeScroll();
   activarVitrina();
+  activarRecorridoVitrina();
   activarTrazoDeLlegada();
   activarFormulario();
 }

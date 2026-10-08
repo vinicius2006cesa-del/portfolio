@@ -1958,13 +1958,72 @@ p {
   opacity: 1;
 }
 
+/* EL RECORRIDO POR LA PAGINA.
+
+   La imagen del proyecto no es una captura de la pantalla: es una
+   captura de la PAGINA ENTERA, larguisima (la de Equipia mide
+   1200x5058). El marco muestra solo un pedazo, y la animacion va
+   corriendo cual pedazo se ve. El resultado se lee como un video
+   paseando por el sitio, pero es un solo JPG.
+
+   POR QUE NO UN VIDEO. Es lo que usa la referencia que miramos, y se ve
+   igual de bien, pero pesa entre tres y siete veces mas por proyecto y
+   el telefono tiene que decodificarlo cuadro a cuadro. Medido: la
+   captura larga pesa 427 KB contra 1 a 3 MB de un video equivalente.
+   Con tres proyectos la diferencia es de 1,3 MB contra 9 MB.
+
+   Se anima object-position y no transform porque asi no hace falta
+   saber cuanto mide de alto cada captura: el navegador calcula solo
+   donde esta el "abajo de todo" de cada imagen. Si manana subis la
+   captura de un sitio mas largo o mas corto, funciona igual sin tocar
+   un solo numero.
+
+   Antes aca habia un parallax que corria la imagen unos pixeles segun
+   el scroll. Se saco: los dos efectos mueven lo mismo y no pueden
+   convivir. Este cuenta mucho mas. */
 .vitrina__imagen img {
   position: absolute;
-  inset: -12% 0 auto 0;
+  inset: 0;
   width: 100%;
-  height: 124%;
+  height: 100%;
   object-fit: cover;
-  transform: translateY(calc((var(--p, 0.5) - 0.5) * -14%));
+  object-position: 50% 0%;
+}
+
+/* Recorre SOLO la del proyecto abierto Y solo mientras la seccion esta
+   a la vista.
+
+   Lo primero, porque los otros paneles siguen dibujados debajo con
+   opacidad 0: sin eso se animarian los tres a la vez sin que nadie los
+   vea.
+
+   Lo segundo, por dos motivos. Uno es no gastar en una animacion que
+   corre para nadie. El otro importa mas: sin esperar, para cuando
+   alguien baja hasta Proyectos la animacion ya arranco hace rato y lo
+   primero que ve es un pedazo cualquiera del medio de la pagina.
+   Medido: a los dos segundos de cargar ya iba por el 7%. Esperando, el
+   recorrido siempre empieza donde tiene que empezar, arriba de todo. */
+.vitrina--a-la-vista .vitrina__panel--activo .vitrina__imagen img {
+  animation: recorrer-pagina 26s var(--curva-suave) infinite alternate;
+}
+
+@keyframes recorrer-pagina {
+  /* Las pausas de los extremos son la mitad del efecto: sin ellas la
+     imagen rebota en el borde y se nota que es un bucle. Con la pausa
+     se lee como alguien que llego al final, miro, y volvio. */
+  0%, 8%    { object-position: 50% 0%; }
+  92%, 100% { object-position: 50% 100%; }
+}
+
+/* Al pasar el cursor se frena, por si queres mirar algo puntual. */
+.vitrina__imagen:hover img {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vitrina--a-la-vista .vitrina__panel--activo .vitrina__imagen img {
+    animation: none;
+  }
 }
 
 /* --- La ficha del proyecto -------------------------------------------
