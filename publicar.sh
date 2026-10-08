@@ -63,12 +63,24 @@ for f in index.html legal.html 404.html; do
   # Ojo: esto arregla la imagen a futuro, pero NO borra lo que esas
   # aplicaciones ya tienen guardado de antes. Para eso hay que pedirles
   # que relean, ver el final de este archivo.
+  #
+  # LO MISMO PARA LAS CAPTURAS DE LOS PROYECTOS.
+  #
+  # Nos mordio una vez: se reemplazo la captura de un proyecto por otra
+  # distinta manteniendo el nombre del archivo, y Cloudflare siguio
+  # sirviendo la vieja durante horas (max-age=14400). La pagina pedia
+  # una imagen larga para recorrerla y recibia la cuadrada de antes, asi
+  # que no se movia nada.
+  #
+  # Cambiar el contenido de un archivo sin cambiar su direccion no le
+  # avisa a ningun cache. El ?v= si.
   # El separador del sed es # y no la barra vertical: la barra vertical
   # tambien separa alternativas adentro de la expresion, y las dos cosas
   # se chocan. Probado: el comando se partia al medio y no corria.
   sed -i -E "s#(content=\"https://viniciuscesa\.com/assets/img/[A-Za-z0-9._-]+\.(png|jpg|webp))(\?v=[0-9]+)?\"#\1?v=$version\"#g" "$f"
+  sed -i -E "s#(src=\"/?assets/[A-Za-z0-9._/-]+\.(png|jpg|jpeg|webp|svg))(\?v=[0-9]+)?\"#\1?v=$version\"#g" "$f"
 done
-echo "Version nueva de CSS, JS e imagen de vista previa: $version"
+echo "Version nueva de CSS, JS e imagenes: $version"
 echo
 
 echo "Se van a publicar estos archivos:"
