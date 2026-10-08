@@ -1037,74 +1037,6 @@ function activarRevelado() {
 }
 
 
-/* =====================================================================
-   5c3. INCLINACION 3D DE LA IMAGEN DE PROYECTOS
-   ---------------------------------------------------------------------
-   La imagen se inclina hacia el cursor, con un reflejo que la recorre.
-   Es el efecto que hace que una captura plana se lea como un objeto.
-
-   Dos limites deliberados:
-   - 7 grados como maximo. Pasado eso deja de parecer una superficie
-     inclinada y empieza a parecer que la pagina esta rota.
-   - Solo con mouse. En tactil no hay cursor al que inclinarse, y en
-     una pantalla chica la perspectiva no se aprecia.
-   ===================================================================== */
-function activarInclinacion() {
-  const marcos = document.querySelectorAll("[data-inclinar]");
-  if (marcos.length === 0) return;
-  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-  if (prefiereMenosMovimiento()) return;
-
-  const GRADOS = 7;
-
-  marcos.forEach((marco) => {
-    let pedido = null;
-    let gx = 0, gy = 0, lx = 50, ly = 50;
-
-    function pintar() {
-      pedido = null;
-      marco.style.transform =
-        "perspective(1100px) rotateX(" + gy.toFixed(2) + "deg) rotateY(" +
-        gx.toFixed(2) + "deg)";
-      // El reflejo sigue al cursor por separado: es lo que vende que
-      // hay una superficie y no solo una caja girada.
-      marco.style.setProperty("--brillo-x", lx.toFixed(1) + "%");
-      marco.style.setProperty("--brillo-y", ly.toFixed(1) + "%");
-    }
-
-    marco.addEventListener("mousemove", (e) => {
-      const caja = marco.getBoundingClientRect();
-      const px = (e.clientX - caja.left) / caja.width;   // 0 a 1
-      const py = (e.clientY - caja.top) / caja.height;
-      // El signo de rotateX va invertido: el mouse arriba tiene que
-      // inclinar el borde superior HACIA ATRAS, no hacia adelante.
-      gx = (px - 0.5) * 2 * GRADOS;
-      gy = -(py - 0.5) * 2 * GRADOS;
-      lx = px * 100;
-      ly = py * 100;
-      if (!pedido) pedido = requestAnimationFrame(pintar);
-    }, { passive: true });
-
-    // Misma idea que en el hero: la capa de video se pide al entrar y
-    // se devuelve cuando el marco termino de enderezarse.
-    let relojCapa = null;
-
-    marco.addEventListener("mouseenter", () => {
-      clearTimeout(relojCapa);
-      marco.classList.add("en-movimiento");
-    }, { passive: true });
-
-    marco.addEventListener("mouseleave", () => {
-      gx = 0;
-      gy = 0;
-      lx = 50;
-      ly = 50;
-      if (!pedido) pedido = requestAnimationFrame(pintar);
-      clearTimeout(relojCapa);
-      relojCapa = setTimeout(() => marco.classList.remove("en-movimiento"), 700);
-    });
-  });
-}
 
 
 /* =====================================================================
@@ -1432,7 +1364,6 @@ function iniciar() {
   activarPlano();
   activarProgresoDeLectura();
   activarRevelado();
-  activarInclinacion();
   activarProgresoDeScroll();
   activarVitrina();
   activarRecorridoVitrina();

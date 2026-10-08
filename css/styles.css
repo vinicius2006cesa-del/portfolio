@@ -1926,36 +1926,18 @@ p {
    El --p lo escribe el JS en #vitrina y baja hasta aca por herencia:
    las variables CSS se heredan, asi que un solo calculo por cuadro
    alcanza para las tres imagenes. */
+/* EL MARCO ES UN MARCO, NO UN OBJETO QUE SE MANIPULA.
+
+   Antes este marco se inclinaba en 3D siguiendo el cursor, con un punto
+   de luz encima que lo acompanaba. Tenia sentido cuando adentro habia
+   una captura fija: el movimiento le daba algo que mirar.
+
+   Con el recorrido adentro ya no: la imagen se mueve sola, y ademas la
+   inclinacion la hacia sentir un objeto que se agarra y se gira en vez
+   de una pantalla que se esta mirando. Se saco todo, inclinacion y
+   reflejo, y quedo un marco quieto con el recorrido adentro. */
 .vitrina__imagen {
   position: relative;
-  /* La vuelta al reposo. El acercamiento lo maneja el JS cuadro a
-     cuadro; esta transicion es solo para cuando sacas el mouse. Como el
-     JS escribe el transform directo, mientras lo mueve la transicion
-     practicamente no actua. */
-  transition: transform 600ms var(--curva-salida);
-}
-
-/* El reflejo. Un punto de luz que sigue al cursor por encima de la
-   imagen: es lo que hace que se lea como una superficie inclinada y no
-   como una caja girada. Va en ::after para no sumar HTML. */
-.vitrina__imagen::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle at var(--brillo-x, 50%) var(--brillo-y, 50%),
-    rgba(255, 255, 255, 0.28) 0%,
-    rgba(255, 255, 255, 0) 55%
-  );
-  opacity: 0;
-  transition: opacity 400ms var(--curva-suave);
-}
-
-.vitrina__imagen:hover::after {
-  opacity: 1;
 }
 
 /* EL RECORRIDO POR LA PAGINA.
@@ -2021,10 +2003,6 @@ p {
   95%, 100% { object-position: 50% 100%; }
 }
 
-/* Al pasar el cursor se frena, por si queres mirar algo puntual. */
-.vitrina__imagen:hover img {
-  animation-play-state: paused;
-}
 
 @media (prefers-reduced-motion: reduce) {
   .vitrina--a-la-vista .vitrina__panel--activo .vitrina__imagen img {
