@@ -1940,29 +1940,17 @@ p {
   position: relative;
 }
 
-/* EL RECORRIDO POR LA PAGINA.
+/* La imagen llena el marco. object-fit: cover recorta lo que sobra en
+   vez de deformar la captura.
 
-   La imagen del proyecto no es una captura de la pantalla: es una
-   captura de la PAGINA ENTERA, larguisima (la de Equipia mide
-   1200x5058). El marco muestra solo un pedazo, y la animacion va
-   corriendo cual pedazo se ve. El resultado se lee como un video
-   paseando por el sitio, pero es un solo JPG.
+   Aca vivio un rato un "recorrido": la imagen era una captura de la
+   pagina entera y se iba corriendo sola, como un video. Se saco. El
+   movimiento no quedaba bien y una captura larga tomada de forma
+   automatica termina con pedazos en blanco, porque hay secciones que
+   cargan sus imagenes recien al llegar y no alcanzan a dibujarse.
 
-   POR QUE NO UN VIDEO. Es lo que usa la referencia que miramos, y se ve
-   igual de bien, pero pesa entre tres y siete veces mas por proyecto y
-   el telefono tiene que decodificarlo cuadro a cuadro. Medido: la
-   captura larga pesa 427 KB contra 1 a 3 MB de un video equivalente.
-   Con tres proyectos la diferencia es de 1,3 MB contra 9 MB.
-
-   Se anima object-position y no transform porque asi no hace falta
-   saber cuanto mide de alto cada captura: el navegador calcula solo
-   donde esta el "abajo de todo" de cada imagen. Si manana subis la
-   captura de un sitio mas largo o mas corto, funciona igual sin tocar
-   un solo numero.
-
-   Antes aca habia un parallax que corria la imagen unos pixeles segun
-   el scroll. Se saco: los dos efectos mueven lo mismo y no pueden
-   convivir. Este cuenta mucho mas. */
+   En su lugar va a ir un video grabado a mano. Hasta entonces, la
+   portada fija. */
 .vitrina__imagen img {
   position: absolute;
   inset: 0;
@@ -1970,44 +1958,6 @@ p {
   height: 100%;
   object-fit: cover;
   object-position: 50% 0%;
-}
-
-/* Recorre SOLO la del proyecto abierto Y solo mientras la seccion esta
-   a la vista.
-
-   Lo primero, porque los otros paneles siguen dibujados debajo con
-   opacidad 0: sin eso se animarian los tres a la vez sin que nadie los
-   vea.
-
-   Lo segundo, por dos motivos. Uno es no gastar en una animacion que
-   corre para nadie. El otro importa mas: sin esperar, para cuando
-   alguien baja hasta Proyectos la animacion ya arranco hace rato y lo
-   primero que ve es un pedazo cualquiera del medio de la pagina.
-   Medido: a los dos segundos de cargar ya iba por el 7%. Esperando, el
-   recorrido siempre empieza donde tiene que empezar, arriba de todo. */
-.vitrina--a-la-vista .vitrina__panel--activo .vitrina__imagen img {
-  /* linear, NO una curva suave. Un scroll de pagina es parejo.
-
-     Con --curva-suave (que desacelera) el recorrido arrancaba disparado
-     y despues se arrastraba: medido, 13,2% de la pagina en el primer
-     segundo y 0,7% en el ultimo, una diferencia de 17 veces. Se veia
-     como un tiron seguido de veinte segundos casi quieto. */
-  animation: recorrer-pagina 18s linear infinite alternate;
-}
-
-@keyframes recorrer-pagina {
-  /* Las pausas de los extremos son la mitad del efecto: sin ellas la
-     imagen rebota en el borde y se nota que es un bucle. Con la pausa
-     se lee como alguien que llego al final, miro, y volvio. */
-  0%, 5%    { object-position: 50% 0%; }
-  95%, 100% { object-position: 50% 100%; }
-}
-
-
-@media (prefers-reduced-motion: reduce) {
-  .vitrina--a-la-vista .vitrina__panel--activo .vitrina__imagen img {
-    animation: none;
-  }
 }
 
 /* --- La ficha del proyecto -------------------------------------------
