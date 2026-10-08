@@ -2004,15 +2004,21 @@ p {
    Medido: a los dos segundos de cargar ya iba por el 7%. Esperando, el
    recorrido siempre empieza donde tiene que empezar, arriba de todo. */
 .vitrina--a-la-vista .vitrina__panel--activo .vitrina__imagen img {
-  animation: recorrer-pagina 26s var(--curva-suave) infinite alternate;
+  /* linear, NO una curva suave. Un scroll de pagina es parejo.
+
+     Con --curva-suave (que desacelera) el recorrido arrancaba disparado
+     y despues se arrastraba: medido, 13,2% de la pagina en el primer
+     segundo y 0,7% en el ultimo, una diferencia de 17 veces. Se veia
+     como un tiron seguido de veinte segundos casi quieto. */
+  animation: recorrer-pagina 18s linear infinite alternate;
 }
 
 @keyframes recorrer-pagina {
   /* Las pausas de los extremos son la mitad del efecto: sin ellas la
      imagen rebota en el borde y se nota que es un bucle. Con la pausa
      se lee como alguien que llego al final, miro, y volvio. */
-  0%, 8%    { object-position: 50% 0%; }
-  92%, 100% { object-position: 50% 100%; }
+  0%, 5%    { object-position: 50% 0%; }
+  95%, 100% { object-position: 50% 100%; }
 }
 
 /* Al pasar el cursor se frena, por si queres mirar algo puntual. */
