@@ -1111,6 +1111,72 @@ function activarTrazoDeLlegada() {
 
 
 /* =====================================================================
+   5g. LOS VIDEOS DE LA VITRINA
+   ---------------------------------------------------------------------
+   Cada proyecto puede tener un video con el recorrido por su sitio. El
+   HTML los deja quietos a proposito: sin autoplay y con preload="none",
+   asi que al abrir la pagina no se baja ni un byte.
+
+   Se reproduce uno solo, y solo cuando se dan las dos condiciones: que
+   sea el proyecto abierto y que la seccion este a la vista. Los otros
+   paneles siguen dibujados debajo con opacidad 0, asi que sin esto se
+   reproducirian los tres a la vez sin que nadie los vea, cada uno
+   bajando su propio archivo.
+
+   Son casi tres megas cada uno. Alguien que entra desde el telefono y
+   no llega nunca hasta Proyectos no paga nada de eso.
+   ===================================================================== */
+function activarVideosVitrina() {
+  const vitrina = document.getElementById("vitrina");
+  if (!vitrina) return;
+
+  const videos = [...vitrina.querySelectorAll(".vitrina__video")];
+  if (videos.length === 0) return;
+
+  /* Con menos movimiento pedido no se reproduce ninguno: queda el
+     poster, que es una captura del sitio y cuenta lo mismo quieta. */
+  if (prefiereMenosMovimiento()) return;
+
+  let aLaVista = false;
+
+  function acomodar() {
+    videos.forEach((v) => {
+      const panel = v.closest(".vitrina__panel");
+      const activo = panel && panel.classList.contains("vitrina__panel--activo");
+      if (activo && aLaVista) {
+        /* play() devuelve una promesa que se rechaza si el navegador
+           decide no reproducir (ahorro de datos, politica de autoplay).
+           Hay que atraparla o queda un error suelto en la consola. */
+        const intento = v.play();
+        if (intento) intento.catch(function () {});
+      } else {
+        v.pause();
+      }
+    });
+  }
+
+  const vigia = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((e) => {
+        aLaVista = e.isIntersecting;
+      });
+      acomodar();
+    },
+    { threshold: 0.25 }
+  );
+  vigia.observe(vitrina);
+
+  /* Al cambiar de proyecto hay que rehacer la cuenta. El cambio lo hace
+     activarVitrina poniendo y sacando una clase, asi que lo mas simple
+     es mirar cuando cambia el atributo class de los paneles. */
+  const espia = new MutationObserver(acomodar);
+  vitrina.querySelectorAll(".vitrina__panel").forEach((p) =>
+    espia.observe(p, { attributes: true, attributeFilter: ["class"] })
+  );
+}
+
+
+/* =====================================================================
    6. FORMULARIO DE CONTACTO
    ---------------------------------------------------------------------
    Lo enviamos con fetch para no recargar la pagina y poder mostrar un
@@ -1331,6 +1397,7 @@ function iniciar() {
   activarRevelado();
   activarProgresoDeScroll();
   activarVitrina();
+  activarVideosVitrina();
   activarTrazoDeLlegada();
   activarFormulario();
 }

@@ -78,7 +78,10 @@ for f in index.html legal.html 404.html; do
   # tambien separa alternativas adentro de la expresion, y las dos cosas
   # se chocan. Probado: el comando se partia al medio y no corria.
   sed -i -E "s#(content=\"https://viniciuscesa\.com/assets/img/[A-Za-z0-9._-]+\.(png|jpg|webp))(\?v=[0-9]+)?\"#\1?v=$version\"#g" "$f"
-  sed -i -E "s#(src=\"/?assets/[A-Za-z0-9._/-]+\.(png|jpg|jpeg|webp|svg))(\?v=[0-9]+)?\"#\1?v=$version\"#g" "$f"
+  # (src|poster) y no solo src: el <video> del recorrido lleva su
+  # captura de respaldo en poster=, y esa tambien se puede cambiar.
+  # Y mp4 en la lista de extensiones, por el video mismo.
+  sed -i -E "s#((src|poster)=\"/?assets/[A-Za-z0-9._/-]+\.(png|jpg|jpeg|webp|svg|mp4|webm))(\?v=[0-9]+)?\"#\1?v=$version\"#g" "$f"
 done
 echo "Version nueva de CSS, JS e imagenes: $version"
 echo

@@ -1951,11 +1951,15 @@ p {
 
    En su lugar va a ir un video grabado a mano. Hasta entonces, la
    portada fija. */
-.vitrina__imagen img {
+.vitrina__imagen img,
+.vitrina__video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  /* El video se codifico en 3:2, igual que el marco, asi que cover no
+     recorta nada. Esta igual por si algun dia entra uno con otra
+     proporcion: mejor que recorte a que se deforme. */
   object-fit: cover;
   object-position: 50% 0%;
 }

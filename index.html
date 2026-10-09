@@ -34,7 +34,7 @@
   <meta property="og:url" content="https://viniciuscesa.com/">
   <!-- La imagen que se ve al compartir el link. Tiene que ser PNG o JPG
        de 1200x630: WhatsApp y Facebook no leen SVG. -->
-  <meta property="og:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610081659">
+  <meta property="og:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610090507">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="2400">
   <meta property="og:image:height" content="1260">
@@ -43,7 +43,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Vinicius Cesa — Diseño y desarrollo web">
   <meta name="twitter:description" content="Diseño y desarrollo de sitios web a medida para que tu trabajo se tome en serio y convierta consultas en clientes.">
-  <meta name="twitter:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610081659">
+  <meta name="twitter:image" content="https://viniciuscesa.com/assets/img/og-image.png?v=202610090507">
 
   <!-- ===================================================================
        FAVICON Y COLOR DE MARCA
@@ -166,12 +166,12 @@
     }
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=202610081659">
+  <link rel="stylesheet" href="css/styles.css?v=202610090507">
 
   <!-- Habilita las animaciones de entrada. Sin defer: tiene que correr
        antes del primer pintado. Si este archivo no carga, el sitio se ve
        completo y sin animaciones, que es lo que queremos. -->
-  <script src="js/activar-animaciones.js?v=202610081659"></script>
+  <script src="js/activar-animaciones.js?v=202610090507"></script>
 </head>
 
 <body>
@@ -392,13 +392,32 @@
                  role="tabpanel" id="vp-01" aria-labelledby="vt-01">
 
               <div class="vitrina__imagen">
-                <!-- width y height llevan las medidas REALES del archivo.
-                     El navegador las usa para reservar el lugar antes de
-                     que la imagen llegue: si no coinciden, la pagina pega
-                     un salto cuando termina de cargar. -->
-                <img src="assets/img/proyecto-equipia.jpg?v=202610081659"
-                     alt="Portada de Equipia: una camiseta de River Plate sobre un fondo azul, con el titular del producto y un boton de compra"
-                     width="1800" height="1200" loading="lazy">
+                <!-- EL RECORRIDO, GRABADO.
+
+                     poster es la captura fija: se ve enseguida, mientras
+                     el video todavia no empezo a bajar. Sin poster el
+                     marco quedaria en negro los primeros segundos.
+
+                     preload="none" quiere decir que el archivo NO se baja
+                     al abrir la pagina. Lo pide el JS recien cuando este
+                     proyecto esta abierto Y la seccion esta a la vista.
+                     Son casi tres megas: no se le cobran a alguien que
+                     entra desde el telefono y nunca llega hasta aca.
+
+                     muted no es decorativo: sin eso los navegadores
+                     bloquean la reproduccion automatica. playsinline
+                     evita que en iPhone se abra a pantalla completa solo.
+
+                     No lleva autoplay: lo arranca el JS. Ver
+                     activarVideosVitrina. -->
+                <video class="vitrina__video"
+                       poster="assets/img/proyecto-equipia.jpg?v=202610090507"
+                       width="1440" height="960"
+                       muted loop playsinline preload="none"
+                       disablepictureinpicture
+                       aria-label="Recorrido grabado por el sitio de Equipia">
+                  <source src="assets/video/proyecto-equipia.mp4?v=202610090507" type="video/mp4">
+                </video>
               </div>
 
               <!-- La ficha. Lleva los datos del proyecto en el mismo
@@ -440,7 +459,7 @@
                  role="tabpanel" id="vp-02" aria-labelledby="vt-02" hidden>
 
               <div class="vitrina__imagen">
-                <img src="assets/img/proyecto-portfolio.svg?v=202610081659" alt="Vista de un portfolio profesional con una galería de trabajos"
+                <img src="assets/img/proyecto-portfolio.svg?v=202610090507" alt="Vista de un portfolio profesional con una galería de trabajos"
                      width="1200" height="750" loading="lazy">
               </div>
 
@@ -485,7 +504,7 @@
                  role="tabpanel" id="vp-03" aria-labelledby="vt-03" hidden>
 
               <div class="vitrina__imagen">
-                <img src="assets/img/proyecto-institucional.svg?v=202610081659" alt="Vista de un sitio institucional con secciones de empresa, servicios y contacto"
+                <img src="assets/img/proyecto-institucional.svg?v=202610090507" alt="Vista de un sitio institucional con secciones de empresa, servicios y contacto"
                      width="1200" height="750" loading="lazy">
               </div>
 
@@ -961,7 +980,7 @@
         <!-- Columna 1: marca, que hacés y las redes -->
         <div class="footer__marca-col">
           <p class="footer__marca">
-            <img src="assets/marca/v-crema.svg?v=202610081659" alt="" width="34" height="34">
+            <img src="assets/marca/v-crema.svg?v=202610090507" alt="" width="34" height="34">
             <span>Vinicius Cesa</span>
           </p>
           <!-- Antes aca se repetia, con otras palabras, lo mismo que dice
@@ -1143,7 +1162,7 @@
        defer hace que el navegador siga armando la pagina mientras
        descarga el script, y lo ejecute cuando el HTML esta completo.
        =================================================================== -->
-  <script src="js/main.js?v=202610081659" defer></script>
+  <script src="js/main.js?v=202610090507" defer></script>
 
 </body>
 </html>
